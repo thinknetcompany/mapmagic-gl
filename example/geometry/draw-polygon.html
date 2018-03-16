@@ -1,0 +1,42 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Display a map</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/css/mapmagic-gl.css' rel='stylesheet' />
+    <style>
+        #map {
+            height: 90vh;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='map'></div>
+    <script>
+        const map = new mapmagic.Map({
+            container: 'map',
+            app_id: 'example-m82la',
+            api_key: ''
+        });
+
+        map.on('load', function () {
+            map.addPolygon({
+                id: 'city-district',
+                coordinates:[
+                    [100.5182085132937, 13.810625871384914],
+                    [100.49004639314808, 13.757788616172789],
+                    [100.51436822418873, 13.739137321964094],
+                    [100.54829077800093, 13.713644819353718],
+                    [100.58093323543875, 13.787627594325201],
+                    [100.5521310671059, 13.833621879410586]
+                ]
+              })
+        })
+    </script>
+</body>
+</html>

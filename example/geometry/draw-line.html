@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset='utf-8' />
+    <title>Display a map</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/css/mapmagic-gl.css' rel='stylesheet' />
+    <style>
+        #map {
+            height: 90vh;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='map'></div>
+    <script>
+        const map = new mapmagic.Map({
+            container: 'map',
+            app_id: 'example-m82la',
+            api_key: ''
+        });
+
+        map.on('load', function () {
+          map.addLine({
+            id: 'phra-pradaeng',
+            coordinates: [
+              [100.47644313104138, 13.681937298079163],
+              [100.48129943712564, 13.675842487108369],
+              [100.50780677440406, 13.67191026727113],
+              [100.5265613225339, 13.693628535272623],
+              [100.54052320248576, 13.69873993645703],
+              [100.55559187760178, 13.719054839020814]
+            ],
+            style: {
+              lineWidth: 5,
+            }
+          })
+
+          map.addLine({
+            id: 'rama-9',
+            coordinates: [
+              [100.58888632828723, 13.630326416375254],
+              [100.59795464990867, 13.599711115944729],
+              [100.61036393209162, 13.589969053546099],
+              [100.60415929098656, 13.573731393137876],
+              [100.63947801727284, 13.52547579371847]
+            ],
+            style: {
+              color: '#000FF0'
+            }
+          })
+        })
+    </script>
+</body>
+</html>

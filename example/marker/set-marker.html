@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Icon marker</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/css/mapmagic-gl.css' rel='stylesheet' />
+    <style>
+        #map {
+            height: 90vh;
+            width: 100%;
+        }
+
+        #selected-value {
+          width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='map'></div>
+    <select id="selected-value">
+      <option value="100.61,13.66">บางนา</option>
+      <option value="100.49,13.65">บางมด</option>
+      <option value="100.39,13.66">บางบอน</option>
+    </select>
+    <script>
+        const map = new mapmagic.Map({
+            container: 'map',
+            app_id: 'example-m82la',
+            api_key: ''
+        })
+
+        map.on('load', function () {
+            map.addMarker({
+                id: 'bangbon',
+                lng: 100.61,
+                lat: 13.66,
+                icon: 'mmg_car_2_orange',
+                onClick: () => {
+                    alert('รถรับส่ง 6 ล้อ บางบอน')
+                }
+            })
+
+            document.getElementById('selected-value').addEventListener('change', (val) => {
+              const lngLat = val.target.value.split(',')
+              console.log(lngLat)
+              map.setMarker({
+                id: 'bangbon',
+                lng: lngLat[0],
+                lat: lngLat[1],
+              })
+            })
+        })
+    </script>
+</body>
+
+</html>

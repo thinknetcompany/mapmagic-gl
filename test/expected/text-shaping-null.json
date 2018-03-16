@@ -1,0 +1,22 @@
+{
+  "positionedGlyphs": [
+    {
+      "glyph": 104,
+      "x": -10,
+      "y": -17,
+      "vertical": false
+    },
+    {
+      "glyph": 105,
+      "x": 4,
+      "y": -17,
+      "vertical": false
+    }
+  ],
+  "text": "hi\u0000",
+  "top": -12,
+  "bottom": 12,
+  "left": -10,
+  "right": 10,
+  "writingMode": 1
+}

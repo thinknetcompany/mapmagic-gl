@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>add marker for filter by name</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/css/mapmagic-gl.css' rel='stylesheet' />
+    <style>
+        #map {
+            height: 90vh;
+            width: 100%;
+        }
+
+        .filter-ctrl {
+            position: absolute;
+            top: 30px;
+            margin-right: 30px;
+            right: 20px;
+            z-index: 1;
+            width: 180px;
+        }
+
+        .filter-ctrl input[type=text] {
+            font: 12px/20px 'Helvetica Neue', Arial, Helvetica, sans-serif;
+            width: 100%;
+            border: 0;
+            background-color: #fff;
+            margin: 0;
+            color: rgba(0, 0, 0, .5);
+            padding: 10px;
+            box-shadow: 0 0 0 2px rgba(0, 0, 0, 0.1);
+            border-radius: 3px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='map'></div>
+    <div class='filter-ctrl'>
+        <input id='filter-input' type='text' name='filter' placeholder='Filter by name' />
+    </div>
+    <script>
+        var layerIDs = [];
+        var filterInput = document.getElementById('filter-input');
+
+
+        const map = new mapmagic.Map({
+            container: 'map',
+            app_id: 'example-m82la',
+            api_key: ''
+        })
+
+        var places = [{
+            "properties": {
+                "label": "car",
+                "icon": "mmg_car_1_orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [100.49, 13.72]  // [ lng , lat ]
+            }
+        }, {
+            "properties": {
+                "label": "building",
+                "icon": "mmg_building_5_orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [100.45, 13.72]
+            }
+        }, {
+            "properties": {
+                "label": "building",
+                "icon": "mmg_building_5_orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [100.40, 13.72]
+            }
+        }, {
+            "properties": {
+                "label": "car",
+                "icon": "mmg_car_1_orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [100.35, 13.72]
+            }
+        }, {
+            "properties": {
+                "label": "store",
+                "icon": "mmg_building_2_orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [100.30, 13.72]
+            }
+        }, {
+            "properties": {
+                "label": "store",
+                "icon": "mmg_building_2_orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [100.25, 13.72]
+            }
+        }, {
+            "properties": {
+                "label": "building",
+                "icon": "mmg_building_5_orange"
+            },
+            "geometry": {
+                "type": "Point",
+                "coordinates": [100.20, 13.72]
+            }
+        }]
+
+        map.on('load', function () {
+            map.addMarkerFilter({ places })
+        });
+    </script>
+</body>
+
+</html>

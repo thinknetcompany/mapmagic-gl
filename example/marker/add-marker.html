@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset='utf-8' />
+    <title>Icon marker</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/css/mapmagic-gl.css' rel='stylesheet' />
+    <style>
+        #map {
+            height: 90vh;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <div id='map'></div>
+    <script>
+        const map = new mapmagic.Map({
+            container: 'map',
+            app_id: 'example-m82la',
+            api_key: ''
+        })
+
+        map.on('load', function () {
+            map.addMarker({
+                id: 'bangbon',
+                lat: 13.72,
+                lng: 100.49,
+                icon: 'mmg_car_2_orange',
+                onClick: () => {
+                    alert('รถรับส่ง 6 ล้อ บางบอน')
+                }
+            })
+
+            map.addMarker({
+                id: 'bangkhae',
+                lat: 13.74,
+                lng: 100.40,
+                icon: 'mmg_car_2_orange',
+                onClick: () => {
+                    alert('รถรับส่ง 6 ล้อ บางแค')
+                }
+            })
+
+            map.addMarker({
+                id: 'somewhere',
+                lat: 13.7,
+                lng: 100.35,
+                onClick: () => {
+                    alert('ร้านป้าน้อยคำ')
+                }
+            });
+        })
+    </script>
+</body>
+
+</html>

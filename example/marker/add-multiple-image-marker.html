@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>Image multiple marker</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <script src='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/js/mapmagic-gl.js'></script>
+  <link href='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/css/mapmagic-gl.css' rel='stylesheet' />
+  <style>
+    #map {
+      height: 90vh;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id='map'></div>
+  <script>
+    const map = new mapmagic.Map({
+      container: 'map',
+      app_id: 'example-m82la',
+      api_key: ''
+    })
+
+    const places = [
+      {
+        description: 'test',
+        lng: 100.49,
+        lat: 13.72,
+      },
+      {
+        description: 'test',
+        lng: 100.35,
+        lat: 13.72,
+      }
+    ]
+
+    map.on('load', function () {
+      map.addMarkerImageArray({
+        id: 'katoon',
+        url: 'https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/images/house.png',
+        size: 1,
+        places,
+      })
+    })
+    map.addPopup({
+      id: 'katoon',
+      action: 'hover',
+    })
+  </script>
+</body>
+
+</html>

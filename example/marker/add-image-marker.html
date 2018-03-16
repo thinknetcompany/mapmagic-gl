@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>Image marker</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <script src='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/css/mapmagic-gl.css' rel='stylesheet' />
+  <style>
+    #map {
+      height: 90vh;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id='map'></div>
+  <script>
+    const map = new mapmagic.Map({
+      container: 'map',
+      app_id: 'example-m82la',
+      api_key: ''
+    })
+
+    map.on('load', function () {
+      map.addMarkerImage({
+        id: 'katoon',
+        lat: 13.72,
+        lng: 100.49,
+        url: 'https://lh3.googleusercontent.com/4AidcfRtE9it7FF45gawXuSJIfm6GWR-WauJYgcrxnLpxAOH3ldbdt8uiKnGd5pgZ476MnYDTgtgH6nARCDgvAkBknssb4Zbr5HqOCGAUxseiXpvhblAtcyIJ0JIpdHt0KSKpU0EsTUecAj6fAzSwCmEJ5SWACn7tTQGJfw4lWgl46ksFRvyWmiOmlpaQ-1qlOuVVy3Qh4PPnPeHZ0BgJ_sTbs2YQDOBKw47TMOCpZ7kYzcZ1G6CjP3eaYHJDkb9HZ4F0v_mwxaCsi2yaT3PIvYxAy-blzyvUnc9cbiaON8nBB7PhjA1nR-_XJQ5eZaSqRANpAxftffOSyZRLgec1KtIWv5soXOd5P6W2JczKtT5Mu2wWSw4Eu5j5cqUEd07_nWZJjzZVxkcGsF3VvrEMLUzwW9fN0_LdjemJnWQfq57UCmTfmNobgnDTSeVlxCh_W1hEQuXv7jzJybdpBdsouJmpTNdoZBi7i0ngXgjzYK0ciodEve1R1kITPS9Nb4YRV9QmZDHizOIkn5WtMn_4vhZKknlyxGKO8HoJPvWBd6slnqAfajd22JG6_vZWoKh=w1440-h782',
+        description: 'No description',
+        size: .5,
+        offset: [0, -10],
+        onClick: () => {
+          alert('รับหัวใจซักดวงมั้ยค่ะ')
+        }
+      })
+
+      map.addMarkerImage({
+        lat: 13.72,
+        lng: 100.20,
+        url: 'https://lh3.googleusercontent.com/4AidcfRtE9it7FF45gawXuSJIfm6GWR-WauJYgcrxnLpxAOH3ldbdt8uiKnGd5pgZ476MnYDTgtgH6nARCDgvAkBknssb4Zbr5HqOCGAUxseiXpvhblAtcyIJ0JIpdHt0KSKpU0EsTUecAj6fAzSwCmEJ5SWACn7tTQGJfw4lWgl46ksFRvyWmiOmlpaQ-1qlOuVVy3Qh4PPnPeHZ0BgJ_sTbs2YQDOBKw47TMOCpZ7kYzcZ1G6CjP3eaYHJDkb9HZ4F0v_mwxaCsi2yaT3PIvYxAy-blzyvUnc9cbiaON8nBB7PhjA1nR-_XJQ5eZaSqRANpAxftffOSyZRLgec1KtIWv5soXOd5P6W2JczKtT5Mu2wWSw4Eu5j5cqUEd07_nWZJjzZVxkcGsF3VvrEMLUzwW9fN0_LdjemJnWQfq57UCmTfmNobgnDTSeVlxCh_W1hEQuXv7jzJybdpBdsouJmpTNdoZBi7i0ngXgjzYK0ciodEve1R1kITPS9Nb4YRV9QmZDHizOIkn5WtMn_4vhZKknlyxGKO8HoJPvWBd6slnqAfajd22JG6_vZWoKh=w1440-h782',
+      })
+    })
+  </script>
+</body>
+
+</html>

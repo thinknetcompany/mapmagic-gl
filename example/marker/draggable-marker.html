@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset='utf-8' />
+  <title>Image marker</title>
+  <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+  <script src='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/js/mapmagic-gl.js'></script>
+  <link href='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/css/mapmagic-gl.css' rel='stylesheet' />
+  <style>
+    #map {
+      height: 90vh;
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div id='map'></div>
+  <script>
+    const map = new mapmagic.Map({
+      container: 'map',
+      app_id: 'example-m82la',
+      api_key: ''
+    })
+
+    map.on('load', function () {
+      map.addMarker({
+        id: 'bangbon',
+        lat: 13.50,
+        lng: 100.49,
+        draggable: true,
+        onClick: (e) => {
+          const { lng, lat } = e.lngLat
+          alert(`you are at [${lng}, ${lat}]`)
+        }
+      })
+
+      map.addMarker({
+        id: 'bangbon1',
+        lat: 13.45,
+        lng: 100.79,
+        draggable: true,
+        onDragEnd: (e) => {
+          const { lng, lat } = e.lngLat
+          alert(`you are at [${lng}, ${lat}]`)
+        }
+      })
+    })
+  </script>
+</body>
+
+</html>
