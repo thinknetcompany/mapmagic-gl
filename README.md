@@ -144,9 +144,9 @@ map.addMarker({
   lat: 13.72,
   lng: 100.49,
   icon: 'mmg_car_2_orange',
+  description: 'รถ ว. บางบอน 2',
   popup: {
-    action: 'click',
-    description: 'รถ ว. บางบอน 2'
+    action: 'click'
   }
 })
 
