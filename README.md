@@ -4,7 +4,7 @@ Mapmagic-gl คือ Javascript library ที่จะช่วยทำให
 
 Official Site : https://www.mapmagic.co.th
 
-## Release Notes 0.3.0
+## Release Notes 0.3.1
 ```
 1. Render map tile บนเว็บบราวเซอร์
 2. ฟังก์ชันพื้นฐานการใช้งานและแสดงผลบนแผนที่ (Marker, Line, Polygon)
