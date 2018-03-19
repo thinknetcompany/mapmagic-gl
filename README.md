@@ -48,8 +48,8 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 #### หรือดาวน์โหลดจาก mapmagic server สำหรับใช้บน HTML
 
 ```html
-<script src='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/js/mapmagic-gl.js'></script>
-<link href='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/css/mapmagic-gl.css' rel='stylesheet' />
+<script src='https://libs.mapmagic.co.th/mapmagic-gl/0.3.1/js/mapmagic-gl.js'></script>
+<link href='https://libs.mapmagic.co.th/mapmagic-gl/0.3.1/css/mapmagic-gl.css' rel='stylesheet' />
 ```
 
 
