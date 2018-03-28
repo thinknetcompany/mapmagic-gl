@@ -1,8 +1,12 @@
-# Mapmagic GL
+![](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/common-mapmagic-image/logo_mapmagic.png)
+# mapmagic-gl
 
-Mapmagic-gl คือ Javascript library ที่จะช่วยทำให้การแสดงแผนที่และการเพิ่มฟังก์ชันบนเว็ปไซต์ของคุณง่ายขึ้น
+mapmagic-gl คือ Javascript library ที่จะช่วยทำให้การแสดงแผนที่และการเพิ่มฟังก์ชันบนเว็ปไซต์ของคุณง่ายขึ้น
 
 Official Site : https://www.mapmagic.co.th
+
+For Developers : https://developers.mapmagic.co.th
+ สำหรับจัดการ api key และการเข้าถึง MapMagic บน application ของคุณ 
 
 ## Release Notes 0.3.1
 ```
@@ -37,7 +41,7 @@ install package
 $ npm install mapmagic-gl --save
 ```
 
-จากนั้น Import library Mapmagic GL เข้าสู่โปรเจ็ค
+จากนั้น Import library mapmagic-gl เข้าสู่โปรเจ็ค
 
 ```javascript
 const MapmagicGL = require('mapmagic-gl')
@@ -134,7 +138,6 @@ map.addMarkerImage({
 ```
 
 ### เพิ่ม Popup ลงใน Marker
-เพื่อที่จะเพิ่ม Popup ลงใน Marker คุณจำเป็นต้องใช้ Pop id เดียวกันกับ Marker id
 
 ![marker's popup](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/images/popup.png)
 
