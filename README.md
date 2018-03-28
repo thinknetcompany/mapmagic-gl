@@ -1,8 +1,4 @@
-<center>
-
 ![](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/common-mapmagic-image/logo_mapmagic.png)
-
-</center>
 
 # mapmagic-gl
 
