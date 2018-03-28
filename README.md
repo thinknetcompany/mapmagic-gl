@@ -271,7 +271,7 @@ document.getElementById('selected-value').addEventListener('change', (val) => {
 
 ### ป้องกันการเลื่อนแผนที่
 
-![protected scrolling](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/images/protected-scrolling.png)
+![protected scrolling](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/images/protected-scroll.png)
 
 ```javascript
 const map = new mapmagic.Map({
