@@ -1,4 +1,9 @@
+<center>
+
 ![](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/common-mapmagic-image/logo_mapmagic.png)
+
+</center>
+
 # mapmagic-gl
 
 mapmagic-gl คือ Javascript library ที่จะช่วยทำให้การแสดงแผนที่และการเพิ่มฟังก์ชันบนเว็ปไซต์ของคุณง่ายขึ้น
