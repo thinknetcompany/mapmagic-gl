@@ -24,14 +24,16 @@ For Developers : https://developers.mapmagic.co.th
 ```
 
 ## Features
-  * [แสดงแผนที่บนเว็ปไซต์](#initial-map)
-  * [เพิ่ม Marker](#add-marker)
-  * [ปรับแต่ง Marker](#custom-marker)
-  * [เพิ่ม Marker เป็นรูปภาพ](#add-image-marker)
-  * [แสดง Popup บนเครื่องหมาย](#add-popup-to-marker)
-  * [วาดเส้นบนแผนที่](#add-line)
-  * [วาด Polygon บนแผนที่](#add-polygon)
-  * [สร้าง Dragable marker ที่สามารถรับข้อมูลตำแหน่ง (lat,lng)](#add-draggable-marker)
+  * [แสดงแผนที่บนเว็ปไซต์](#เริ่มใช้งาน)
+  * [เพิ่ม Marker](#%E0%B9%80%E0%B8%9E%E0%B8%B4%E0%B9%88%E0%B8%A1-marker)
+  * [ปรับแต่ง Marker](#%E0%B8%9B%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B9%81%E0%B8%95%E0%B9%88%E0%B8%87-marker)
+  * [เพิ่ม Marker เป็นรูปภาพ](#%E0%B9%80%E0%B8%9E%E0%B8%B4%E0%B9%88%E0%B8%A1-marker-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B9%80%E0%B8%9B%E0%B9%87%E0%B8%99%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%A0%E0%B8%B2%E0%B8%9E)
+  * [แสดง Popup บนเครื่องหมาย](#%E0%B9%80%E0%B8%9E%E0%B8%B4%E0%B9%88%E0%B8%A1-popup-%E0%B8%A5%E0%B8%87%E0%B9%83%E0%B8%99-marker)
+  * [วาดเส้นบนแผนที่](#วาดเส้นลงแผนที่)
+  * [วาด Polygon บนแผนที่](#%E0%B8%A7%E0%B8%B2%E0%B8%94-polygon)
+  * [สร้าง Dragable marker ที่สามารถรับข้อมูลตำแหน่ง (lat,lng)](#%E0%B9%80%E0%B8%9E%E0%B8%B4%E0%B9%88%E0%B8%A1-marker-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%AA%E0%B8%B2%E0%B8%A1%E0%B8%B2%E0%B8%A3%E0%B8%96%E0%B8%A5%E0%B8%B2%E0%B8%81%E0%B8%A7%E0%B8%B2%E0%B8%87%E0%B9%84%E0%B8%94%E0%B9%89)
+  * [เปลี่ยนตำแหน่ง Marker](#%E0%B9%80%E0%B8%9B%E0%B8%A5%E0%B8%B5%E0%B9%88%E0%B8%A2%E0%B8%99%E0%B8%95%E0%B8%B3%E0%B9%81%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%87-marker)
+  * [ป้องกันการเลื่อนแผนที่](#ป้องกันการเลื่อนแผนที่)
 
 ## การติดตั้ง
 #### ติดตั้งผ่าน NPM
@@ -80,6 +82,19 @@ const map = new MapmagicGL.Map({
   api_key: '<your api key>',
 })
 ```
+
+ชื่อของ container จะต้องตรงกับ id ของ div ที่ใช้แสดงแผนที่ และคุณก็สามารถใช้ชื่อ container อื่นๆได้เช่นกัน
+## API เบื้องต้น
+| Property | Description | Type | Default |
+|----------|-------------|------|---------|
+| container | id ของ container ที่จะใช้ render map | string | map |
+| app_id | Application ID ของคุณ | string | - |
+| api_key | API Key ของคุณ | string | - |
+| center | จุดเริ่มต้นของแผนที่ | Object | { lng: 100.49, lat: 13.72 } |
+| zoom | ระดับการซูมขณะเริ่มแผนที่ จะต้องอยู่ระหว่าง 1 - 22 | integer | 9 |
+| navigation | แสดงแถบปรับมุมมองของแผนที่ | boolean | false |
+
+*สามารถศึกษา API เพิ่มเติมได้จาก Reference: [Mapbox GL API](https://www.mapbox.com/mapbox-gl-js/api/#map)*
 
 ## การใช้แผนที่อย่างง่าย
 การเรียกใช้แผนที่ให้ Render บน เว็บไซต์
