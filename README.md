@@ -129,7 +129,7 @@ map.addMarker({
 ### ปรับแต่ง Marker
 ปรับแต่ง Marker's style เช่น icon
 
-![styled marker](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/images/custom-marker.png?lang=th)
+![styled marker](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/images/custom-marker.png)
 
 ```javascript
 map.addMarker({
@@ -143,7 +143,7 @@ map.addMarker({
 ### เพิ่ม Marker ที่เป็นรูปภาพ
 ใช้รูปภาพแทน default icon
 
-![Image marker](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/images/image-marker.png?id=addMarkerImage)
+![Image marker](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/images/image-marker.png)
 
 ```javascript
 map.addMarkerImage({
