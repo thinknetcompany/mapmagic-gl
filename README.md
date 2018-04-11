@@ -143,7 +143,7 @@ map.addMarker({
 ### เพิ่ม Marker ที่เป็นรูปภาพ
 ใช้รูปภาพแทน default icon
 
-![Image marker](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/images/image-marker.png)
+![Image marker](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/images/image-marker.png?lang=th)
 
 ```javascript
 map.addMarkerImage({
