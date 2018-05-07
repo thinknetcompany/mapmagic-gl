@@ -16,7 +16,6 @@ const eventClick = function (map, id, payload) {
             offset: payload.offset || [0, 0]
         }).setLngLat(e.features[0].geometry.coordinates)
             .setHTML(e.features[0].properties.description)
-            // .setText(payload.description || '')
             .addTo(this);
     });
     map.on('mouseenter', id, function () {
@@ -38,7 +37,6 @@ const eventHover = function (map, id, payload) {
         this.getCanvas().style.cursor = 'pointer';
         popup.setLngLat(e.features[0].geometry.coordinates)
             .setHTML(e.features[0].properties.description)
-            // .setText(payload.description || '')
             .addTo(this);
     });
     map.on('mouseleave', id, function () {

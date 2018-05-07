@@ -89,7 +89,7 @@ const _onScroll = () => {
     }
 }
 
-const handleDasktop = (map, winText, macText) => {
+const handleDesktop = (map, winText, macText) => {
     const mapmagic = document.getElementsByClassName('mapboxgl-canvas')[0]
     const overlayMapmagic = document.getElementById('overlayMapmagic')
     if (navigator.appVersion.indexOf("Win") != -1 || navigator.appVersion.indexOf("Mac") != -1) {
@@ -137,7 +137,7 @@ const disabled = function (map) {
 
 
     handleMobile(map, mobileText);
-    handleDasktop(map, winText, macText);
+    handleDesktop(map, winText, macText);
 
 };
 

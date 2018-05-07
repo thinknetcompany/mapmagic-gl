@@ -5,12 +5,12 @@
     <meta charset='utf-8' />
     <title>Display a map</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/js/mapmagic-gl.js'></script>
-    <link href='https://libs.mapmagic.co.th/mapmagic-gl/0.3.0/css/mapmagic-gl.css' rel='stylesheet' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/0.4.0/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/0.4.0/css/mapmagic-gl.css' rel='stylesheet' />
     <style>
         #map {
             height: 90vh;
-            width: 100%; 
+            width: 100%;
         }
     </style>
 </head>
@@ -21,8 +21,14 @@
     <script>
         const map = new mapmagic.Map({
             container: 'map',
-            app_id: 'example-m82la',
-            api_key: ''
+            app_id: 'example-6iwo4',
+            api_key: '<your_api_key>',
+            hash: true,
+            navigation: true,
+            center: {
+                lng: 98.98,
+                lat: 18.79,
+            }
         });
     </script>
 </body>

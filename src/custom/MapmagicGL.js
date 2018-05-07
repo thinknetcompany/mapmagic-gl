@@ -1,28 +1,37 @@
 /* eslint-disable */
-const Map = require('../ui/map');
-const Logger = require('./util/Logger');
-const Marker = require('./lib/Marker');
-const Popup = require('./lib/Popup');
-const Geometry = require('./lib/Geometry');
-const Style = require('./lib/Style');
-const DOM = require('../util/dom');
-const Handler = require('./lib/Handler');
-const mapStyle = 'https://api.mapmagic.co.th/v1/get-map-style';
-const ScrollZoomHandler = require('../ui/handler/scroll_zoom');
+const constant = require('./constant')
+const Map = require('../ui/map')
+const Logger = require('./util/Logger')
+const Marker = require('./lib/Marker')
+const Popup = require('./lib/Popup')
+const Geometry = require('./lib/Geometry')
+const Style = require('./lib/Style')
+const DOM = require('../util/dom')
+const Handler = require('./lib/Handler')
+const NavigationControl = require('.././ui/control/navigation_control')
+const ScrollZoomHandler = require('../ui/handler/scroll_zoom')
+const Debugger = require('./util/Debugger')
+
+const { API_URL } = constant
 
 class MapmagicGL extends Map {
     constructor(options) {
-        
+
         if (!options.style) {
-            options['style'] = `${mapStyle}?app_id=${options.app_id}&api_key=${options.api_key}&lang=${options.lang}`;
-        }
-        if (!options.center) {
-            options['center'] = [100.49, 13.72];
+            options['style'] = `${API_URL}?app_id=${options.app_id}&api_key=${options.api_key}&lang=${options.lang}`;
         }
         if (!options.zoom) {
             options['zoom'] = 9;
         }
-        
+        let center = [100.49, 13.72]
+        if (options.center) {
+            if (options.center.lng && options.center.lat) {
+                const { lng, lat } = options.center
+                center = [lng, lat]
+            }
+        }
+        options['center'] = center;
+
         super(options);
         const map = this;
 
@@ -32,8 +41,13 @@ class MapmagicGL extends Map {
         if (options.protectScroll === true) {
             Handler.disabled(map);
         }
+        if (options.navigationCtrl) {
+            map.addControl(new NavigationControl())
+        }
+
         map.appendLogo();
         map.appendCopyrightText();
+        Debugger.alertMissingKey(options.app_id, options.api_key)
     }
 
     appendLogo() {

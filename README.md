@@ -9,18 +9,10 @@ Official Site : https://www.mapmagic.co.th
 For Developers : https://developers.mapmagic.co.th
  สำหรับจัดการ api key และการเข้าถึง MapMagic บน application ของคุณ 
 
-## Release Notes 0.3.1
+## Release Notes 0.4.0
 ```
-1. Render map tile บนเว็บบราวเซอร์
-2. ฟังก์ชันพื้นฐานการใช้งานและแสดงผลบนแผนที่ (Marker, Line, Polygon)
-
-  2.1 addMarker ที่สามารถเลือกการแสดงหมุดในแบบของ default marker , custom marker , image marker รวมถึงการเพิ่มฟังก์ชันการลากวางหมุดด้วยฟังก์ชัน draggable Marker
-
-  2.2 addLine ใช้วาดเส้นลงและกำหนด Properties บนแผนที่
-
-  2.3 addPolygon สำหรับวาด พื้นที่ polygon บนแผนที่
-
-  2.4 เพิ่มฟังก์ชันการป้องกันการเลื่อนแผนที่ด้วยนิ้วเดียวในกรณีเล่นในโทรศัพท์หรือการใช้ scroll mouse บน desktop แล้วทำให้เกิดปัญหาเลื่อนแผนที่โดยไม่ได้ตั้งใจ
+1. เพิ่มการปรับตำแหน่งของ Marker โดยเพิ่ม option offset:[x,y]
+2. เพิ่มการเปิดใช้งาน navigation control
 ```
 
 ## Features
@@ -55,8 +47,8 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 #### หรือดาวน์โหลดจาก mapmagic server สำหรับใช้บน HTML
 
 ```html
-<script src='https://libs.mapmagic.co.th/mapmagic-gl/0.3.1/js/mapmagic-gl.js'></script>
-<link href='https://libs.mapmagic.co.th/mapmagic-gl/0.3.1/css/mapmagic-gl.css' rel='stylesheet' />
+<script src='https://libs.mapmagic.co.th/mapmagic-gl/0.4.0/js/mapmagic-gl.js'></script>
+<link href='https://libs.mapmagic.co.th/mapmagic-gl/0.4.0/css/mapmagic-gl.css' rel='stylesheet' />
 ```
 
 
@@ -92,7 +84,7 @@ const map = new MapmagicGL.Map({
 | api_key | API Key ของคุณ | string | - |
 | center | จุดเริ่มต้นของแผนที่ | Object | { lng: 100.49, lat: 13.72 } |
 | zoom | ระดับการซูมขณะเริ่มแผนที่ จะต้องอยู่ระหว่าง 1 - 22 | integer | 9 |
-| navigation | แสดงแถบปรับมุมมองของแผนที่ | boolean | false |
+| navigationCtrl | แสดงแถบปรับมุมมองของแผนที่ | boolean | false |
 
 *สามารถศึกษา API เพิ่มเติมได้จาก Reference: [Mapbox GL API](https://www.mapbox.com/mapbox-gl-js/api/#map)*
 
@@ -120,6 +112,7 @@ map.addMarker({
   id: 'bangbon',
   lat: 13.72,
   lng: 100.49,
+  offset: [0,-10],
   onClick: () => {
       alert('รถรับส่ง 6 ล้อ บางบอน')
   }
@@ -129,13 +122,13 @@ map.addMarker({
 ### ปรับแต่ง Marker
 ปรับแต่ง Marker's style เช่น icon
 
-![styled marker](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/images/custom-marker.png?lang=th)
+![styled marker](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/images/custom-marker.png)
 
 ```javascript
 map.addMarker({
   id: 'bangbon',
   lat: 13.72,
-  lng: 100.49,
+  lng: 100.49
   icon: 'mmg_car_2_orange',
 })
 ```
@@ -172,7 +165,7 @@ map.addMarker({
 ```
 
 ### วาดเส้นลงแผนที่
-วาดเส้นโดยการเพิ่มตำแหน่ง (lat, lng) ลงใน Array อย่างเป็นลำดับ
+วาดเส้นโดยการเพิ่มตำแหน่ง (lng, lat) ลงใน Array อย่างเป็นลำดับ
 
 ![draw line](https://s3-ap-southeast-1.amazonaws.com/cdn-mapmagic-platform/images/line.png)
 

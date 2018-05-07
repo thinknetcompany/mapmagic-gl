@@ -29,11 +29,12 @@ const addMarker = function (payload = {}) {
             }
         ],
     };
-
     const args = {
         id: payload.id,
         lat: payload.lat,
         lng: payload.lng,
+        size: payload.size || 1,
+        offset: payload.offset || [0, 0],
     }
 
     try {
@@ -116,7 +117,9 @@ const addMarker = function (payload = {}) {
             },
             "layout": {
                 "icon-image": payload.icon || 'mmg_pin_1_orange',
-                "icon-allow-overlap": true
+                "icon-allow-overlap": true,
+                'icon-size': payload.size || 1,
+                'icon-offset': payload.offset || [0, 0],
             }
         })
 
