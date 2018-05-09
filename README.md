@@ -39,7 +39,7 @@ $ npm install mapmagic-gl --save
 จากนั้น Import library mapmagic-gl เข้าสู่โปรเจ็ค
 
 ```javascript
-const MapmagicGL = require('mapmagic-gl')
+const mapmagic = require('mapmagic-gl')
 require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 ```
 ---
@@ -68,7 +68,7 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 เพื่อนำมาใช้งานในเว็บไซต์ของคุณ
 
 ```javascript
-const map = new MapmagicGL.Map({
+const map = new mapmagic.Map({
   container: 'map', // id ของ div ที่จะให้ map ไป render
   app_id: '<your app id>',
   api_key: '<your api key>',
