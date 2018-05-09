@@ -39,7 +39,7 @@ $ npm install mapmagic-gl --save
 and then Import library mapmagic-gl to project
 
 ```javascript
-const MapmagicGL = require('mapmagic-gl')
+const mapmagic = require('mapmagic-gl')
 require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 ```
 ---
@@ -67,7 +67,7 @@ Using div tag for render map to page
 Before you can using Mapmagic, you need to get "app_id" and "api_key" from [Mapmagic Platform](https://developers.mapmagic.co.th)
 
 ```javascript
-const map = new MapmagicGL.Map({
+const map = new mapmagic.Map({
   container: 'map', // div's id for render map
   app_id: '<your app id>',
   api_key: '<your api key>',
