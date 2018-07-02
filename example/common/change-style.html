@@ -9,31 +9,27 @@
     <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/css/mapmagic-gl.css' rel='stylesheet' />
     <style>
         #map {
-            height: 500px;
-            width: 600px;
-        }
-
-        .space {
-            height: 500px;
-            font-size: 3rem;
-            display: flex;
-            flex-direction: row;
-            align-items: center;
+            height: 90vh;
+            width: 100%;
         }
     </style>
 </head>
 
 <body>
 
-    <div class='space'>Space</div>
     <div id='map'></div>
-    <div class='space'>Space</div>
     <script>
         const map = new mapmagic.Map({
             container: 'map',
             app_id: '<your_app_id>',
             api_key: '<your_api_key>',
-            protectScroll: true,
+            style: 'ivory', // almond, cha-thai, charcoal, cloudy, hybrid, ivory, lightstell, midnight, satellite, spearmint, terrain
+            hash: true,
+            navigation: true,
+            center: {
+                lng: 98.98,
+                lat: 18.79,
+            }
         });
     </script>
 </body>

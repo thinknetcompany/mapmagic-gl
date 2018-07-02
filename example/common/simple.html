@@ -5,8 +5,8 @@
     <meta charset='utf-8' />
     <title>Display a map</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://libs.mapmagic.co.th/mapmagic-gl/0.4.0/js/mapmagic-gl.js'></script>
-    <link href='https://libs.mapmagic.co.th/mapmagic-gl/0.4.0/css/mapmagic-gl.css' rel='stylesheet' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/css/mapmagic-gl.css' rel='stylesheet' />
     <style>
         #map {
             height: 90vh;
@@ -21,16 +21,23 @@
     <script>
         const map = new mapmagic.Map({
             container: 'map',
-            app_id: 'example-6iwo4',
+            styleURL: '<url_style>',
+            style: 'midnight',
+            app_id: '<your_app_id>',
             api_key: '<your_api_key>',
             hash: true,
             navigation: true,
-            center: {
-                lng: 98.98,
-                lat: 18.79,
-            }
         });
+
+        const changeStyle = (style) => {
+            map.setStyle(style)
+        }
     </script>
+    <button onclick="changeStyle('almond')">almond</button>
+    <button onclick="changeStyle('cha-thai')">cha-thai</button>
+    <button onclick="changeStyle('charcoal')">charcoal</button>
+    <button onclick="changeStyle('midnight')">midnight</button>
+    <button onclick="changeStyle('satellite')">satellite</button>
 </body>
 
 </html>

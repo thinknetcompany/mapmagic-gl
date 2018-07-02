@@ -1,11 +1,18 @@
 /* eslint-disable */
 const logger = require('../util/Logger')
 
-const addMarker = function (payload = {}) {
-    const ADD_MARKER_ID = 'mkr-001'
+const loggerDebug = {
+    addMarker: true,
+    addMarkerArray: true,
+    addMarkerImage: true,
+    addMarkerImageArray: true,
+    addMarkerFilter: true,
+    setMarker: true,
+}
 
+const addMarker = function (payload = {}) {
     if (!payload.lng || !payload.lat) {
-        logger.warn(ADD_MARKER_ID, 'blank latitude and longitude')
+        logger.warn(addMarker.name, 'blank latitude and longitude', {}, loggerDebug.addMarker)
     }
 
     const ID = payload.id || `places${Math.floor(Math.random() * 1000) + 1}`;
@@ -127,18 +134,21 @@ const addMarker = function (payload = {}) {
             Object.assign(payload.popup, { id: ID })
             this.addPopup(payload.popup)
         }
-
-        logger.info(ADD_MARKER_ID, args)
+        if (!process.env.DEBUG) {
+            logger.info(addMarker.name, null, {}, loggerDebug.addMarker)
+        } else {
+            logger.debug(addMarker.name, null, args)
+        }
     } catch (error) {
-        logger.error(ADD_MARKER_ID, error.message)
+        logger.error(addMarker.name, error.message, {}, loggerDebug.addMarker)
     }
+    loggerDebug.addMarker === false
 }
 
 const addMarkerArray = function (payload = {}) {
-    const ADD_MARKER_ARRAY_ID = 'mkr-002'
     const ID = payload.id || `places${Math.floor(Math.random() * 1000) + 1}`;
     if (typeof payload.marker !== 'Array') {
-        logger.warn(ADD_MARKER_ARRAY_ID, 'marker array cannot resolve')
+        logger.warn(addMarkerArray.name, 'marker array cannot resolve', {}, loggerDebug.addMarkerArray)
     }
     const args = {
         id: ID,
@@ -146,7 +156,7 @@ const addMarkerArray = function (payload = {}) {
     }
     const markerArray = payload.marker.map((val, index) => {
         if (!val.lng || !val.lat) {
-            logger.warn(ADD_MARKER_ARRAY_ID, `blank latitude and longitude at item ${index}`)
+            logger.warn(addMarkerArray.name, `blank latitude and longitude at item ${index}`, {}, loggerDebug.addMarkerArray)
         }
         return {
             "type": "Feature",
@@ -180,17 +190,21 @@ const addMarkerArray = function (payload = {}) {
                 "icon-allow-overlap": true
             }
         })
-        logger.info(ADD_MARKER_ARRAY_ID, args)
+        if (!process.env.DEBUG) {
+            logger.info(addMarkerArray.name, null, {}, loggerDebug.addMarkerArray)
+        } else {
+            logger.debug(addMarkerArray.name, null, args)
+        }
     } catch (error) {
-        logger.error(ADD_MARKER_ARRAY_ID, error.message)
+        logger.error(addMarkerArray.name, error.message, {}, loggerDebug.addMarkerArray)
     }
+    loggerDebug.addMarkerArray = false
 };
 
 const addMarkerImage = function (info = {}) {
-    const ADD_MARKER_IMAGE_ID = 'mkr-003'
     const { id, url, description, lat, lng, size, offset, onClick } = info
     if (!lat || !lng) {
-        logger.warn(ADD_MARKER_IMAGE_ID, 'blank latitude and longitude')
+        logger.warn(addMarkerImage.name, 'blank latitude and longitude', {}, loggerDebug.addMarkerImage)
     }
     const map = this;
     const ID = id || `places${Math.floor(Math.random() * 1000) + 1}`
@@ -205,7 +219,7 @@ const addMarkerImage = function (info = {}) {
     }
     map.loadImage(url || '', (error, image) => {
         if (error) {
-            logger.error(ADD_MARKER_IMAGE_ID, error.message)
+            logger.error(addMarkerImage.name, error.message, {}, loggerDebug.addMarkerImage)
             throw error
         }
 
@@ -243,29 +257,26 @@ const addMarkerImage = function (info = {}) {
                     'icon-offset': offset || [0, 0]
                 }
             })
-            logger.info(ADD_MARKER_IMAGE_ID, args)
+            if (!process.env.DEBUG) {
+                logger.info(addMarkerImage.name, null, {}, loggerDebug.addMarkerImage)
+            } else {
+                logger.debug(addMarkerImage.name, null, args)
+            }
         } catch (error) {
-            logger.error(ADD_MARKER_IMAGE_ID, error.message)
+            logger.error(addMarkerImage.name, error.message, {}, loggerDebug.addMarkerImage)
         }
     })
+    loggerDebug.addMarkerImage = false
 }
 
 const addMarkerImageArray = function (info = {}) {
-    const ADD_MARKER_IMAGE_ARRAY_ID = 'mkr-004'
     const { id, url, size, offset, places } = info
     const map = this
     const ID = id || `places${Math.floor(Math.random() * 1000) + 1}`
-    const args = {
-        id: ID,
-        url,
-        size: size || 1,
-        offset: offset || [0, 0],
-        places
-    }
 
     const markerArray = places.map((val, index) => {
         if (!val.lng || !val.lat) {
-            logger.warn(ADD_MARKER_IMAGE_ARRAY_ID, `blank latitude and longitude at item ${index}`)
+            logger.warn(addMarkerImageArray.name, `blank latitude and longitude at item ${index}`, {}, loggerDebug.addMarkerImageArray)
         }
         return {
             'type': 'Feature',
@@ -282,7 +293,7 @@ const addMarkerImageArray = function (info = {}) {
 
     map.loadImage(url || '', (error, image) => {
         if (error) {
-            logger.error(ADD_MARKER_IMAGE_ARRAY_ID, error.message)
+            logger.error(addMarkerImageArray.name, error.message, {}, loggerDebug.addMarkerImageArray)
             throw error;
         }
         try {
@@ -303,23 +314,26 @@ const addMarkerImageArray = function (info = {}) {
                     'icon-offset': offset || [0, 0]
                 }
             })
-            logger.info(ADD_MARKER_IMAGE_ARRAY_ID)
+            if (!process.env.DEBUG) {
+                logger.info(addMarkerImageArray.name, null, {}, loggerDebug.addMarkerImageArray)
+            } else {
+                logger.debug(addMarkerImageArray.name, null, args)
+            }
         } catch (error) {
-            logger.error(ADD_MARKER_IMAGE_ARRAY_ID, error.message)
+            logger.error(addMarkerImageArray.name, error.message, {}, loggerDebug.addMarkerImageArray)
         }
     })
+    loggerDebug.addMarkerImageArray = false
 }
 
 const addMarkerFilter = function (info = {}) {
-    const ADD_MARKER_FILTER = 'mkr-005'
-
     const places = {
         "type": "FeatureCollection",
         "features": info.places
     };
 
     if (!info.places) {
-        logger.warn(ADD_MARKER_FILTER, 'missing place info')
+        logger.warn(addMarkerFilter.name, 'missing place info', {}, loggerDebug.addMarkerFilter)
     }
     map.addSource('places', {
         "type": "geojson",
@@ -358,14 +372,18 @@ const addMarkerFilter = function (info = {}) {
                     },
                     "filter": ["==", "label", label]
                 })
-                logger.info(ADD_MARKER_FILTER, args)
+                if (!process.env.DEBUG) {
+                    logger.info(addMarkerFilter.name, null, {}, loggerDebug.addMarkerFilter)
+                } else {
+                    logger.debug(addMarkerFilter.name, null, args)
+                }
             } catch (error) {
-                logger.error(ADD_MARKER_FILTER, error.message)
+                logger.error(addMarkerFilter.name, error.message, {}, loggerDebug.addMarkerFilter)
             }
 
             layerIDs.push(layerID)
         } else {
-            logger.error(ADD_MARKER_FILTER, 'cannot find layer')
+            logger.error(addMarkerFilter.name, 'cannot find layer', {}, loggerDebug.addMarkerFilter)
         }
     });
 
@@ -376,6 +394,7 @@ const addMarkerFilter = function (info = {}) {
                 layerID.indexOf(value) > -1 ? 'visible' : 'none')
         })
     });
+    loggerDebug.addMarkerFilter = false
 };
 
 const setMarker = function (payload = {}) {
@@ -383,7 +402,7 @@ const setMarker = function (payload = {}) {
     const { id, lng, lat } = payload
 
     if (!lat || !lng) {
-        logger.warn(ADD_MARKER_IMAGE_ID, 'blank latitude and longitude')
+        logger.warn(addMarkerImage.name, 'blank latitude and longitude', {}, loggerDebug.setMarker)
     }
 
     const geojson = {
@@ -396,11 +415,15 @@ const setMarker = function (payload = {}) {
 
     try {
         this.getSource(id).setData(geojson)
-        logger.info(SET_MARKER, payload)
+        if (!process.env.DEBUG) {
+            logger.info(SET_MARKER, null, payload, loggerDebug.setMarker)
+        } else {
+            logger.debug(SET_MARKER, null, payload)
+        }
     } catch (error) {
-        logger.error(SET_MARKER, error.message)
+        logger.error(SET_MARKER, error.message, {}, loggerDebug.setMarker)
     }
-
+    loggerDebug.setMarker = process.env.DEBUG
 }
 
 module.exports = {
