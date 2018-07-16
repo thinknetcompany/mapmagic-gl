@@ -1,5 +1,6 @@
 /* eslint-disable */
 const logger = require('../util/Logger')
+const { LOG_CONSTANT } = require('../constant')
 
 const loggerDebug = {
     addMarker: true,
@@ -12,7 +13,7 @@ const loggerDebug = {
 
 const addMarker = function (payload = {}) {
     if (!payload.lng || !payload.lat) {
-        logger.warn(addMarker.name, 'blank latitude and longitude', {}, loggerDebug.addMarker)
+        logger.warn(addMarker.name, LOG_CONSTANT.UNDEFINED_LATLNG, {}, loggerDebug.addMarker)
     }
 
     const ID = payload.id || `places${Math.floor(Math.random() * 1000) + 1}`;
@@ -88,7 +89,6 @@ const addMarker = function (payload = {}) {
 
             function onUp(e) {
                 if (!isDragging) return;
-                let coords = e.lngLat;
 
                 if (payload.onDragEnd && isDragging)
                     payload.onDragEnd(e);
@@ -148,7 +148,7 @@ const addMarker = function (payload = {}) {
 const addMarkerArray = function (payload = {}) {
     const ID = payload.id || `places${Math.floor(Math.random() * 1000) + 1}`;
     if (typeof payload.marker !== 'Array') {
-        logger.warn(addMarkerArray.name, 'marker array cannot resolve', {}, loggerDebug.addMarkerArray)
+        logger.warn(addMarkerArray.name, LOG_CONSTANT.INVALID_TYPE, {}, loggerDebug.addMarkerArray)
     }
     const args = {
         id: ID,
@@ -156,7 +156,7 @@ const addMarkerArray = function (payload = {}) {
     }
     const markerArray = payload.marker.map((val, index) => {
         if (!val.lng || !val.lat) {
-            logger.warn(addMarkerArray.name, `blank latitude and longitude at item ${index}`, {}, loggerDebug.addMarkerArray)
+            logger.warn(addMarkerArray.name, `${UNDEFINED_ARRAY_LATLNG} ${index}`, {}, loggerDebug.addMarkerArray)
         }
         return {
             "type": "Feature",
@@ -204,7 +204,7 @@ const addMarkerArray = function (payload = {}) {
 const addMarkerImage = function (info = {}) {
     const { id, url, description, lat, lng, size, offset, onClick } = info
     if (!lat || !lng) {
-        logger.warn(addMarkerImage.name, 'blank latitude and longitude', {}, loggerDebug.addMarkerImage)
+        logger.warn(addMarkerImage.name, LOG_CONSTANT.UNDEFINED_LATLNG, {}, loggerDebug.addMarkerImage)
     }
     const map = this;
     const ID = id || `places${Math.floor(Math.random() * 1000) + 1}`
@@ -212,8 +212,7 @@ const addMarkerImage = function (info = {}) {
         id: ID,
         lat,
         lng,
-        url,
-        description: description || '',
+        img_url: url,
         size: size || 1,
         offset: offset || [0, 0],
     }
@@ -273,10 +272,15 @@ const addMarkerImageArray = function (info = {}) {
     const { id, url, size, offset, places } = info
     const map = this
     const ID = id || `places${Math.floor(Math.random() * 1000) + 1}`
-
+    const args = {
+        img_url: url,
+        size,
+        offset,
+        places
+    }
     const markerArray = places.map((val, index) => {
         if (!val.lng || !val.lat) {
-            logger.warn(addMarkerImageArray.name, `blank latitude and longitude at item ${index}`, {}, loggerDebug.addMarkerImageArray)
+            logger.warn(addMarkerImageArray.name, `${LOG_CONSTANT.UNDEFINED_ARRAY_LATLNG} ${index}`, {}, loggerDebug.addMarkerImageArray)
         }
         return {
             'type': 'Feature',
@@ -290,7 +294,6 @@ const addMarkerImageArray = function (info = {}) {
             }
         }
     });
-
     map.loadImage(url || '', (error, image) => {
         if (error) {
             logger.error(addMarkerImageArray.name, error.message, {}, loggerDebug.addMarkerImageArray)
@@ -322,8 +325,8 @@ const addMarkerImageArray = function (info = {}) {
         } catch (error) {
             logger.error(addMarkerImageArray.name, error.message, {}, loggerDebug.addMarkerImageArray)
         }
+        loggerDebug.addMarkerImageArray = false
     })
-    loggerDebug.addMarkerImageArray = false
 }
 
 const addMarkerFilter = function (info = {}) {
@@ -333,7 +336,7 @@ const addMarkerFilter = function (info = {}) {
     };
 
     if (!info.places) {
-        logger.warn(addMarkerFilter.name, 'missing place info', {}, loggerDebug.addMarkerFilter)
+        logger.warn(addMarkerFilter.name, LOG_CONSTANT.UNDEFINED_PLACE_INFO, {}, loggerDebug.addMarkerFilter)
     }
     map.addSource('places', {
         "type": "geojson",
@@ -380,10 +383,9 @@ const addMarkerFilter = function (info = {}) {
             } catch (error) {
                 logger.error(addMarkerFilter.name, error.message, {}, loggerDebug.addMarkerFilter)
             }
-
             layerIDs.push(layerID)
         } else {
-            logger.error(addMarkerFilter.name, 'cannot find layer', {}, loggerDebug.addMarkerFilter)
+            logger.error(addMarkerFilter.name, LOG_CONSTANT.UNDEFINED_LAYER, {}, loggerDebug.addMarkerFilter)
         }
     });
 
@@ -402,7 +404,7 @@ const setMarker = function (payload = {}) {
     const { id, lng, lat } = payload
 
     if (!lat || !lng) {
-        logger.warn(addMarkerImage.name, 'blank latitude and longitude', {}, loggerDebug.setMarker)
+        logger.warn(addMarkerImage.name, LOG_CONSTANT.UNDEFINED_LATLNG, {}, loggerDebug.setMarker)
     }
 
     const geojson = {
@@ -432,5 +434,5 @@ module.exports = {
     addMarkerImage,
     addMarkerImageArray,
     addMarkerFilter,
-    setMarker
+    setMarker,
 };

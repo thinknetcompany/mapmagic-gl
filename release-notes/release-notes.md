@@ -1,5 +1,11 @@
 
 ## Release Notes
+### Version 1.1.2
+```
+1. แก้ปัญหาเวลาใช้ Style URL แล้วไม่สามารถลบ apiKey และ appId ออกได้
+2. แก้ปัญหาที่ใส่ Option style ตอน init แล้ว error
+3. เพิ่มรูปแบบการใช้คีย์ใน Options คือ apiKey, appId, styleURL
+```
 ### Version 1.1.1
 ```
 1. แก้ปัญหาเวลาใช้ Style URL แล้วไม่สามารถลบ apiKey และ appId ออกได้

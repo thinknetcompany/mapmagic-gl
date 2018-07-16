@@ -16,10 +16,8 @@
 ## :mega: Upcoming Releases
 - [ ] แก้ไขรูปทรงของ line และ polygon ได้
 
-## :pushpin: Release Notes 1.1.1
-- [x] แก้ปัญหาเวลาใช้ Style URL แล้วไม่สามารถลบ apiKey และ appId ออกได้
-- [x] แก้ปัญหาที่ใช้ Option style ตอน init แล้ว error
-- [x] เพิ่มรูปแบบการใช้คีย์ใน Options คือ apiKey, appId, styleURL
+## :pushpin: Release Notes 1.1.2
+- [x] แก้บัคที่สีของ Logo MapMagic ไม่เปลี่ยนไปตามสีของพื้น map
 
 ## :clipboard: Features
 * [แสดงแผนที่บนเว็ปไซต์](#%3Aelectric_plug%3A-%E0%B9%80%E0%B8%A3%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B9%83%E0%B8%8A%E0%B9%89%E0%B8%87%E0%B8%B2%E0%B8%99-mapmagic-api)
@@ -42,7 +40,7 @@
 ## :inbox_tray: ติดตั้ง MapMagic GL
 #### ติดตั้งผ่าน NPM
 
-ติดตั้ง dependencies
+ติดตั่ง dependencies
 
 ```shell
 $ npm install mapmagic-gl --save

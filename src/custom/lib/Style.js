@@ -1,5 +1,6 @@
 /* eslint-disable */
 const logger = require('../util/Logger')
+const { LOG_CONSTANT } = require('../constant')
 
 const initColorMap = function (payload = {}) {
     try {
@@ -9,7 +10,7 @@ const initColorMap = function (payload = {}) {
                 logger.warn(initColorMap.name, 'missing color!')
             }
             if(!layer) {
-                logger.warn(initColorMap.name, 'missing layer!')
+                logger.warn(initColorMap.name, LOG_CONSTANT.UNDEFINED_LAYER)
             }
             let attribute = null;
             const layers = [];
