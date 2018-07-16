@@ -2,6 +2,8 @@
 const Popup = require('../../ui/popup');
 const logger = require('../util/Logger')
 
+let logFirst = true
+
 const eventShow = function (map, geojson) {
     new Popup({ closeOnClick: false })
         .setLngLat(geojson.features[0].geometry.coordinates)
@@ -55,29 +57,42 @@ const addPopup = function (payload = {}) {
 
     if (action === 'show') {
         try {
-            eventShow(this, geojson);
-            logger.info('pop-001', payload);
+            eventShow(this, geojson)
+            if (!process.env.DEBUG) {
+                logger.info(addPopup.name, null, {}, logFirst)
+            } else {
+                logger.debug(addPopup.name, null, payload)
+            }
         }
         catch (error) {
-            logger.error('pop-001', error.message)
+            logger.error(addPopup.name, error.message)
         }
     } else if (action === 'click') {
         try {
-            eventClick(this, ID, payload);
-            logger.info('pop-001', payload);
+            eventClick(this, ID, payload)
+            if (!process.env.DEBUG) {
+                logger.info(addPopup.name, null, {}, logFirst)
+            } else {
+                logger.debug(addPopup.name, null, payload)
+            }
         }
         catch (error) {
-            logger.error('pop-001', error.message)
+            logger.error(addPopup.name, error.message)
         }
     } else if (action === 'hover') {
         try {
             eventHover(this, ID, payload);
-            logger.info('pop-001', payload);
+            if (!process.env.DEBUG) {
+                logger.info(addPopup.name, null, {}, logFirst)
+            } else {
+                logger.debug(addPopup.name, null, payload)
+            }
         }
         catch (error) {
-            logger.error('pop-001', error.message)
+            logger.error(addPopup.name, error.message)
         }
     }
+    logFirst = false
 };
 
 module.exports = { addPopup };

@@ -1,5 +1,21 @@
 
 ## Release Notes
+### Version 1.1.1
+```
+1. แก้ปัญหาเวลาใช้ Style URL แล้วไม่สามารถลบ apiKey และ appId ออกได้
+2. แก้ปัญหาที่ใส่ Option style ตอน init แล้ว error
+3. เพิ่มรูปแบบการใช้คีย์ใน Options คือ apiKey, appId, styleURL
+```
+### Version 1.1.0
+```
+1. เพิ่มฟังก์ชันการเปลี่ยน Style ของ Map
+2. แก้ปัญหาเวลาใช้ Style URL แล้วไม่สามารถลบ api_key และ app_id ออกได้
+```
+### Version 1.0.0
+```
+1. สามารถเลือก Style ของ Map ได้
+2. สามารถเลือกภาษาที่จะแสดงบน Map ได้
+```
 ### Version 0.4.0
 ```
 1. เพิ่มการปรับตำแหน่งของ Marker โดยเพิ่ม option offset:[x,y]

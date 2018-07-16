@@ -1,9 +1,15 @@
 /* eslint-disable */
 const logger = require('../util/Logger')
 
+const loggerDebug = {
+    addPolygon: true,
+}
+
 const addPolygon = function (payload) {
     const ID = payload.id || `places${Math.floor(Math.random() * 1000) + 1}`
-    if (!payload.coordinates) { logger.warn('geo-001', 'coordinates is undefined') }
+    if (!payload.coordinates) {
+        logger.warn(addPolygon.name, 'coordinates is undefined', {}, loggerDebug.addPolygon)
+    }
 
     let style;
     const defaultColor = '#888888';
@@ -41,16 +47,21 @@ const addPolygon = function (payload) {
             },
             "filter": ["==", "$type", "Polygon"]
         });
-        logger.info('geo-001', payload)
+        if (!process.env.DEBUG) {
+            logger.info(addPolygon.name, null, {}, loggerDebug.addPolygon)
+        } else {
+            logger.debug(addPolygon.name, null, payload, process.env.DEBUG)
+        }
     }
     catch (error) {
-        logger.error('geo-001', error.message)
+        logger.error(addPolygon.name, error.message, {}, loggerDebug.addPolygon)
     }
+    loggerDebug.addPolygon = false
 };
 
 const addLine = function (payload) {
     const ID = payload.id || `places${Math.floor(Math.random() * 1000) + 1}`;
-    if (!payload.coordinates) { logger.warn('geo-001', 'coordinates is undefined') }
+    if (!payload.coordinates) { logger.warn(addLine.name, 'coordinates is undefined') }
 
     let style;
     const defaultColor = '#FF1233';
@@ -89,10 +100,14 @@ const addLine = function (payload) {
                 }
             }
         });
-        logger.info('geo-002', payload)
+        if (!process.env.DEBUG) {
+            logger.info(addLine.name, null, {})
+        } else {
+            logger.debug(addLine.name, null, payload, process.env.DEBUG)
+        }
     }
     catch (error) {
-        logger.error('geo-002', error.message)
+        logger.error(addLine.name, error.message)
     }
 };
 

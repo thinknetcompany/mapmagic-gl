@@ -2,42 +2,44 @@
 const logger = require('beaver-logger')
 const constant = require('../constant')
 
-const { LOGGER_URL, LOGGER_TIMER } = constant
+const { NODE_ENV, LOGGER_URL, LOGGER_URL_DEV, LOGGER_TIMER } = constant
 const url = window.location.href
+const urlLog = NODE_ENV !== 'production' ? LOGGER_URL_DEV : LOGGER_URL
+const userAgent = navigator.userAgent
+
+const defaultLogging = (logCallback) => (functionName, message, args = {}, emitLog = true) => {
+  const payload = {
+    'user-agent': userAgent,
+    app_id: process.env.APP_ID,
+    function_name: functionName,
+    url,
+    message
+  }
+  if (process.env.DEBUG) {
+    payload.args = args
+  }
+  if (process.env.LOGGING && emitLog) {
+    logCallback('mapmagic', payload)
+  }
+}
 
 const initLogger = () => {
   logger.init({
-    uri: LOGGER_URL,
+    uri: urlLog,
     flushInterval: LOGGER_TIMER,
     heartbeat: false,
     silent: true,
   })
 }
 
-const info = (functionId, args = {}) => {
-  const payload = { 
-    appId: process.env.APP_ID, 
-    functionId,
-    url,
-    args,
-  }
-
-  
-  logger.info('mapmagic', payload)
-}
-
-const warn = (functionId, message) => {
-  const payload = { appId: process.env.APP_ID, functionId, url, message }
-  logger.warn('mapmagic', payload)
-}
-
-const error = (functionId, message) => {
-  const payload = { appId: process.env.APP_ID, functionId, url, message }
-  logger.error('mapmagic', payload)
-}
+const debug = defaultLogging(logger.debug)
+const info = defaultLogging(logger.info)
+const warn = defaultLogging(logger.warn)
+const error = defaultLogging(logger.error)
 
 module.exports = {
   initLogger,
+  debug,
   info,
   warn,
   error,

@@ -89,14 +89,11 @@ const _onScroll = () => {
     }
 }
 
-const handleDesktop = (map, winText, macText) => {
+const handleDesktop = (map) => {
     const mapmagic = document.getElementsByClassName('mapboxgl-canvas')[0]
-    const overlayMapmagic = document.getElementById('overlayMapmagic')
     if (navigator.appVersion.indexOf("Win") != -1 || navigator.appVersion.indexOf("Mac") != -1) {
         map.scrollZoom.disable();
         const overlayMapmagic = document.getElementById('overlayMapmagic')
-        const mapOffsetTop = overlayMapmagic.getBoundingClientRect().top;
-        const mapOffsetBottom = overlayMapmagic.getBoundingClientRect().bottom;
 
         document.addEventListener('keydown', function (e) {
             if (navigator.appVersion.indexOf("Win") != -1) {
@@ -130,14 +127,14 @@ const handleDesktop = (map, winText, macText) => {
 }
 
 const disabled = function (map) {
-    logger.info('hnd-001')
-    overWrite(map);
-    initStyle(map);
+    logger.info(disabled.name)
+    overWrite(map)
+    initStyle(map)
 
 
 
     handleMobile(map, mobileText);
-    handleDesktop(map, winText, macText);
+    handleDesktop(map, winText, macText)
 
 };
 
