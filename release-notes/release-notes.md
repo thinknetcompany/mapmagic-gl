@@ -1,5 +1,13 @@
 
 ## Release Notes
+### Version 1.1.3
+```
+1. แก้ apidoc
+```
+### Version 1.1.2
+```
+1. แก้บัคที่สีของ Logo MapMagic ไม่เปลี่ยนไปตามสีของพื้น map
+```
 ### Version 1.1.1
 ```
 1. แก้ปัญหาเวลาใช้ Style URL แล้วไม่สามารถลบ apiKey และ appId ออกได้

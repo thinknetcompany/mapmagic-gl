@@ -13,10 +13,8 @@
 ## :mega: Upcoming Releases
 - [ ] Adjust shape of line and polygon
 
-## :pushpin: Release Notes 1.1.1
-- [x] Fixed an editable credential in style URL (App ID and API key)
-- [x] Fixed an error when create map with style option
-- [x] Additional credential create options. The credential could either be in Snake-Case or Camel-Case format (e.g. appId and app_id, api_key and apiKey)
+## :pushpin: Release Notes 1.1.3
+- [x] Fixed apidoc
 
 ## Features
 * [Display map on website](#:electric_plug:-get-start-with-mapmagic-api)
