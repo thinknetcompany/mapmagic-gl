@@ -42,7 +42,7 @@
 ## :inbox_tray: ติดตั้ง MapMagic GL
 #### ติดตั้งผ่าน NPM
 
-ติดตั่ง dependencies
+ติดตั้ง dependencies
 
 ```shell
 $ npm install mapmagic-gl --save
