@@ -16,12 +16,11 @@
 ## :mega: Upcoming Releases
 - [ ] แก้ไขรูปทรงของ line และ polygon ได้
 
-## :pushpin: Release Notes 1.1.4
+## :pushpin: Release Notes 1.1.5
 - [x] อัพเดต SearchAPI document
-- [x] แก้ปัญหาเวลาใช้ Style URL แล้วไม่สามารถลบ apiKey และ appId ออกได้ 
 
 ## :clipboard: Features
-* [แสดงแผนที่บนเว็ปไซต์](#%3Aelectric_plug%3A-%E0%B9%80%E0%B8%A3%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B9%83%E0%B8%8A%E0%B9%89%E0%B8%87%E0%B8%B2%E0%B8%99-mapmagic-api)
+* [แสดงแผนที่บนเว็ปไซต์](#-%E0%B9%80%E0%B8%A3%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B9%83%E0%B8%8A%E0%B9%89%E0%B8%87%E0%B8%B2%E0%B8%99-mapmagic-api)
 * [การกำหนดการแสดงภาษาบนแผนที่](MAPSTYLE.md#%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%81%E0%B8%B3%E0%B8%AB%E0%B8%99%E0%B8%94%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%81%E0%B8%AA%E0%B8%94%E0%B8%87%E0%B8%A0%E0%B8%B2%E0%B8%A9%E0%B8%B2%E0%B8%9A%E0%B8%99%E0%B9%81%E0%B8%9C%E0%B8%99%E0%B8%97%E0%B8%B5%E0%B9%88)
 * [Map Style](#map-style)
   * [เปลี่ยน Map Style](#%E0%B9%80%E0%B8%9B%E0%B8%A5%E0%B8%B5%E0%B9%88%E0%B8%A2%E0%B8%99-map-style)
@@ -32,14 +31,13 @@
   * [เพิ่ม Popup บน Marker](#%E0%B9%80%E0%B8%9E%E0%B8%B4%E0%B9%88%E0%B8%A1-popup-%E0%B8%A5%E0%B8%87%E0%B9%83%E0%B8%99-marker)
   * [เปลี่ยนตำแหน่ง Marker](#mapsetmarkeroptions-%E0%B8%9B%E0%B8%A3%E0%B8%B1%E0%B8%9A%E0%B8%95%E0%B8%B3%E0%B9%81%E0%B8%AB%E0%B8%99%E0%B9%88%E0%B8%87-marker)
   * [Marker แบบลากวาง](#draggable-marker)
-  * [Image Marker](#map.addMarkerImage%28options%29-%E0%B9%80%E0%B8%9E%E0%B8%B4%E0%B9%88%E0%B8%A1-Marker-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B9%80%E0%B8%9B%E0%B9%87%E0%B8%99%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%A0%E0%B8%B2%E0%B8%9E)
-* [Geometry](#Geometry)
-  * [Line](#map.addLine%28options%29-%E0%B8%A7%E0%B8%B2%E0%B8%94%E0%B9%80%E0%B8%AA%E0%B9%89%E0%B8%99%E0%B8%A5%E0%B8%87%E0%B9%81%E0%B8%9C%E0%B8%99%E0%B8%97%E0%B8%B5%E0%B9%88)
-  * [Polygon](#map.addPolygon%28options%29-%E0%B8%A7%E0%B8%B2%E0%B8%94-Polygon)
+  * [Image Marker](#mapaddmarkerimageoptions-%E0%B9%80%E0%B8%9E%E0%B8%B4%E0%B9%88%E0%B8%A1-marker-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B9%80%E0%B8%9B%E0%B9%87%E0%B8%99%E0%B8%A3%E0%B8%B9%E0%B8%9B%E0%B8%A0%E0%B8%B2%E0%B8%9E)
+* [Geometry](#geometry)
+  * [Line](#mapaddlineoptions-%E0%B8%A7%E0%B8%B2%E0%B8%94%E0%B9%80%E0%B8%AA%E0%B9%89%E0%B8%99%E0%B8%A5%E0%B8%87%E0%B9%81%E0%B8%9C%E0%B8%99%E0%B8%97%E0%B8%B5%E0%B9%88)
+  * [Polygon](#mapaddpolygonoptions-%E0%B8%A7%E0%B8%B2%E0%B8%94-polygon)
 * [API Document](#API-Document)
   * [Search](./API_SEARCH.md)
   * [Suggest](./API_SUGGEST.md)
-  * [Routing](./API_ROUTING.md)
 
 
 ## :inbox_tray: ติดตั้ง MapMagic GL
@@ -62,8 +60,8 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 #### หรือดาวน์โหลดจาก MapMagic Server สำหรับใช้บน HTML
 
 ```html
-<script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/js/mapmagic-gl.js'></script>
-<link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/css/mapmagic-gl.css' rel='stylesheet' />
+<script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.5/js/mapmagic-gl.js'></script>
+<link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.5/css/mapmagic-gl.css' rel='stylesheet' />
 ```
 
 
@@ -76,8 +74,8 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 ```html
 <html>
   <head>
-    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/js/mapmagic-gl.js'></script>
-    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/css/mapmagic-gl.css' rel='stylesheet' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.5/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.5/css/mapmagic-gl.css' rel='stylesheet' />
   </head>
   <body>
     <div id="map" style="height: 100vh;" />
@@ -113,17 +111,17 @@ map.on('load', function() {
 
 ### Map style
 #### รายชื่อ Map Style
-- [Almond](MAPSTYLE.md###almond)
-- [Cha thai](MAPSTYLE.md###cha-thai)
-- [Charcoal](MAPSTYLE.md###charcoal)
-- [Cloudy](MAPSTYLE.md###cloudy)
-- [Hybrid](MAPSTYLE.md###hybrid)
-- [Ivory](MAPSTYLE.md###ivory)
-- [Lightsteel](MAPSTYLE.md###lightsteel)
-- [Midnight](MAPSTYLE.md###midnight)
-- [Satellite](MAPSTYLE.md###satellite)
-- [Spearmint](MAPSTYLE.md###spearmint)
-- [Terrain](MAPSTYLE.md###terrain)
+- [Almond](MAPSTYLE.md#almond)
+- [Cha thai](MAPSTYLE.md#cha-thai)
+- [Charcoal](MAPSTYLE.md#charcoal)
+- [Cloudy](MAPSTYLE.md#cloudy)
+- [Hybrid](MAPSTYLE.md#hybrid)
+- [Ivory](MAPSTYLE.md#ivory)
+- [Lightsteel](MAPSTYLE.md#lightsteel)
+- [Midnight](MAPSTYLE.md#midnight)
+- [Satellite](MAPSTYLE.md#satellite)
+- [Spearmint](MAPSTYLE.md#spearmint)
+- [Terrain](MAPSTYLE.md#terrain)
 
 ![map style satellite](/static/image/map-style/satellite.png)
 
@@ -155,8 +153,8 @@ map.setStyle('satellite')
 ```javascript
 const map = new mapmagic.Map({
   container: 'map',
-  app_id: '<YOUR_APP_ID>',
-  api_key: '<YOUR_API_KEY>',
+  app_id: 'YOUR_APP_ID',
+  api_key: 'YOUR_API_KEY',
   protectScroll: true,
 });
 ```
@@ -174,7 +172,7 @@ const map = new mapmagic.Map({
 | icon | เปลี่ยน icon | string | - |
 | draggable | ทำให้ Marker สามารถลากวางได้ | boolean | false |
 | onDragEnd | event ที่จะเกิดขึ้นเมื่อผู้ใช้ drag เสร็จสิ้น | function | - |
-| popup | แสดง [Popup](#map.addMarker(options)-กับ-Popup) บน Marker | object | - |
+| popup | แสดง [Popup](#mapaddmarkeroptions-กับ-popup) บน Marker | object | - |
 
 ###### เพิ่ม Marker ลงบนแผนที่
 
@@ -242,7 +240,7 @@ map.on('load', function() {
 #### map.addMarker(options) กับ Popup
 | Property | Description | Type | Default |
 |--|--|--|--|
-| description | คำธิบายเมื่อ popup แสดงขึ้น | string | - |
+| description | คำอธิบายเมื่อ popup แสดงขึ้น | string | - |
 | action | เมื่อ action นี้ถูกเรียก popup จะแสดง มี 2 รูปแบบคือ `click` และ `hover` | string | click |
 |offset| ระยะห่างของ popup กับพิกัดของ Marker | number[] | [0, 0] |
 
@@ -320,7 +318,7 @@ map.on('load', function() {
   map.addMarkerImage({
     lat: 13.72,  // require
     lng: 100.20, // require
-    url: '<your image>'
+    url: 'YOUR IMAGE'
   })
 })
 ```
@@ -408,16 +406,16 @@ map.on('load', function() {
   <head>
     <title>DEMO</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/js/mapmagic-gl.js'></script>
-    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/css/mapmagic-gl.css' rel='stylesheet' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.5/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.5/css/mapmagic-gl.css' rel='stylesheet' />
   </head>
   <body>
     <div id="map" style="height: 100vh;"></div>
     <script>
         const map = new mapmagic.Map({
             container: 'map',
-            app_id: '<YOUR_APP_ID>',
-            api_key: '<YOUR_API_KEY>'
+            app_id: 'YOUR_APP_ID',
+            api_key: 'YOUR_API_KEY'
         });
 
         map.on('load', function() {

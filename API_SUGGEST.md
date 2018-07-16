@@ -20,8 +20,8 @@
 | address | พื้นที่หรือเขตที่ตั้งที่ประกอบด้วย `ตำบล`, `อำเภอ` และ `จังหวัด` | object |
 | telephone | เบอร์โทรศัพท์ติดต่อ | string |
 | coordinate | ตำแหน่งรูปแบบ `lat`,`lng` | number[] |
-| type | ชนิดซึ่งค่าที่เป็นไปได้จะมีตาม [type](./readme-type-category.md#type) | string |
-| category | ประเภทซึ่งค่าที่เป็นไปได้จะมีตาม [category](./readme-type-category.md#category) | string |
+| &nbsp;&nbsp;&nbsp;&nbsp;type | ชนิดของผลลัพธ์ ดูเพิ่มเติมได้ที่ [type](./readme-type-category.md#type) | string |
+| &nbsp;&nbsp;&nbsp;&nbsp;category | หมวดหมู่ของผลลัพธ์ ดูเพิ่มเติมได้ที่ [category](./readme-type-category.md#category) | string |
 | poi_score | คะแนนความน่าสนใจ | number |
 
 #### ตัวอย่าง

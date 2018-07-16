@@ -13,17 +13,17 @@ const map = new mapmagic.Map({
 
 ```
 ## รายชื่อ Map Styles
-- [Almond](##almond)
-- [Cha thai](###cha-thai)
-- [Charcoal](###charcoal)
-- [Cloudy](###cloudy)
-- [Hybrid](###hybrid)
-- [Ivory](###ivory)
-- [Lightsteel](###lightsteel)
-- [Midnight](###midnight)
-- [Satellite](###satellite)
-- [Spearmint](###spearmint)
-- [Terrain](###terrain)
+- [Almond](#almond)
+- [Cha thai](#cha-thai)
+- [Charcoal](#charcoal)
+- [Cloudy](#cloudy)
+- [Hybrid](#hybrid)
+- [Ivory](#ivory)
+- [Lightsteel](#lightsteel)
+- [Midnight](#midnight)
+- [Satellite](#satellite)
+- [Spearmint](#spearmint)
+- [Terrain](#terrain)
 
 ## ตัวอย่าง map style
 

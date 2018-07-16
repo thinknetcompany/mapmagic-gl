@@ -1,5 +1,9 @@
 
 ## Release Notes
+### Version 1.1.5
+```
+1. อัพเดต SearhAPI document
+```
 ### Version 1.1.4
 ```
 1. อัพเดต SearhAPI document

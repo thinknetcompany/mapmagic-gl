@@ -13,12 +13,11 @@
 ## :mega: Upcoming Releases
 - [ ] Adjust shape of line and polygon
 
-## :pushpin: Release Notes 1.1.4
+## :pushpin: Release Notes 1.1.5
 - [x] Update SearchAPI document
-- [x] Fix bug: Can't remove app ID and API key when using Style URL
 
 ## Features
-* [Display map on website](#:electric_plug:-get-start-with-mapmagic-api)
+* [Display map on website](#-get-start-with-mapmagic-api)
 * [Select language in map](MAPSTYLE_ENG.md#choose-maps-language)
 * [Map Style](#map-style)
     * [Change Map Style](#change-map-style)
@@ -28,14 +27,13 @@
     * [Icon marker](#icon-marker)
     * [Draggable Marker](#draggable-marker)
     * [Add popup to marker](#add-popup-to-marker)
-    * [Re-location marker](#map.setMarker(options)-re-location-marker)
+    * [Re-location marker](#mapsetmarkeroptions-re-location-marker)
 * [Geometry](#geometry)
-    * [Add line](#map.addline(options)-draw-line)
-    * [Add polygon](#map.addpolygon(options)-draw-polygon)
+    * [Add line](#mapaddlineoptions-draw-line)
+    * [Add polygon](#mapaddpolygonoptions-draw-polygon)
 * [API Document](#API-Document)
     * [Search](./API_SEARCH.md)
     * [Suggest](./API_SUGGEST.md)
-    * [Routing](./API_ROUTING.md)
   
 ## :inbox_tray: Install MapMagic GL
 #### Install via NPM
@@ -57,8 +55,8 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 #### Or download from mapmagic server for using on HTML
 
 ```html
-<script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/js/mapmagic-gl.js'></script>
-<link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/css/mapmagic-gl.css' rel='stylesheet' />
+<script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.5/js/mapmagic-gl.js'></script>
+<link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.5/css/mapmagic-gl.css' rel='stylesheet' />
 ```
 
 
@@ -70,8 +68,8 @@ Create `<div id="YOUR_MAP">` for render map on website, but you should have both
 ```html
 <html>
   <head>
-    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/js/mapmagic-gl.js'></script>
-    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/css/mapmagic-gl.css' rel='stylesheet' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.5/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.5/css/mapmagic-gl.css' rel='stylesheet' />
   </head>
   <body>
     <div id="map" style="height: 100vh;" />
@@ -109,17 +107,17 @@ map.on('load', function() {
 ### Map style
 
 #### Style List
-- [Almond](MAPSTYLE_ENG.md###almond)
-- [Cha thai](MAPSTYLE_ENG.md###cha-thai)
-- [Charcoal](MAPSTYLE_ENG.md###charcoal)
-- [Cloudy](MAPSTYLE_ENG.md###cloudy)
-- [Hybrid](MAPSTYLE_ENG.md###hybrid)
-- [Ivory](MAPSTYLE_ENG.md###ivory)
-- [Lightsteel](MAPSTYLE_ENG.md###lightsteel)
-- [Midnight](MAPSTYLE_ENG.md###midnight)
-- [Satellite](MAPSTYLE_ENG.md###satellite)
-- [Spearmint](MAPSTYLE_ENG.md###spearmint)
-- [Terrain](MAPSTYLE_ENG.md###terrain)
+- [Almond](MAPSTYLE_ENG.md#almond)
+- [Cha thai](MAPSTYLE_ENG.md#cha-thai)
+- [Charcoal](MAPSTYLE_ENG.md#charcoal)
+- [Cloudy](MAPSTYLE_ENG.md#cloudy)
+- [Hybrid](MAPSTYLE_ENG.md#hybrid)
+- [Ivory](MAPSTYLE_ENG.md#ivory)
+- [Lightsteel](MAPSTYLE_ENG.md#lightsteel)
+- [Midnight](MAPSTYLE_ENG.md#midnight)
+- [Satellite](MAPSTYLE_ENG.md#satellite)
+- [Spearmint](MAPSTYLE_ENG.md#spearmint)
+- [Terrain](MAPSTYLE_ENG.md#terrain)
 
 ![map style satellite](/static/image/map-style/satellite.png)
 
@@ -171,7 +169,7 @@ const map = new mapmagic.Map({
 | icon | Change marker icon | string | - |
 | draggable | Make marker to be draggable | boolean | false |
 | onDragEnd | Callback event when drag finished | function | - |
-| popup | Show [Popup](#map.addMarker(options)-กับ-Popup) on Marker | object | - |
+| popup | Show [Popup](#mapaddmarkeroptions-with-popup) on Marker | object | - |
 
 ###### Add marker to map
 
@@ -405,8 +403,8 @@ map.on('load', function() {
   <head>
     <title>DEMO</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/js/mapmagic-gl.js'></script>
-    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.1/css/mapmagic-gl.css' rel='stylesheet' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.5/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.5/css/mapmagic-gl.css' rel='stylesheet' />
   </head>
   <body>
     <div id="map" style="height: 100vh;"></div>
