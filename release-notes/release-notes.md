@@ -1,10 +1,17 @@
 
 ## Release Notes
+### Version 1.1.4
+```
+1. อัพเดต SearhAPI document
+2. แก้ปัญหาเวลาใช้ Style URL แล้วไม่สามารถลบ apiKey และ appId ออกได้
+```
+### Version 1.1.3
+```
+1. แก้ apidoc
+```
 ### Version 1.1.2
 ```
-1. แก้ปัญหาเวลาใช้ Style URL แล้วไม่สามารถลบ apiKey และ appId ออกได้
-2. แก้ปัญหาที่ใส่ Option style ตอน init แล้ว error
-3. เพิ่มรูปแบบการใช้คีย์ใน Options คือ apiKey, appId, styleURL
+1. แก้บัคที่สีของ Logo MapMagic ไม่เปลี่ยนไปตามสีของพื้น map
 ```
 ### Version 1.1.1
 ```

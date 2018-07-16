@@ -57,14 +57,18 @@ class MapmagicGL extends Map {
 
     getStyleURL(options, newStyle = null) {
         let styleURL
-        let style
-        if (newStyle) {
-            style = newStyle
+        if (this.styleURL) {
+            styleURL = this.styleURL;
         } else {
-            style = options.style ? options.style : 'ivory'
+            let style
+            if (newStyle) {
+                style = newStyle
+            } else {
+                style = options.style ? options.style : 'ivory'
+            }
+            styleURL = `${API_URL}/${style}?app_id=${this.appId}&api_key=${this.apiKey}&lang=${options.lang}`;
+            Debugger.alertMissingKey(this.appId || 'error', this.apiKey || 'error') 
         }
-        styleURL = `${API_URL}/${style}?app_id=${this.appId}&api_key=${this.apiKey}&lang=${options.lang}`;
-        Debugger.alertMissingKey(this.appId || 'error', this.apiKey || 'error') 
         return styleURL
     }
 
@@ -78,7 +82,6 @@ class MapmagicGL extends Map {
             styleURL = this.getStyleURL(this.options, style)
         }
         super.setStyle(styleURL, option)
-        this.styleURL = styleURL
     }
 
     adjustLogoColor ({ style }) {

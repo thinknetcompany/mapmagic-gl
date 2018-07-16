@@ -17,7 +17,7 @@
 
 #### Body
 | Property | Description | Allowed Values | Default Value |
-|----------|-------------|-------------| ------- |
+|----------|-------------|-------------|-------|
 | keyword | ชื่อของสถานที่ที่ต้องการค้นหา | string | - |
 | app_id | application ID ที่ได้จากการ register บน [MapMagic platform](https://developers.mapmagic.co.th/auth/signin) ใช้ในการ authentication | string | - |
 | api_key | api key ที่ได้จากการ register บน [MapMagic platform](https://developers.mapmagic.co.th/auth/signin) ใช้ในการ authentication | string | - |
@@ -132,10 +132,10 @@ BODY :
 
 #### Body
 | Property | Description | Allowed Values | Default Value |
-|----------|-------------|-------------| ------- |
+|----------|-------------|-------------|-------|
 | keyword | ชื่อของสถานที่ที่ต้องการค้นหา | string | - |
 | origin | ค่า `lat`,`lng` ที่เป็นจุดศูนย์กลางในการค้นหา | number[] | - |
-| distance | ระยะทางจากจุดศูนย์กลางที่ใช้ในการจัดลำดับผลลัพธ์จากใกล้ไปไกลตาม [algorithm](./readme-nearby-algorithm.md) โดยค่าที่ใช้ต้องอยู่ในรูปแบบ string ของตัวเลขแล้วตามด้วยหน่วยระยะทางโดยเลือกจาก `km ( กิโลเมตร ) `&#124;` m ( เมตร ) `&#124;` ft ( ฟุต ) `&#124;` yd ( หลา ) `&#124;` mi ( ไมล์ ) ` | string | - |
+| distance | ระยะทางจากจุดศูนย์กลางที่ใช้ในการจัดลำดับผลลัพธ์จากใกล้ไปไกลตาม [algorithm](./readme-nearby-algorithm.md) โดยค่าที่ใช้ต้องอยู่ในรูปแบบ string ของตัวเลขแล้วตามด้วยหน่วยระยะทางโดยเลือกจาก `km ( กิโลเมตร ) `&#124;` m ( เมตร ) `&#124;` ft ( ฟุต ) `&#124;` yd ( หลา ) `&#124;` mi ( ไมล์ ) ` | string | `"10km"` |
 | app_id | application ID ที่ได้จากการ register บน [MapMagic platform](https://developers.mapmagic.co.th/auth/signin) ใช้ในการ authentication | string | - |
 | api_key | api key ที่ได้จากการ register บน [MapMagic platform](https://developers.mapmagic.co.th/auth/signin) ใช้ในการ authentication | string | - |
 
@@ -248,8 +248,8 @@ BODY :
 
 #### Optional Body Key
 | Property | Description | Allowed Values | Default Value |
-|----------|-------------|-------------| ------- |
-| filter **`optional`** | กรองข้อมูลที่ขึ้นแสดงโดยขึ้นอยู่ [filter format](https://hackmd.io/s/Skr59WSgX#Filter-Format) ที่ส่งมา | array | - |
+|----------|-------------|-------------|-------|
+| filter **`optional`** | กรองข้อมูลที่ขึ้นแสดงโดยขึ้นอยู่ [filter format](#filter-format) ที่ส่งมา | array | - |
 | rankby **`optional`** | ลำดับความสำคัญของข้อมูลที่ขึ้นแสดงโดยเลือกได้จาก `poi_score` &#124; `category` โดยถ้าใช้แบบ `category` ให้ใส่เป็น [category](./readme-type-category.md#category) เรียงจากอันดับแรกไปลำดับสุดท้ายโดยใช้ `,` ในการขั้นระหว่างแต่ละ `category` | string | - |
 | hascontact **`optional`** | กรองเฉพาะข้อมูลที่มีรายละเอียดการติดต่อ | boolean | false |
 | page **`optional`** | ตำแหน่งของหน้าที่แสดงผลลัพธ์ | number | 1 |
@@ -263,8 +263,8 @@ BODY :
  กรองข้อมูลตาม [type](./readme-type-category.md#type) และ/หรือ [category](./readme-type-category.md#category)
  
 ###### Object Keys
- | Property | Description | Allowed Values | Default Value |
-|----------|-------------|-------------| ------- |
+| Property | Description | Allowed Values | Default Value |
+|----------|-------------|-------------|-------|
 | include | ชุดค่า type และ category ที่จะใช้กรองข้อมูลที่ขึ้นแสดง | string[] | - |
 | exclude | ชุดค่า type และ category ที่จะใช้กรองข้อมูลที่ไม่ขึ้นแสดง ( ถ้าใช้ร่วมกับ `include` ค่านี้จะไม่มีผล ) | string[] | - |
 
@@ -279,8 +279,8 @@ BODY :
  กรองข้อมูลที่อยู่ภายในพื้นวงกลม
  
 ###### Object Keys
- | Property | Description | Allowed Values | Default Value |
-|----------|-------------|-------------| ------- |
+| Property | Description | Allowed Values | Default Value |
+|----------|-------------|-------------|-------|
 | type | กรณีนี้ต้องตั้งค่าเป็น `radius` เท่านั้น | string | - |
 | origin **`textsearch only`** | ตำแหน่งจุดศูนย์กลางของวงกลมโดยรับเป็นค่า `lat`,`lng` | number[] | - |
 | scope | ระยะรัศมีของวงกลมโดยค่าที่ใช้ต้องอยู่ในรูปแบบ string ของตัวเลขแล้วตามด้วยหน่วยระยะทางโดยเลือกจาก `km ( กิโลเมตร ) `&#124;` m ( เมตร ) `&#124;` ft ( ฟุต ) `&#124;` yd ( หลา ) `&#124;` mi ( ไมล์ ) ` | number | - |
@@ -298,8 +298,8 @@ BODY :
  กรองข้อมูลที่อยู่ภายในพื้นที่ polygon
  
 ###### Object Keys
- | Property | Description | Allowed Values | Default Value |
-|----------|-------------|-------------| ------- |
+| Property | Description | Allowed Values | Default Value |
+|----------|-------------|-------------|-------|
 | type | กรณีนี้ต้องตั้งค่าเป็น `polygon` เท่านั้น | string | - |
 | points | ตำแหน่งจุดที่ใช้วาดพื้นที่ polygon | array(number[]) | - |
 
@@ -606,7 +606,7 @@ BODY :
 
 #### Body
 | Property | Description | Allowed Values | Default Value |
-|----------|-------------|-------------| ------- |
+|----------|-------------|-------------|-------|
 | app_id | application ID ที่ได้จากการ register บน [MapMagic platform](https://developers.mapmagic.co.th/auth/signin) ใช้ในการ authentication | string | - |
 | api_key | api key ที่ได้จากการ register บน [MapMagic platform](https://developers.mapmagic.co.th/auth/signin) ใช้ในการ authentication | string | - |
 | queries | ชุด query ของการค้นที่ต้องการโดยในแต่ละ query ต้องมี searchtype นอกจากนั้นก็สามารถมีค่าได้ตาม textsearch body และ nearbysearch body ตามปกติ | object[] | - |

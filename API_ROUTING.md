@@ -8,6 +8,8 @@
 | src | จุดเริ่มต้นของเส้นทาง โดยสามารถใช้ได้ทั้ง Node ID และค่า Latitude, Longtitude |
 | dst | จุดเริ่มต้นของเส้นทาง โดยสามารถใช้ได้ทั้ง Node ID และค่า Latitude, Longtitude |
 | filter | array parameter สำหรับเลือกประเภทการเดินทาง (optional) <br> 1 = รถไฟฟ้า <br> 2 = รถเมล์ <br> 3 = เรือ <br> 4 = รถไฟ <br> 5 = รถด่วนพิเศษบีอาร์ที |
+| app_id | application ID ที่ได้จากการ register บน [MapMagic platform](https://developers.mapmagic.co.th/auth/signin) ใช้ในการ authentication |
+| api_key | api key ที่ได้จากการ register บน [MapMagic platform](https://developers.mapmagic.co.th/auth/signin) ใช้ในการ authentication |
 
 
 ### Response
@@ -20,25 +22,17 @@
 | distance | ระยะทางรวมของการเดินทาง (เมตร) |
 | time | ระยะเวลารวมของการเดินทาง (วินาที) |
 | route | ข้อมูล edge ของ Routing |
+| &nbsp;&nbsp;&nbsp;&nbsp;seq | ลำดับการเดินทางของ (edge, node) |
+| &nbsp;&nbsp;&nbsp;&nbsp;tn_type | ประเภทของ edge <br> 0 = ทางเชื่อมระหว่าง edge ประเภทต่างๆ <br> 1 = รถไฟฟ้า <br> 2 = รถเมล์ <br> 3 = เรือ <br> 4 = รถไฟ <br> 5 = รถด่วนพิเศษบีอาร์ที |
+| &nbsp;&nbsp;&nbsp;&nbsp;time | ระยะของ edge (วินาที) |
+| &nbsp;&nbsp;&nbsp;&nbsp;distance | ระยะทางของ edge (เมตร) |
+| &nbsp;&nbsp;&nbsp;&nbsp;tn_id | geometry id ของ edge <br> "10001" = edge ของการเปลี่ยนเส้นทาง(ขึ้น)เช่น การขึ้นรถเมล์สายใหม่ เป็นต้น <br> "10002" = edge ของการเปลี่ยนเส้นทาง(ลง)เช่น การลงจากรถเมล์ เป็นต้น <br> "20001" = edge ของการเดินด้วยเท้า <br> "อื่นๆ" = edge id ของ MapMagic |
 | waypoint | ข้อมูล node ของ Routing เช่น จุดการเปลี่ยนสายรถเมล์ เป็นต้น |
-
-#### route
-| ชื่อ | รายละเอียด |
-|----|-----------|
-| seq | ลำดับการเดินทางของ (edge, node) |
-| tn_type | ประเภทของ edge <br> 0 = ทางเชื่อมระหว่าง edge ประเภทต่างๆ <br> 1 = รถไฟฟ้า <br> 2 = รถเมล์ <br> 3 = เรือ <br> 4 = รถไฟ <br> 5 = รถด่วนพิเศษบีอาร์ที |
-| time | ระยะของ edge (วินาที) |
-| distance | ระยะทางของ edge (เมตร) |
-| tn_id | geometry id ของ edge <br> "10001" = edge ของการเปลี่ยนเส้นทาง(ขึ้น)เช่น การขึ้นรถเมล์สายใหม่ เป็นต้น <br> "10002" = edge ของการเปลี่ยนเส้นทาง(ลง)เช่น การลงจากรถเมล์ เป็นต้น <br> "20001" = edge ของการเดินด้วยเท้า <br> "อื่นๆ" = edge id ของ MapMagic |
-
-#### waypoint
-| ชื่อ | รายละเอียด |
-|----|-----------|
-| seq | ลำดับการเดินทางของ (edge, node) |
-| node_id | node id |
-| nameth | ชื่อภาษาไทยของ node |
-| nameen | 	ชื่อภาษาอังกฤษของ node |
-| geom | geometry ของ node (geojson) |
+| &nbsp;&nbsp;&nbsp;&nbsp;seq | ลำดับการเดินทางของ (edge, node) |
+| &nbsp;&nbsp;&nbsp;&nbsp;node_id | node id |
+| &nbsp;&nbsp;&nbsp;&nbsp;nameth | ชื่อภาษาไทยของ node |
+| &nbsp;&nbsp;&nbsp;&nbsp;nameen | 	ชื่อภาษาอังกฤษของ node |
+| &nbsp;&nbsp;&nbsp;&nbsp;geom | geometry ของ node (geojson) |
 
 ## ตัวอย่าง
 

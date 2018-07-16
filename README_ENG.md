@@ -13,8 +13,9 @@
 ## :mega: Upcoming Releases
 - [ ] Adjust shape of line and polygon
 
-## :pushpin: Release Notes 1.1.2
-- [x] Fixed bug: Color of MapMagic logo doesn't change along with the background color
+## :pushpin: Release Notes 1.1.4
+- [x] Update SearchAPI document
+- [x] Fix bug: Can't remove app ID and API key when using Style URL
 
 ## Features
 * [Display map on website](#:electric_plug:-get-start-with-mapmagic-api)
@@ -31,6 +32,10 @@
 * [Geometry](#geometry)
     * [Add line](#map.addline(options)-draw-line)
     * [Add polygon](#map.addpolygon(options)-draw-polygon)
+* [API Document](#API-Document)
+    * [Search](./API_SEARCH.md)
+    * [Suggest](./API_SUGGEST.md)
+    * [Routing](./API_ROUTING.md)
   
 ## :inbox_tray: Install MapMagic GL
 #### Install via NPM
