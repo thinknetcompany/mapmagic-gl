@@ -16,8 +16,8 @@
 ## :mega: Upcoming Releases
 - [ ] แก้ไขรูปทรงของ line และ polygon ได้
 
-## :pushpin: Release Notes 1.1.5
-- [x] อัพเดต SearchAPI document
+## :pushpin: Release Notes 1.1.6
+- [x] อัพเดต ReverseGeocodingAPI document
 
 ## :clipboard: Features
 * [แสดงแผนที่บนเว็ปไซต์](#-%E0%B9%80%E0%B8%A3%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B9%83%E0%B8%8A%E0%B9%89%E0%B8%87%E0%B8%B2%E0%B8%99-mapmagic-api)
@@ -38,6 +38,7 @@
 * [API Document](#API-Document)
   * [Search](./API_SEARCH.md)
   * [Suggest](./API_SUGGEST.md)
+  * [Reverse Geocoding](./API_REVERSE_GEOCODING.md)
 
 
 ## :inbox_tray: ติดตั้ง MapMagic GL

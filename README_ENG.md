@@ -13,8 +13,8 @@
 ## :mega: Upcoming Releases
 - [ ] Adjust shape of line and polygon
 
-## :pushpin: Release Notes 1.1.5
-- [x] Update SearchAPI document
+## :pushpin: Release Notes 1.1.6
+- [x] Update ReverseGeocodingAPI document
 
 ## Features
 * [Display map on website](#-get-start-with-mapmagic-api)
@@ -32,8 +32,9 @@
     * [Add line](#mapaddlineoptions-draw-line)
     * [Add polygon](#mapaddpolygonoptions-draw-polygon)
 * [API Document](#API-Document)
-    * [Search](./API_SEARCH.md)
-    * [Suggest](./API_SUGGEST.md)
+    * [Search](./API_SEARCH_ENG.md)
+    * [Suggest](./API_SUGGEST_ENG.md)
+    * [Reverse Geocoding](./API_REVERSE_GEOCODING_ENG.md)
   
 ## :inbox_tray: Install MapMagic GL
 #### Install via NPM

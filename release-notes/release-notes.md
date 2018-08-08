@@ -1,5 +1,9 @@
 
 ## Release Notes
+### Version 1.1.6
+```
+1. อัพเดต ReverseGeocodingAPI document
+```
 ### Version 1.1.5
 ```
 1. อัพเดต SearhAPI document
