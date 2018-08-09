@@ -21,7 +21,10 @@
 ### Responses
 | Property | Description | Type |
 |----------|-------------|------|
-| response | ผลลัพธ์ที่ได้จากการค้นหา แบ่งออกเป็น 3 ประเภทได้แก่<br>1) ตำแหน่งพื้นที่ปัจจุบัน(currentLocation)<br>2) ถนนที่ได้จากตำแหน่งปัจจุบัน(currentStreet)<br>3) ตำแหน่งของสถานที่ที่ใกล้เคียงกับตำแหน่งปัจจุบัน โดยเรียงตามระยะทางที่ใกล้กว่า(nearbyPOI) | object |
+| response | ผลลัพธ์ที่ได้จากการค้นหา แบ่งออกเป็น 3 ประเภท | object |
+| &nbsp;&nbsp;&nbsp;&nbsp;currentLocation | ตำแหน่งพื้นที่ปัจจุบัน | object[] |
+| &nbsp;&nbsp;&nbsp;&nbsp;currentStreet | ถนนที่ได้จากตำแหน่งปัจจุบัน | object[] |
+| &nbsp;&nbsp;&nbsp;&nbsp;nearbyPOI |  ตำแหน่งของสถานที่ที่ใกล้เคียงกับตำแหน่งปัจจุบัน โดยเรียงตามระยะทางที่ใกล้กว่า | object[] |
 
 ### ตัวอย่างการใช้งาน
 #### Request

@@ -21,7 +21,10 @@ Search by coordinate (lat, lng)
 ### Responses
 | Property | Description | Type |
 |----------|-------------|------|
-| response | Response that consist of<br>1) Current location of marker location. ( "currentLocation" )<br>2) Current street of marker location. ( "currentStreet" )<br>3) Points of interest, sorted by distance to marker location. ( "nearbyPOI" ) | object |
+| response | Response that consist of currentLocation, currentStreet, nearbyPOI | object |
+| &nbsp;&nbsp;&nbsp;&nbsp;currentLocation | Current location of marker location. | object[] |
+| &nbsp;&nbsp;&nbsp;&nbsp;currentStreet | Current street of marker location. | object[] |
+| &nbsp;&nbsp;&nbsp;&nbsp;nearbyPOI | Points of interest sorted by distance to marker location. | object[] |
 
 ### Example
 #### Request

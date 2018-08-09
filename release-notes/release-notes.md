@@ -1,5 +1,9 @@
 
 ## Release Notes
+### Version 1.1.8
+```
+1. อัพเดตคำอธิบายบางส่วนของ ReverseGeocodingAPI และ SuggestAPI document
+```
 ### Version 1.1.7
 ```
 1. อัพเดตคำอธิบายบางส่วนของ ReverseGeocodingAPI document
