@@ -11,10 +11,11 @@ Search by coordinate (lat, lng)
 > **GET** `https://api.mapmagic.co.th/v1/reverse-geocoding`
 
 ### Query String
-| Property | Description | Type |
-|----------|-------------|------|
-| lat | Latitude of interested coordinate. | number |
-| lng | Longitude of interested coordinate. | number |
+| Property | Description | Type | Default |
+|----------|-------------|------|---------|
+| lat | Latitude of interested coordinate. | number | - |
+| lng | Longitude of interested coordinate. | number | - |
+| radius<br>**`optional`** | Set the search distance around the Marker (meters) | number | 10 |
 | app_id | [MapMagic platform](https://developers.mapmagic.co.th/auth/signin) application ID that use for authentication. | string | - |
 | api_key | [MapMagic platform](https://developers.mapmagic.co.th/auth/signin) API key that use for authentication. | string | - |
 

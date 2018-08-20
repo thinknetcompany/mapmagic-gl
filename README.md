@@ -15,9 +15,13 @@
 
 ## :mega: Upcoming Releases
 - [ ] แก้ไขรูปทรงของ line และ polygon ได้
+- [ ] Options เพิ่มเติมสำหรับฟังก์ชัน setMarker
+- [ ] ฟังก์ชัน removeMarker
+- [ ] ฟังก์ชัน ลบ Event listener ทั้งหมดของ map
 
-## :pushpin: Release Notes 1.1.8
-- [x] อัพเดตคำอธิบายบางส่วนของ ReverseGeocodingAPI และ SuggestAPI document
+## :pushpin: Release Notes 1.1.9
+- [x] เพิ่ม Routing API documents
+- [x] อัพเดตคำอธิบายบางส่วนของ ReverseGeocodingAPI document
 
 ## :clipboard: Features
 * [แสดงแผนที่บนเว็ปไซต์](#-%E0%B9%80%E0%B8%A3%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B9%83%E0%B8%8A%E0%B9%89%E0%B8%87%E0%B8%B2%E0%B8%99-mapmagic-api)
@@ -39,6 +43,7 @@
   * [Search](./API_SEARCH.md)
   * [Suggest](./API_SUGGEST.md)
   * [Reverse Geocoding](./API_REVERSE_GEOCODING.md)
+  * [Public Transport Routing](./API_PUBLIC_TRANSPORT_ROUTING.md)
 
 
 ## :inbox_tray: ติดตั้ง MapMagic GL
@@ -61,8 +66,8 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 #### หรือดาวน์โหลดจาก MapMagic Server สำหรับใช้บน HTML
 
 ```html
-<script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.8/js/mapmagic-gl.js'></script>
-<link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.8/css/mapmagic-gl.css' rel='stylesheet' />
+<script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/js/mapmagic-gl.js'></script>
+<link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/css/mapmagic-gl.css' rel='stylesheet' />
 ```
 
 
@@ -75,8 +80,8 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 ```html
 <html>
   <head>
-    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.8/js/mapmagic-gl.js'></script>
-    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.8/css/mapmagic-gl.css' rel='stylesheet' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/css/mapmagic-gl.css' rel='stylesheet' />
   </head>
   <body>
     <div id="map" style="height: 100vh;" />
@@ -407,8 +412,8 @@ map.on('load', function() {
   <head>
     <title>DEMO</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.8/js/mapmagic-gl.js'></script>
-    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.8/css/mapmagic-gl.css' rel='stylesheet' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/css/mapmagic-gl.css' rel='stylesheet' />
   </head>
   <body>
     <div id="map" style="height: 100vh;"></div>

@@ -11,10 +11,11 @@
 > **GET** `https://api.mapmagic.co.th/v1/reverse-geocoding`
 
 ### Query String
-| Property | Description | Type |
-|----------|-------------|------|
-| lat | ค่าละติจูดของตำแหน่งที่ต้องการ | number |
-| lng | ค่าลองจิจูดของตำแหน่งที่ต้องการ | number |
+| Property | Description | Type | Default |
+|----------|-------------|------|---------|
+| lat | ค่าละติจูดของตำแหน่งที่ต้องการ | number | - |
+| lng | ค่าลองจิจูดของตำแหน่งที่ต้องการ | number | - |
+| radius | กำหนดระยะการค้นหารอบๆ marker (เมตร) | number | 10 |
 | app_id | Application ID ที่ได้จากการ register บน [MapMagic platform](https://developers.mapmagic.co.th/auth/signin) ใช้ในการ authentication | string | - |
 | api_key | API Key ที่ได้จากการ register บน [MapMagic platform](https://developers.mapmagic.co.th/auth/signin) ใช้ในการ authentication | string | - |
 
