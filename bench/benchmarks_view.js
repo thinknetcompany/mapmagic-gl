@@ -1,15 +1,11 @@
-/* global d3 */
+import React from 'react';
+import ReactDOM from 'react-dom';
+import * as d3 from 'd3';
+import Axis from './lib/axis';
+import { kde, probabilitiesOfSuperiority } from './lib/statistics';
 
-const versionColor = d3.scaleOrdinal(['#1b9e77', '#7570b3']);
-
+const versionColor = d3.scaleOrdinal(['#1b9e77', '#7570b3', '#d95f02']);
 const formatSample = d3.format(".3r");
-const Axis = require('./lib/axis');
-const {
-    summaryStatistics,
-    regression,
-    kde,
-    probabilitiesOfSuperiority
-} = require('./lib/statistics');
 
 class StatisticsPlot extends React.Component {
     constructor(props) {
@@ -122,7 +118,8 @@ class StatisticsPlot extends React.Component {
                                 )}
                                 {v.samples.filter(d => d >= tMax)
                                     .map((d, i) =>
-                                        <use href="#up-arrow"
+                                        <use key={i}
+                                            href="#up-arrow"
                                             x={scale(i)}
                                             y={t(d)}
                                             style={{
@@ -159,7 +156,7 @@ class StatisticsPlot extends React.Component {
                                     transform={`translate(-5, ${t(trimmedMean)}) rotate(90)`}
                                     x={0}
                                     y={0} />
-                                {[mean, trimmedMean].map(d =>
+                                {[mean, trimmedMean].map((d, i) =>
                                     <text // left
                                         key={i}
                                         dx={-16}
@@ -248,7 +245,7 @@ class RegressionPlot extends React.Component {
                         <g
                             key={i}
                             fill={versionColor(v.name)}
-                            fill-opacity="0.7">
+                            fillOpacity="0.7">
                             {v.regression.data.map(([a, b], i) =>
                                 <circle key={i} r="2" cx={x(a)} cy={y(b)}/>
                             )}
@@ -299,8 +296,8 @@ class BenchmarkRow extends React.Component {
             [current, master] = this.props.versions;
         }
 
-        let change = '';
-        let pInferiority = '';
+        let change;
+        let pInferiority;
         if (endedCount === 2) {
             const delta = current.summary.trimmedMean - master.summary.trimmedMean;
             // Use "Cohen's d" (modified to used the trimmed mean/sd) to decide
@@ -333,22 +330,29 @@ class BenchmarkRow extends React.Component {
         return (
             <div className="col12 clearfix space-bottom">
                 <table className="fixed space-bottom">
-                    <tr><th><h2 className="col4"><a href={`#${this.props.name}`} onClick={this.reload}>{this.props.name}</a></h2></th>
-                        {this.props.versions.map(version => <th style={{color: versionColor(version.name)}} key={version.name}>{version.name}</th>)}</tr>
-                    {this.renderStatistic('(20% trimmed) Mean',
-                        (version) => <p>
-                            {formatSample(version.summary.trimmedMean)} ms
-                            {current && version.name === current.name && change}
-                        </p>)}
-                    {this.renderStatistic('(Windsorized) Deviation',
-                        (version) => <p>{formatSample(version.summary.windsorizedDeviation)} ms</p>)}
-                    {this.renderStatistic('R² Slope / Correlation',
-                        (version) => <p>{formatSample(version.regression.slope)} ms / {version.regression.correlation.toFixed(3)} {
-                            version.regression.correlation < 0.9 ? '\u2620\uFE0F' :
-                            version.regression.correlation < 0.99 ? '\u26A0\uFE0F' : ''}</p>)}
-                    {this.renderStatistic('Minimum',
-                        (version) => <p>{formatSample(version.summary.min)} ms</p>)}
-                    {pInferiority && <tr><td colspan={3}>{pInferiority}</td></tr>}
+                    <tbody>
+                        <tr><th><h2 className="col4"><a href={`#${this.props.name}`} onClick={this.reload}>{this.props.name}</a></h2></th>
+                            {this.props.versions.map(version => <th style={{color: versionColor(version.name)}} key={version.name}>{version.name}</th>)}</tr>
+                        {this.props.location && <tr>
+                            <th><p style={{color: '#1287A8'}}>{this.props.location.description}</p></th>
+                            <th><p style={{color: '#1287A8'}}>Zoom Level: {this.props.location.zoom}</p></th>
+                            <th><p style={{color: '#1287A8'}}>Lat: {this.props.location.center[1]} Lng: {this.props.location.center[0]}</p></th>
+                        </tr>}
+                        {this.renderStatistic('(20% trimmed) Mean',
+                            (version) => <p>
+                                {formatSample(version.summary.trimmedMean)} ms
+                                {current && version.name === current.name && change}
+                            </p>)}
+                        {this.renderStatistic('(Windsorized) Deviation',
+                            (version) => <p>{formatSample(version.summary.windsorizedDeviation)} ms</p>)}
+                        {this.renderStatistic('R² Slope / Correlation',
+                            (version) => <p>{formatSample(version.regression.slope)} ms / {version.regression.correlation.toFixed(3)} {
+                                version.regression.correlation < 0.9 ? '\u2620\uFE0F' :
+                                version.regression.correlation < 0.99 ? '\u26A0\uFE0F' : ''}</p>)}
+                        {this.renderStatistic('Minimum',
+                            (version) => <p>{formatSample(version.summary.min)} ms</p>)}
+                        {pInferiority && <tr><td colSpan={3}>{pInferiority}</td></tr>}
+                    </tbody>
                 </table>
                 {endedCount > 0 && <StatisticsPlot versions={this.props.versions}/>}
                 {endedCount > 0 && <RegressionPlot versions={this.props.versions}/>}
@@ -387,7 +391,9 @@ class BenchmarksTable extends React.Component {
                     this.props.finished ?
                         <span>Finished <button className='button fr icon share' onClick={this.share}>Share</button></span> :
                         <span>Running</span>}</h1>
-                {this.props.benchmarks.map(benchmark => <BenchmarkRow key={benchmark.name} {...benchmark}/>)}
+                {this.props.benchmarks.map((benchmark, i) => {
+                    return <BenchmarkRow key={`${benchmark.name}-${i}`} {...benchmark}/>;
+                })}
             </div>
         );
     }
@@ -413,64 +419,11 @@ class BenchmarksTable extends React.Component {
     }
 }
 
-const versions = window.mapboxglVersions;
-const benchmarks = [];
-const filter = window.location.hash.substr(1);
+export default function updateUI(benchmarks, finished) {
+    finished = !!finished;
 
-let finished = false;
-let promise = Promise.resolve();
-
-for (const name in window.mapboxglBenchmarks) {
-    if (filter && name !== filter)
-        continue;
-
-    const benchmark = { name, versions: [] };
-    benchmarks.push(benchmark);
-
-    for (const ver in window.mapboxglBenchmarks[name]) {
-        const version = {
-            name: ver,
-            status: 'waiting',
-            logs: [],
-            samples: [],
-            summary: {}
-        };
-
-        benchmark.versions.push(version);
-
-        promise = promise.then(() => {
-            version.status = 'running';
-            update();
-
-            return window.mapboxglBenchmarks[name][ver].run()
-                .then(measurements => {
-                    // scale measurements down by iteration count, so that
-                    // they represent (average) time for a single iteration
-                    const samples = measurements.map(({time, iterations}) => time / iterations);
-                    version.status = 'ended';
-                    version.samples = samples;
-                    version.summary = summaryStatistics(samples);
-                    version.regression = regression(measurements);
-                    update();
-                })
-                .catch(error => {
-                    version.status = 'errored';
-                    version.error = error;
-                    update();
-                });
-        });
-    }
-}
-
-promise = promise.then(() => {
-    finished = true;
-    update();
-});
-
-function update() {
     ReactDOM.render(
-        <BenchmarksTable versions={versions} benchmarks={benchmarks} finished={finished}/>,
+        <BenchmarksTable benchmarks={benchmarks} finished={finished}/>,
         document.getElementById('benchmarks')
     );
 }
-

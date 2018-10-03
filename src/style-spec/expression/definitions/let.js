@@ -17,10 +17,7 @@ class Let implements Expression {
     }
 
     evaluate(ctx: EvaluationContext) {
-        ctx.pushScope(this.bindings);
-        const result = this.result.evaluate(ctx);
-        ctx.popScope();
-        return result;
+        return this.result.evaluate(ctx);
     }
 
     eachChild(fn: (Expression) => void) {
@@ -52,11 +49,24 @@ class Let implements Expression {
             bindings.push([name, value]);
         }
 
-        const result = context.parse(args[args.length - 1], args.length - 1, undefined, bindings);
+        const result = context.parse(args[args.length - 1], args.length - 1, context.expectedType, bindings);
         if (!result) return null;
 
         return new Let(bindings, result);
     }
+
+    possibleOutputs() {
+        return this.result.possibleOutputs();
+    }
+
+    serialize() {
+        const serialized = ["let"];
+        for (const [name, expr] of this.bindings) {
+            serialized.push(name, expr.serialize());
+        }
+        serialized.push(this.result.serialize());
+        return serialized;
+    }
 }
 
-module.exports = Let;
+export default Let;

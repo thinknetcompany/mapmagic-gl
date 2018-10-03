@@ -1,0 +1,19 @@
+@import "mapbox-gl.css";
+
+a.mapmagic-ctrl-logo {
+  width: 140px;
+  height: 20px;
+  margin: 0 0 -3px -3px;
+  display: block;
+  background-repeat: no-repeat;
+  cursor: pointer;
+  background-image: svg-load('svg/mapmagicgl-logo.svg');
+}
+
+a.mapmagic-ctrl-logo.dark {
+  background-image: svg-load('svg/mapmagicgl-logo-white.svg');
+}
+
+.mapboxgl-missing-css {
+  display: none;
+}

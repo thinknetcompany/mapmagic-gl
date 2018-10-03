@@ -1,16 +1,16 @@
-/* eslint-disable */
-const logger = require('../util/Logger')
-const { LOG_CONSTANT } = require('../constant')
+// @flow
+import Logger from '../util/Logger';
+import { LOG_CONSTANT } from '../constant';
 
 const initColorMap = function (payload = {}) {
     try {
         payload.layers.forEach(option => {
             const { layer, color } = option;
-            if(!color) {
-                logger.warn(initColorMap.name, 'missing color!')
+            if (!color) {
+                Logger.warn(initColorMap.name, 'missing color!');
             }
-            if(!layer) {
-                logger.warn(initColorMap.name, LOG_CONSTANT.UNDEFINED_LAYER)
+            if (!layer) {
+                Logger.warn(initColorMap.name, LOG_CONSTANT.UNDEFINED_LAYER);
             }
             let attribute = null;
             const layers = [];
@@ -41,14 +41,14 @@ const initColorMap = function (payload = {}) {
             }
             layers.forEach(value => {
                 map.setPaintProperty(value, attribute, color);
-            }) 
-        })
-        logger.info(initColorMap.name, null, payload)      
+            });
+        });
+        Logger.info(initColorMap.name, null, payload);
     } catch (error) {
-        logger.error(initColorMap.name, error.message)
+        Logger.error(initColorMap.name, error.message);
     }
 };
 
-module.exports = {
+export default {
     initColorMap
 };

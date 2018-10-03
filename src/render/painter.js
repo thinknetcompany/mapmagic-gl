@@ -1,52 +1,76 @@
 // @flow
 
-const browser = require('../util/browser');
-const mat4 = require('@mapbox/gl-matrix').mat4;
-const SourceCache = require('../source/source_cache');
-const EXTENT = require('../data/extent');
-const pixelsToTileUnits = require('../source/pixels_to_tile_units');
-const util = require('../util/util');
-const VertexBuffer = require('../gl/vertex_buffer');
-const VertexArrayObject = require('./vertex_array_object');
-const RasterBoundsArray = require('../data/raster_bounds_array');
-const PosArray = require('../data/pos_array');
-const {ProgramConfiguration} = require('../data/program_configuration');
-const CrossTileSymbolIndex = require('../symbol/cross_tile_symbol_index');
-const shaders = require('../shaders');
-const Program = require('./program');
-const RenderTexture = require('./render_texture');
-const updateTileMasks = require('./tile_mask');
+import browser from '../util/browser';
+
+import { mat4 } from 'gl-matrix';
+import SourceCache from '../source/source_cache';
+import EXTENT from '../data/extent';
+import pixelsToTileUnits from '../source/pixels_to_tile_units';
+import SegmentVector from '../data/segment';
+import { RasterBoundsArray, PosArray, TriangleIndexArray, LineStripIndexArray } from '../data/array_types';
+import rasterBoundsAttributes from '../data/raster_bounds_attributes';
+import posAttributes from '../data/pos_attributes';
+import ProgramConfiguration from '../data/program_configuration';
+import CrossTileSymbolIndex from '../symbol/cross_tile_symbol_index';
+import shaders from '../shaders';
+import Program from './program';
+import { programUniforms } from './program/program_uniforms';
+import Context from '../gl/context';
+import DepthMode from '../gl/depth_mode';
+import StencilMode from '../gl/stencil_mode';
+import ColorMode from '../gl/color_mode';
+import CullFaceMode from '../gl/cull_face_mode';
+import Texture from './texture';
+import updateTileMasks from './tile_mask';
+import { clippingMaskUniformValues } from './program/clipping_mask_program';
+import Color from '../style-spec/util/color';
+import symbol from './draw_symbol';
+import circle from './draw_circle';
+import heatmap from './draw_heatmap';
+import line from './draw_line';
+import fill from './draw_fill';
+import fillExtrusion from './draw_fill_extrusion';
+import hillshade from './draw_hillshade';
+import raster from './draw_raster';
+import background from './draw_background';
+import debug from './draw_debug';
+import custom from './draw_custom';
 
 const draw = {
-    symbol: require('./draw_symbol'),
-    circle: require('./draw_circle'),
-    heatmap: require('./draw_heatmap'),
-    line: require('./draw_line'),
-    fill: require('./draw_fill'),
-    'fill-extrusion': require('./draw_fill_extrusion'),
-    raster: require('./draw_raster'),
-    background: require('./draw_background'),
-    debug: require('./draw_debug')
+    symbol,
+    circle,
+    heatmap,
+    line,
+    fill,
+    'fill-extrusion': fillExtrusion,
+    hillshade,
+    raster,
+    background,
+    debug,
+    custom
 };
 
 import type Transform from '../geo/transform';
 import type Tile from '../source/tile';
-import type TileCoord from '../source/tile_coord';
+import type {OverscaledTileID} from '../source/tile_id';
 import type Style from '../style/style';
 import type StyleLayer from '../style/style_layer';
+import type {CrossFaded} from '../style/properties';
 import type LineAtlas from './line_atlas';
-import type Texture from './texture';
 import type ImageManager from './image_manager';
 import type GlyphManager from './glyph_manager';
+import type VertexBuffer from '../gl/vertex_buffer';
+import type IndexBuffer from '../gl/index_buffer';
+import type {DepthMaskType, DepthFuncType} from '../gl/types';
 
-export type RenderPass = '3d' | 'opaque' | 'translucent';
+export type RenderPass = 'offscreen' | 'opaque' | 'translucent';
 
 type PainterOptions = {
     showOverdrawInspector: boolean,
     showTileBoundaries: boolean,
     rotating: boolean,
     zooming: boolean,
-    collisionFadeDuration: number
+    fadeDuration: number
 }
 
 /**
@@ -56,31 +80,28 @@ type PainterOptions = {
  * @private
  */
 class Painter {
-    gl: WebGLRenderingContext;
+    context: Context;
     transform: Transform;
     _tileTextures: { [number]: Array<Texture> };
     numSublayers: number;
     depthEpsilon: number;
-    lineWidthRange: [number, number];
     emptyProgramConfiguration: ProgramConfiguration;
     width: number;
     height: number;
     depthRbo: WebGLRenderbuffer;
-    depthRboAttached: boolean;
-    _depthMask: boolean;
+    depthRboNeedsClear: boolean;
     tileExtentBuffer: VertexBuffer;
-    tileExtentVAO: VertexArrayObject;
-    tileExtentPatternVAO: VertexArrayObject;
+    tileExtentSegments: SegmentVector;
     debugBuffer: VertexBuffer;
-    debugVAO: VertexArrayObject;
+    debugSegments: SegmentVector;
     rasterBoundsBuffer: VertexBuffer;
-    rasterBoundsVAO: VertexArrayObject;
+    rasterBoundsSegments: SegmentVector;
     viewportBuffer: VertexBuffer;
-    viewportVAO: VertexArrayObject;
-    extTextureFilterAnisotropic: any;
-    extTextureFilterAnisotropicMax: any;
-    extTextureHalfFloat: any;
+    viewportSegments: SegmentVector;
+    quadTriangleIndexBuffer: IndexBuffer;
+    tileBorderIndexBuffer: IndexBuffer;
     _tileClippingMaskIDs: { [number]: number };
+    stencilClearMode: StencilMode;
     style: Style;
     options: PainterOptions;
     lineAtlas: LineAtlas;
@@ -91,12 +112,12 @@ class Painter {
     currentLayer: number;
     id: string;
     _showOverdrawInspector: boolean;
-    cache: { [string]: Program };
-    currentProgram: Program;
+    cache: { [string]: Program<*> };
     crossTileSymbolIndex: CrossTileSymbolIndex;
+    symbolFadeChange: number;
 
     constructor(gl: WebGLRenderingContext, transform: Transform) {
-        this.gl = gl;
+        this.context = new Context(gl);
         this.transform = transform;
         this._tileTextures = {};
 
@@ -107,7 +128,7 @@ class Painter {
         this.numSublayers = SourceCache.maxUnderzooming + SourceCache.maxOverzooming + 1;
         this.depthEpsilon = 1 / Math.pow(2, 16);
 
-        this.lineWidthRange = gl.getParameter(gl.ALIASED_LINE_WIDTH_RANGE);
+        this.depthRboNeedsClear = true;
 
         this.emptyProgramConfiguration = new ProgramConfiguration();
 
@@ -119,96 +140,74 @@ class Painter {
      * for a new width and height value.
      */
     resize(width: number, height: number) {
-        const gl = this.gl;
+        const gl = this.context.gl;
 
         this.width = width * browser.devicePixelRatio;
         this.height = height * browser.devicePixelRatio;
-        gl.viewport(0, 0, this.width, this.height);
+        this.context.viewport.set([0, 0, this.width, this.height]);
 
         if (this.style) {
             for (const layerId of this.style._order) {
-                this.style._layers[layerId].resize(gl);
+                this.style._layers[layerId].resize();
             }
         }
 
         if (this.depthRbo) {
-            this.gl.deleteRenderbuffer(this.depthRbo);
+            gl.deleteRenderbuffer(this.depthRbo);
             this.depthRbo = null;
         }
     }
 
     setup() {
-        const gl = this.gl;
-
-        // We are blending the new pixels *behind* the existing pixels. That way we can
-        // draw front-to-back and use then stencil buffer to cull opaque pixels early.
-        gl.enable(gl.BLEND);
-        gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-
-        gl.enable(gl.STENCIL_TEST);
-
-        gl.enable(gl.DEPTH_TEST);
-        gl.depthFunc(gl.LEQUAL);
-
-        this._depthMask = false;
-        gl.depthMask(false);
+        const context = this.context;
 
         const tileExtentArray = new PosArray();
         tileExtentArray.emplaceBack(0, 0);
         tileExtentArray.emplaceBack(EXTENT, 0);
         tileExtentArray.emplaceBack(0, EXTENT);
         tileExtentArray.emplaceBack(EXTENT, EXTENT);
-        this.tileExtentBuffer = new VertexBuffer(gl, tileExtentArray);
-        this.tileExtentVAO = new VertexArrayObject();
-        this.tileExtentPatternVAO = new VertexArrayObject();
+        this.tileExtentBuffer = context.createVertexBuffer(tileExtentArray, posAttributes.members);
+        this.tileExtentSegments = SegmentVector.simpleSegment(0, 0, 4, 2);
 
         const debugArray = new PosArray();
         debugArray.emplaceBack(0, 0);
         debugArray.emplaceBack(EXTENT, 0);
-        debugArray.emplaceBack(EXTENT, EXTENT);
         debugArray.emplaceBack(0, EXTENT);
-        debugArray.emplaceBack(0, 0);
-        this.debugBuffer = new VertexBuffer(gl, debugArray);
-        this.debugVAO = new VertexArrayObject();
+        debugArray.emplaceBack(EXTENT, EXTENT);
+        this.debugBuffer = context.createVertexBuffer(debugArray, posAttributes.members);
+        this.debugSegments = SegmentVector.simpleSegment(0, 0, 4, 5);
 
         const rasterBoundsArray = new RasterBoundsArray();
         rasterBoundsArray.emplaceBack(0, 0, 0, 0);
         rasterBoundsArray.emplaceBack(EXTENT, 0, EXTENT, 0);
         rasterBoundsArray.emplaceBack(0, EXTENT, 0, EXTENT);
         rasterBoundsArray.emplaceBack(EXTENT, EXTENT, EXTENT, EXTENT);
-        this.rasterBoundsBuffer = new VertexBuffer(gl, rasterBoundsArray);
-        this.rasterBoundsVAO = new VertexArrayObject();
+        this.rasterBoundsBuffer = context.createVertexBuffer(rasterBoundsArray, rasterBoundsAttributes.members);
+        this.rasterBoundsSegments = SegmentVector.simpleSegment(0, 0, 4, 2);
 
         const viewportArray = new PosArray();
         viewportArray.emplaceBack(0, 0);
         viewportArray.emplaceBack(1, 0);
         viewportArray.emplaceBack(0, 1);
         viewportArray.emplaceBack(1, 1);
-        this.viewportBuffer = new VertexBuffer(gl, viewportArray);
-        this.viewportVAO = new VertexArrayObject();
+        this.viewportBuffer = context.createVertexBuffer(viewportArray, posAttributes.members);
+        this.viewportSegments = SegmentVector.simpleSegment(0, 0, 4, 2);
 
-        this.extTextureFilterAnisotropic = (
-            gl.getExtension('EXT_texture_filter_anisotropic') ||
-            gl.getExtension('MOZ_EXT_texture_filter_anisotropic') ||
-            gl.getExtension('WEBKIT_EXT_texture_filter_anisotropic')
-        );
-        if (this.extTextureFilterAnisotropic) {
-            this.extTextureFilterAnisotropicMax = gl.getParameter(this.extTextureFilterAnisotropic.MAX_TEXTURE_MAX_ANISOTROPY_EXT);
-        }
+        const tileLineStripIndices = new LineStripIndexArray();
+        tileLineStripIndices.emplaceBack(0);
+        tileLineStripIndices.emplaceBack(1);
+        tileLineStripIndices.emplaceBack(3);
+        tileLineStripIndices.emplaceBack(2);
+        tileLineStripIndices.emplaceBack(0);
+        this.tileBorderIndexBuffer = context.createIndexBuffer(tileLineStripIndices);
 
-        this.extTextureHalfFloat = gl.getExtension('OES_texture_half_float');
-        if (this.extTextureHalfFloat) {
-            gl.getExtension('OES_texture_half_float_linear');
-        }
-    }
+        const quadTriangleIndices = new TriangleIndexArray();
+        quadTriangleIndices.emplaceBack(0, 1, 2);
+        quadTriangleIndices.emplaceBack(2, 1, 3);
+        this.quadTriangleIndexBuffer = context.createIndexBuffer(quadTriangleIndices);
 
-    /*
-     * Reset the color buffers of the drawing canvas.
-     */
-    clearColor() {
-        const gl = this.gl;
-        gl.clearColor(0, 0, 0, 0);
-        gl.clear(gl.COLOR_BUFFER_BIT);
+        const gl = this.context.gl;
+        this.stencilClearMode = new StencilMode({ func: gl.ALWAYS, mask: 0 }, 0x0, 0xFF, gl.ZERO, gl.ZERO, gl.ZERO);
     }
 
     /*
@@ -216,87 +215,72 @@ class Painter {
      * new tiles at the same location, while retaining previously drawn pixels.
      */
     clearStencil() {
-        const gl = this.gl;
+        const context = this.context;
+        const gl = context.gl;
 
         // As a temporary workaround for https://github.com/mapbox/mapbox-gl-js/issues/5490,
         // pending an upstream fix, we draw a fullscreen stencil=0 clipping mask here,
-        // effectively clearing the stencil buffer: restore this code for native
-        // performance and readability once an upstream patch lands.
-
-        // gl.clearStencil(0x0);
-        // gl.stencilMask(0xFF);
-        // gl.clear(gl.STENCIL_BUFFER_BIT);
-
-        gl.colorMask(false, false, false, false);
-        this.depthMask(false);
-        gl.disable(gl.DEPTH_TEST);
-        gl.enable(gl.STENCIL_TEST);
-
-        gl.stencilMask(0xFF);
-        gl.stencilOp(gl.ZERO, gl.ZERO, gl.ZERO);
-
-        gl.stencilFunc(gl.ALWAYS, 0x0, 0xFF);
+        // effectively clearing the stencil buffer: once an upstream patch lands, remove
+        // this function in favor of context.clear({ stencil: 0x0 })
 
         const matrix = mat4.create();
         mat4.ortho(matrix, 0, this.width, this.height, 0, 0, 1);
         mat4.scale(matrix, matrix, [gl.drawingBufferWidth, gl.drawingBufferHeight, 0]);
 
-        const program = this.useProgram('fill', ProgramConfiguration.forTileClippingMask());
-        gl.uniformMatrix4fv(program.uniforms.u_matrix, false, matrix);
-
-        this.viewportVAO.bind(gl, program, this.viewportBuffer);
-        gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
-
-        gl.stencilMask(0x00);
-        gl.colorMask(true, true, true, true);
-        this.depthMask(true);
-        gl.enable(gl.DEPTH_TEST);
+        this.useProgram('clippingMask').draw(context, gl.TRIANGLES,
+            DepthMode.disabled, this.stencilClearMode, ColorMode.disabled, CullFaceMode.disabled,
+            clippingMaskUniformValues(matrix),
+            '$clipping', this.viewportBuffer,
+            this.quadTriangleIndexBuffer, this.viewportSegments);
     }
 
-    clearDepth() {
-        const gl = this.gl;
-        gl.clearDepth(1);
-        this.depthMask(true);
-        gl.clear(gl.DEPTH_BUFFER_BIT);
-    }
+    _renderTileClippingMasks(tileIDs: Array<OverscaledTileID>) {
+        const context = this.context;
+        const gl = context.gl;
 
-    _renderTileClippingMasks(coords: Array<TileCoord>) {
-        const gl = this.gl;
-        gl.colorMask(false, false, false, false);
-        this.depthMask(false);
-        gl.disable(gl.DEPTH_TEST);
-        gl.enable(gl.STENCIL_TEST);
+        context.setColorMode(ColorMode.disabled);
+        context.setDepthMode(DepthMode.disabled);
 
-        gl.stencilMask(0xFF);
-        // Tests will always pass, and ref value will be written to stencil buffer.
-        gl.stencilOp(gl.KEEP, gl.KEEP, gl.REPLACE);
+        const program = this.useProgram('clippingMask');
 
         let idNext = 1;
         this._tileClippingMaskIDs = {};
-        const programConfiguration = ProgramConfiguration.forTileClippingMask();
 
-        for (const coord of coords) {
-            const id = this._tileClippingMaskIDs[coord.id] = idNext++;
+        for (const tileID of tileIDs) {
+            const id = this._tileClippingMaskIDs[tileID.key] = idNext++;
 
-            gl.stencilFunc(gl.ALWAYS, id, 0xFF);
-
-            const program = this.useProgram('fill', programConfiguration);
-            gl.uniformMatrix4fv(program.uniforms.u_matrix, false, coord.posMatrix);
-
-            // Draw the clipping mask
-            this.tileExtentVAO.bind(gl, program, this.tileExtentBuffer);
-            gl.drawArrays(gl.TRIANGLE_STRIP, 0, this.tileExtentBuffer.length);
+            program.draw(context, gl.TRIANGLES, DepthMode.disabled,
+                // Tests will always pass, and ref value will be written to stencil buffer.
+                new StencilMode({ func: gl.ALWAYS, mask: 0 }, id, 0xFF, gl.KEEP, gl.KEEP, gl.REPLACE),
+                ColorMode.disabled, CullFaceMode.disabled, clippingMaskUniformValues(tileID.posMatrix),
+                '$clipping', this.tileExtentBuffer,
+                this.quadTriangleIndexBuffer, this.tileExtentSegments);
         }
-
-        gl.stencilMask(0x00);
-        gl.colorMask(true, true, true, true);
-        this.depthMask(true);
-        gl.enable(gl.DEPTH_TEST);
     }
 
-    enableTileClippingMask(coord: TileCoord) {
-        const gl = this.gl;
-        gl.stencilFunc(gl.EQUAL, this._tileClippingMaskIDs[coord.id], 0xFF);
+    stencilModeForClipping(tileID: OverscaledTileID): StencilMode {
+        const gl = this.context.gl;
+        return new StencilMode({ func: gl.EQUAL, mask: 0xFF }, this._tileClippingMaskIDs[tileID.key], 0x00, gl.KEEP, gl.KEEP, gl.REPLACE);
+    }
+
+    colorModeForRenderPass(): $ReadOnly<ColorMode> {
+        const gl = this.context.gl;
+        if (this._showOverdrawInspector) {
+            const numOverdrawSteps = 8;
+            const a = 1 / numOverdrawSteps;
+
+            return new ColorMode([gl.CONSTANT_COLOR, gl.ONE], new Color(a, a, a, 0), [true, true, true, true]);
+        } else if (this.renderPass === 'opaque') {
+            return ColorMode.unblended;
+        } else {
+            return ColorMode.alphaBlended;
+        }
+    }
+
+    depthModeForSublayer(n: number, mask: DepthMaskType, func: ?DepthFuncType): DepthMode {
+        const farDepth = 1 - ((1 + this.currentLayer) * this.numSublayers + n) * this.depthEpsilon;
+        const nearDepth = farDepth - 1 + this.depthRange;
+        return new DepthMode(func || this.context.gl.LEQUAL, mask, [nearDepth, farDepth]);
     }
 
     render(style: Style, options: PainterOptions) {
@@ -307,192 +291,133 @@ class Painter {
         this.imageManager = style.imageManager;
         this.glyphManager = style.glyphManager;
 
-        for (const id in style.sourceCaches) {
-            const sourceCache = this.style.sourceCaches[id];
-            if (sourceCache.used) {
-                sourceCache.prepare(this.gl);
-            }
-        }
+        this.symbolFadeChange = style.placement.symbolFadeChange(browser.now());
 
         const layerIds = this.style._order;
+        const sourceCaches = this.style.sourceCaches;
 
-        const rasterSources = util.filterObject(this.style.sourceCaches, (sc) => { return sc._source.type === 'raster'; });
-        for (const key in rasterSources) {
-            const sourceCache = rasterSources[key];
-            const coords = sourceCache.getVisibleCoordinates();
-            const visibleTiles = coords.map((c)=>{ return sourceCache.getTile(c); });
-            updateTileMasks(visibleTiles, this.gl);
-        }
-
-        // 3D pass
-        // We first create a renderbuffer that we'll use to preserve depth
-        // results across 3D layers, then render each 3D layer to its own
-        // framebuffer/texture, which we'll use later in the translucent pass
-        // to render to the main framebuffer. By doing this before we render to
-        // the main framebuffer we won't have to do an expensive framebuffer
-        // restore mid-render pass.
-        // The most important distinction of the 3D pass is that we use the
-        // depth buffer in an entirely different way (to represent 3D space)
-        // than we do in the 2D pass (to preserve layer order).
-        this.renderPass = '3d';
-        {
-            // We'll wait and only attach the depth renderbuffer if we think we're
-            // rendering something.
-            let first = true;
-
-            let sourceCache;
-            let coords = [];
-
-            for (let i = 0; i < layerIds.length; i++) {
-                const layer = this.style._layers[layerIds[i]];
-
-                if (!layer.has3DPass() || layer.isHidden(this.transform.zoom)) continue;
-
-                if (layer.source !== (sourceCache && sourceCache.id)) {
-                    sourceCache = this.style.sourceCaches[layer.source];
-                    coords = [];
-
-                    if (sourceCache) {
-                        this.clearStencil();
-                        coords = sourceCache.getVisibleCoordinates();
-                    }
-
-                    coords.reverse();
-                }
-
-                if (!coords.length) continue;
-
-                this._setup3DRenderbuffer();
-
-                const renderTarget = layer.viewportFrame || new RenderTexture(this);
-                layer.viewportFrame = renderTarget;
-                renderTarget.bindWithDepth(this.depthRbo);
-
-                if (first) {
-                    this.clearDepth();
-                    first = false;
-                }
-
-                this.renderLayer(this, (sourceCache: any), layer, coords);
-
-                renderTarget.unbind();
+        for (const id in sourceCaches) {
+            const sourceCache = sourceCaches[id];
+            if (sourceCache.used) {
+                sourceCache.prepare(this.context);
             }
         }
+
+        const coordsAscending: {[string]: Array<OverscaledTileID>} = {};
+        const coordsDescending: {[string]: Array<OverscaledTileID>} = {};
+        const coordsDescendingSymbol: {[string]: Array<OverscaledTileID>} = {};
+
+        for (const id in sourceCaches) {
+            const sourceCache = sourceCaches[id];
+            coordsAscending[id] = sourceCache.getVisibleCoordinates();
+            coordsDescending[id] = coordsAscending[id].slice().reverse();
+            coordsDescendingSymbol[id] = sourceCache.getVisibleCoordinates(true).reverse();
+        }
+
+        for (const id in sourceCaches) {
+            const sourceCache = sourceCaches[id];
+            const source = sourceCache.getSource();
+            if (source.type !== 'raster' && source.type !== 'raster-dem') continue;
+            const visibleTiles = [];
+            for (const coord of coordsAscending[id]) visibleTiles.push(sourceCache.getTile(coord));
+            updateTileMasks(visibleTiles, this.context);
+        }
+
+        // Offscreen pass ===============================================
+        // We first do all rendering that requires rendering to a separate
+        // framebuffer, and then save those for rendering back to the map
+        // later: in doing this we avoid doing expensive framebuffer restores.
+        this.renderPass = 'offscreen';
+        this.depthRboNeedsClear = true;
+
+        for (const layerId of layerIds) {
+            const layer = this.style._layers[layerId];
+            if (!layer.hasOffscreenPass() || layer.isHidden(this.transform.zoom)) continue;
+
+            const coords = coordsDescending[layer.source];
+            if (layer.type !== 'custom' && !coords.length) continue;
+
+            this.renderLayer(this, sourceCaches[layer.source], layer, coords);
+        }
+
+        // Rebind the main framebuffer now that all offscreen layers have been rendered:
+        this.context.bindFramebuffer.set(null);
 
         // Clear buffers in preparation for drawing to the main framebuffer
-        this.clearColor();
-        this.clearDepth();
+        this.context.clear({ color: options.showOverdrawInspector ? Color.black : Color.transparent, depth: 1 });
 
-        this.showOverdrawInspector(options.showOverdrawInspector);
-
+        this._showOverdrawInspector = options.showOverdrawInspector;
         this.depthRange = (style._order.length + 2) * this.numSublayers * this.depthEpsilon;
 
-        // Opaque pass
+        // Opaque pass ===============================================
         // Draw opaque layers top-to-bottom first.
         this.renderPass = 'opaque';
-        {
-            let sourceCache;
-            let coords = [];
+        let prevSourceId;
 
-            this.currentLayer = layerIds.length - 1;
+        for (this.currentLayer = layerIds.length - 1; this.currentLayer >= 0; this.currentLayer--) {
+            const layer = this.style._layers[layerIds[this.currentLayer]];
+            const sourceCache = sourceCaches[layer.source];
+            const coords = coordsAscending[layer.source];
 
-            if (!this._showOverdrawInspector) {
-                this.gl.disable(this.gl.BLEND);
-            }
-
-            for (this.currentLayer; this.currentLayer >= 0; this.currentLayer--) {
-                const layer = this.style._layers[layerIds[this.currentLayer]];
-
-                if (layer.source !== (sourceCache && sourceCache.id)) {
-                    sourceCache = this.style.sourceCaches[layer.source];
-                    coords = [];
-
-                    if (sourceCache) {
-                        this.clearStencil();
-                        coords = sourceCache.getVisibleCoordinates();
-                        if (sourceCache.getSource().isTileClipped) {
-                            this._renderTileClippingMasks(coords);
-                        }
-                    }
+            if (layer.source !== prevSourceId && sourceCache) {
+                this.clearStencil();
+                if (sourceCache.getSource().isTileClipped) {
+                    this._renderTileClippingMasks(coords);
                 }
-
-                this.renderLayer(this, (sourceCache: any), layer, coords);
             }
+
+            this.renderLayer(this, sourceCache, layer, coords);
+            prevSourceId = layer.source;
         }
 
-        // Translucent pass
+        // Translucent pass ===============================================
         // Draw all other layers bottom-to-top.
         this.renderPass = 'translucent';
-        {
-            let sourceCache;
-            let coords = [];
 
-            this.gl.enable(this.gl.BLEND);
+        for (this.currentLayer = 0, prevSourceId = null; this.currentLayer < layerIds.length; this.currentLayer++) {
+            const layer = this.style._layers[layerIds[this.currentLayer]];
+            const sourceCache = sourceCaches[layer.source];
 
-            this.currentLayer = 0;
+            // For symbol layers in the translucent pass, we add extra tiles to the renderable set
+            // for cross-tile symbol fading. Symbol layers don't use tile clipping, so no need to render
+            // separate clipping masks
+            const coords = (layer.type === 'symbol' ? coordsDescendingSymbol : coordsDescending)[layer.source];
 
-            for (this.currentLayer; this.currentLayer < layerIds.length; this.currentLayer++) {
-                const layer = this.style._layers[layerIds[this.currentLayer]];
-
-                if (layer.source !== (sourceCache && sourceCache.id)) {
-                    sourceCache = this.style.sourceCaches[layer.source];
-                    coords = [];
-
-                    if (sourceCache) {
-                        this.clearStencil();
-                        coords = sourceCache.getVisibleCoordinates();
-                        if (sourceCache.getSource().isTileClipped) {
-                            this._renderTileClippingMasks(coords);
-                        }
-                    }
-
-                    coords.reverse();
+            if (layer.source !== prevSourceId && sourceCache) {
+                this.clearStencil();
+                if (sourceCache.getSource().isTileClipped) {
+                    this._renderTileClippingMasks(coordsAscending[layer.source]);
                 }
-
-                this.renderLayer(this, (sourceCache: any), layer, coords);
             }
+
+            this.renderLayer(this, sourceCache, layer, coords);
+            prevSourceId = layer.source;
         }
 
         if (this.options.showTileBoundaries) {
-            const sourceCache = this.style.sourceCaches[Object.keys(this.style.sourceCaches)[0]];
-            if (sourceCache) {
-                draw.debug(this, sourceCache, sourceCache.getVisibleCoordinates());
+            for (const id in sourceCaches) {
+                draw.debug(this, sourceCaches[id], coordsAscending[id]);
+                break;
             }
         }
+
+        this.setCustomLayerDefaults();
     }
 
-    _setup3DRenderbuffer() {
+    setupOffscreenDepthRenderbuffer(): void {
+        const context = this.context;
         // All of the 3D textures will use the same depth renderbuffer.
         if (!this.depthRbo) {
-            const gl = this.gl;
-            this.depthRbo = gl.createRenderbuffer();
-            gl.bindRenderbuffer(gl.RENDERBUFFER, this.depthRbo);
-            gl.renderbufferStorage(gl.RENDERBUFFER, gl.DEPTH_COMPONENT16, this.width, this.height);
-            gl.bindRenderbuffer(gl.RENDERBUFFER, null);
-        }
-
-        this.depthRboAttached = true;
-    }
-
-    depthMask(mask: boolean) {
-        if (mask !== this._depthMask) {
-            this._depthMask = mask;
-            this.gl.depthMask(mask);
+            this.depthRbo = context.createRenderbuffer(context.gl.DEPTH_COMPONENT16, this.width, this.height);
         }
     }
 
-    renderLayer(painter: Painter, sourceCache: SourceCache, layer: StyleLayer, coords: Array<TileCoord>) {
+    renderLayer(painter: Painter, sourceCache: SourceCache, layer: StyleLayer, coords: Array<OverscaledTileID>) {
         if (layer.isHidden(this.transform.zoom)) return;
-        if (layer.type !== 'background' && !coords.length) return;
+        if (layer.type !== 'background' && layer.type !== 'custom' && !coords.length) return;
         this.id = layer.id;
 
         draw[layer.type](painter, sourceCache, layer, coords);
-    }
-
-    setDepthSublayer(n: number) {
-        const farDepth = 1 - ((1 + this.currentLayer) * this.numSublayers + n) * this.depthEpsilon;
-        const nearDepth = farDepth - 1 + this.depthRange;
-        this.gl.depthRange(nearDepth, farDepth);
     }
 
     /**
@@ -541,47 +466,55 @@ class Painter {
         return textures && textures.length > 0 ? textures.pop() : null;
     }
 
-    lineWidth(width: number) {
-        this.gl.lineWidth(util.clamp(width, this.lineWidthRange[0], this.lineWidthRange[1]));
+    /**
+     * Checks whether a pattern image is needed, and if it is, whether it is not loaded.
+     *
+     * @returns true if a needed image is missing and rendering needs to be skipped.
+     */
+    isPatternMissing(image: ?CrossFaded<string>): boolean {
+        if (!image) return false;
+        const imagePosA = this.imageManager.getPattern(image.from);
+        const imagePosB = this.imageManager.getPattern(image.to);
+        return !imagePosA || !imagePosB;
     }
 
-    showOverdrawInspector(enabled: boolean) {
-        if (!enabled && !this._showOverdrawInspector) return;
-        this._showOverdrawInspector = enabled;
-
-        const gl = this.gl;
-        if (enabled) {
-            gl.blendFunc(gl.CONSTANT_COLOR, gl.ONE);
-            const numOverdrawSteps = 8;
-            const a = 1 / numOverdrawSteps;
-            gl.blendColor(a, a, a, 0);
-            gl.clearColor(0, 0, 0, 1);
-            gl.clear(gl.COLOR_BUFFER_BIT);
-        } else {
-            gl.blendFunc(gl.ONE, gl.ONE_MINUS_SRC_ALPHA);
-        }
-    }
-
-    _createProgramCached(name: string, programConfiguration: ProgramConfiguration): Program {
+    useProgram(name: string, programConfiguration: ProgramConfiguration = this.emptyProgramConfiguration): Program<any> {
         this.cache = this.cache || {};
         const key = `${name}${programConfiguration.cacheKey || ''}${this._showOverdrawInspector ? '/overdraw' : ''}`;
         if (!this.cache[key]) {
-            this.cache[key] = new Program(this.gl, shaders[name], programConfiguration, this._showOverdrawInspector);
+            this.cache[key] = new Program(this.context, shaders[name], programConfiguration, programUniforms[name], this._showOverdrawInspector);
         }
         return this.cache[key];
     }
 
-    useProgram(name: string, programConfiguration?: ProgramConfiguration): Program {
-        const gl = this.gl;
-        const nextProgram = this._createProgramCached(name, programConfiguration || this.emptyProgramConfiguration);
+    /*
+     * Reset some GL state to default values to avoid hard-to-debug bugs
+     * in custom layers.
+     */
+    setCustomLayerDefaults() {
+        // Prevent custom layers from unintentionally modify the last VAO used.
+        // All other state is state is restored on it's own, but for VAOs it's
+        // simpler to unbind so that we don't have to track the state of VAOs.
+        this.context.unbindVAO();
 
-        if (this.currentProgram !== nextProgram) {
-            gl.useProgram(nextProgram.program);
-            this.currentProgram = nextProgram;
-        }
+        // The default values for this state is meaningful and often expected.
+        // Leaving this state dirty could cause a lot of confusion for users.
+        this.context.cullFace.setDefault();
+        this.context.activeTexture.setDefault();
+        this.context.pixelStoreUnpack.setDefault();
+        this.context.pixelStoreUnpackPremultiplyAlpha.setDefault();
+        this.context.pixelStoreUnpackFlipY.setDefault();
+    }
 
-        return nextProgram;
+    /*
+     * Set GL state that is shared by all layers.
+     */
+    setBaseState() {
+        const gl = this.context.gl;
+        this.context.cullFace.set(false);
+        this.context.viewport.set([0, 0, this.width, this.height]);
+        this.context.blendEquation.set(gl.FUNC_ADD);
     }
 }
 
-module.exports = Painter;
+export default Painter;
