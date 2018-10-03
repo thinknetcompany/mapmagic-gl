@@ -7,7 +7,7 @@ const UNDEFINED_LAYER = 'cannot find layer'
 const UNDEFINED_COLOR = 'missing color'
 const INVALID_TYPE = 'invalid argument type'
 
-module.exports = {
+export default {
   UNDEFINED_COORDINATES,
   UNDEFINED_LATLNG,
   UNDEFINED_ARRAY_LATLNG,

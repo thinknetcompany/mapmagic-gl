@@ -1,29 +1,35 @@
 // @flow
 
+import { endsWith, filterObject } from '../util/util';
 
-const util = require('../util/util');
-const styleSpec = require('../style-spec/reference/latest');
-const validateStyle = require('./validate_style');
-const Evented = require('../util/evented');
+import styleSpec from '../style-spec/reference/latest';
+import {
+    validateStyle,
+    validateLayoutProperty,
+    validatePaintProperty,
+    emitValidationErrors
+} from './validate_style';
+import { Evented } from '../util/evented';
+import { Layout, Transitionable, Transitioning, Properties, PossiblyEvaluatedPropertyValue } from './properties';
+import { supportsPropertyExpression } from '../style-spec/util/properties';
 
-const {
-    Layout,
-    Transitionable,
-    Transitioning,
-    Properties
-} = require('./properties');
-
-import type {Bucket, BucketParameters} from '../data/bucket';
+import type { FeatureState } from '../style-spec/expression';
+import type {Bucket} from '../data/bucket';
 import type Point from '@mapbox/point-geometry';
-import type RenderTexture from '../render/render_texture';
 import type {FeatureFilter} from '../style-spec/feature_filter';
-import type {EvaluationParameters} from './properties';
+import type {TransitionParameters} from './properties';
+import type EvaluationParameters, {CrossfadeParameters} from './evaluation_parameters';
+import type Transform from '../geo/transform';
+import type {
+    LayerSpecification,
+    FilterSpecification
+} from '../style-spec/types';
+import type {CustomLayerInterface} from './style_layer/custom_style_layer';
+import type Map from '../ui/map';
 
 const TRANSITION_SUFFIX = '-transition';
 
 class StyleLayer extends Evented {
-    static create: (layer: LayerSpecification) => StyleLayer;
-
     id: string;
     metadata: mixed;
     type: string;
@@ -33,6 +39,7 @@ class StyleLayer extends Evented {
     maxzoom: ?number;
     filter: FilterSpecification | void;
     visibility: 'visible' | 'none';
+    _crossfadeParameters: CrossfadeParameters;
 
     _unevaluatedLayout: Layout<any>;
     +layout: mixed;
@@ -41,27 +48,36 @@ class StyleLayer extends Evented {
     _transitioningPaint: Transitioning<any>;
     +paint: mixed;
 
-    viewportFrame: ?RenderTexture;
     _featureFilter: FeatureFilter;
 
-    +createBucket: (parameters: BucketParameters) => Bucket;
     +queryRadius: (bucket: Bucket) => number;
     +queryIntersectsFeature: (queryGeometry: Array<Array<Point>>,
                               feature: VectorTileFeature,
+                              featureState: FeatureState,
                               geometry: Array<Array<Point>>,
                               zoom: number,
-                              bearing: number,
-                              pixelsToTileUnits: number) => boolean;
+                              transform: Transform,
+                              pixelsToTileUnits: number,
+                              posMatrix: Float32Array) => boolean;
 
-    constructor(layer: LayerSpecification, properties: {layout?: Properties<*>, paint: Properties<*>}) {
+    +onAdd: ?(map: Map) => void;
+    +onRemove: ?(map: Map) => void;
+
+    constructor(layer: LayerSpecification | CustomLayerInterface, properties: $ReadOnly<{layout?: Properties<*>, paint?: Properties<*>}>) {
         super();
 
         this.id = layer.id;
-        this.metadata = layer.metadata;
         this.type = layer.type;
+        this.visibility = 'visible';
+        this._featureFilter = () => true;
+
+        if (layer.type === 'custom') return;
+
+        layer = ((layer: any): LayerSpecification);
+
+        this.metadata = layer.metadata;
         this.minzoom = layer.minzoom;
         this.maxzoom = layer.maxzoom;
-        this.visibility = 'visible';
 
         if (layer.type !== 'background') {
             this.source = layer.source;
@@ -69,22 +85,26 @@ class StyleLayer extends Evented {
             this.filter = layer.filter;
         }
 
-        this._featureFilter = () => true;
-
         if (properties.layout) {
             this._unevaluatedLayout = new Layout(properties.layout);
         }
 
-        this._transitionablePaint = new Transitionable(properties.paint);
+        if (properties.paint) {
+            this._transitionablePaint = new Transitionable(properties.paint);
 
-        for (const property in layer.paint) {
-            this.setPaintProperty(property, layer.paint[property], {validate: false});
-        }
-        for (const property in layer.layout) {
-            this.setLayoutProperty(property, layer.layout[property], {validate: false});
-        }
+            for (const property in layer.paint) {
+                this.setPaintProperty(property, layer.paint[property], {validate: false});
+            }
+            for (const property in layer.layout) {
+                this.setLayoutProperty(property, layer.layout[property], {validate: false});
+            }
 
-        this._transitioningPaint = this._transitionablePaint.untransitioned();
+            this._transitioningPaint = this._transitionablePaint.untransitioned();
+        }
+    }
+
+    getCrossfadeParameters() {
+        return this._crossfadeParameters;
     }
 
     getLayoutProperty(name: string) {
@@ -98,7 +118,7 @@ class StyleLayer extends Evented {
     setLayoutProperty(name: string, value: mixed, options: {validate: boolean}) {
         if (value !== null && value !== undefined) {
             const key = `layers.${this.id}.layout.${name}`;
-            if (this._validate(validateStyle.layoutProperty, key, name, value, options)) {
+            if (this._validate(validateLayoutProperty, key, name, value, options)) {
                 return;
             }
         }
@@ -112,7 +132,7 @@ class StyleLayer extends Evented {
     }
 
     getPaintProperty(name: string) {
-        if (util.endsWith(name, TRANSITION_SUFFIX)) {
+        if (endsWith(name, TRANSITION_SUFFIX)) {
             return this._transitionablePaint.getTransition(name.slice(0, -TRANSITION_SUFFIX.length));
         } else {
             return this._transitionablePaint.getValue(name);
@@ -122,16 +142,31 @@ class StyleLayer extends Evented {
     setPaintProperty(name: string, value: mixed, options: {validate: boolean}) {
         if (value !== null && value !== undefined) {
             const key = `layers.${this.id}.paint.${name}`;
-            if (this._validate(validateStyle.paintProperty, key, name, value, options)) {
-                return;
+            if (this._validate(validatePaintProperty, key, name, value, options)) {
+                return false;
             }
         }
 
-        if (util.endsWith(name, TRANSITION_SUFFIX)) {
+        if (endsWith(name, TRANSITION_SUFFIX)) {
             this._transitionablePaint.setTransition(name.slice(0, -TRANSITION_SUFFIX.length), (value: any) || undefined);
+            return false;
         } else {
+            // if a cross-faded value is changed, we need to make sure the new icons get added to each tile's iconAtlas
+            // so a call to _updateLayer is necessary, and we return true from this function so it gets called in
+            // Style#setPaintProperty
+            const prop = this._transitionablePaint._values[name];
+            const newCrossFadedValue = prop.property.specification["property-type"] === 'cross-faded-data-driven' && !prop.value.value && value;
+
+            const wasDataDriven = this._transitionablePaint._values[name].value.isDataDriven();
             this._transitionablePaint.setValue(name, value);
+            const isDataDriven = this._transitionablePaint._values[name].value.isDataDriven();
+            this._handleSpecialPaintPropertyUpdate(name);
+            return isDataDriven || wasDataDriven || newCrossFadedValue;
         }
+    }
+
+    _handleSpecialPaintPropertyUpdate(_: string) {
+        // No-op; can be overridden by derived classes.
     }
 
     isHidden(zoom: number) {
@@ -140,15 +175,8 @@ class StyleLayer extends Evented {
         return this.visibility === 'none';
     }
 
-    updatePaintTransitions(options: {transition?: boolean}, transition: TransitionSpecification) {
-        if (options.transition === false) {
-            this._transitioningPaint = this._transitionablePaint.untransitioned();
-        } else {
-            this._transitioningPaint = this._transitionablePaint.transitioned({
-                now: Date.now(),
-                transition
-            }, this._transitioningPaint);
-        }
+    updateTransitions(parameters: TransitionParameters) {
+        this._transitioningPaint = this._transitionablePaint.transitioned(parameters, this._transitioningPaint);
     }
 
     hasTransition() {
@@ -156,6 +184,10 @@ class StyleLayer extends Evented {
     }
 
     recalculate(parameters: EvaluationParameters) {
+        if (parameters.getCrossfadeParameters) {
+            this._crossfadeParameters = parameters.getCrossfadeParameters();
+        }
+
         if (this._unevaluatedLayout) {
             (this: any).layout = this._unevaluatedLayout.possiblyEvaluate(parameters);
         }
@@ -164,7 +196,7 @@ class StyleLayer extends Evented {
     }
 
     serialize() {
-        const output : any = {
+        const output: any = {
             'id': this.id,
             'type': this.type,
             'source': this.source,
@@ -182,7 +214,7 @@ class StyleLayer extends Evented {
             output.layout.visibility = 'none';
         }
 
-        return util.filterObject(output, (value, key) => {
+        return filterObject(output, (value, key) => {
             return value !== undefined &&
                 !(key === 'layout' && !Object.keys(value).length) &&
                 !(key === 'paint' && !Object.keys(value).length);
@@ -193,7 +225,7 @@ class StyleLayer extends Evented {
         if (options && options.validate === false) {
             return false;
         }
-        return validateStyle.emitErrors(this, validate.call(validateStyle, {
+        return emitValidationErrors(this, validate.call(validateStyle, {
             key: key,
             layerType: this.type,
             objectKey: name,
@@ -204,28 +236,30 @@ class StyleLayer extends Evented {
         }));
     }
 
-    has3DPass() {
+    hasOffscreenPass() {
         return false;
     }
 
-    resize(gl: WebGLRenderingContext) { // eslint-disable-line
+    resize() {
         // noop
+    }
+
+    isStateDependent() {
+        for (const property in (this: any).paint._values) {
+            const value = (this: any).paint.get(property);
+            if (!(value instanceof PossiblyEvaluatedPropertyValue) || !supportsPropertyExpression(value.property.specification)) {
+                continue;
+            }
+
+            if ((value.value.kind === 'source' || value.value.kind === 'composite') &&
+                value.value.isStateDependent) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
-module.exports = StyleLayer;
+export default StyleLayer;
 
-const subclasses = {
-    'circle': require('./style_layer/circle_style_layer'),
-    'heatmap': require('./style_layer/heatmap_style_layer'),
-    'fill': require('./style_layer/fill_style_layer'),
-    'fill-extrusion': require('./style_layer/fill_extrusion_style_layer'),
-    'line': require('./style_layer/line_style_layer'),
-    'symbol': require('./style_layer/symbol_style_layer'),
-    'background': require('./style_layer/background_style_layer'),
-    'raster': require('./style_layer/raster_style_layer')
-};
 
-StyleLayer.create = function(layer: LayerSpecification) {
-    return new subclasses[layer.type](layer);
-};

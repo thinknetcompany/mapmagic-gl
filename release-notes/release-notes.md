@@ -1,5 +1,10 @@
 
 ## Release Notes
+### Version 1.2.0
+```
+1. เพิ่ม Logo โดยการใช้ภาพ svg
+2. 
+```
 ### Version 1.1.9
 ```
 1. อัพเดตคำอธิบายบางส่วนของ ReverseGeocodingAPI document

@@ -1,15 +1,15 @@
-/* eslint-disable */
-const Popup = require('../../ui/popup');
-const logger = require('../util/Logger')
+// @flow
+import Popup from '../../ui/popup';
+import Logger from '../util/Logger';
 
-let logFirst = true
+let logFirst = true;
 
 const eventShow = function (map, geojson) {
     new Popup({ closeOnClick: false })
         .setLngLat(geojson.features[0].geometry.coordinates)
         .setHTML(geojson.features[0].properties.description)
         .addTo(map);
-}
+};
 
 const eventClick = function (map, id, payload) {
     map.on('click', id, function (e) {
@@ -26,7 +26,7 @@ const eventClick = function (map, id, payload) {
     map.on('mouseleave', id, function () {
         this.getCanvas().style.cursor = '';
     });
-}
+};
 
 const eventHover = function (map, id, payload) {
     const popup = new Popup({
@@ -45,7 +45,7 @@ const eventHover = function (map, id, payload) {
         this.getCanvas().style.cursor = '';
         popup.remove();
     });
-}
+};
 
 const addPopup = function (payload = {}) {
     const ID = payload.id || `places${Math.floor(Math.random() * 1000) + 1}`;
@@ -57,42 +57,39 @@ const addPopup = function (payload = {}) {
 
     if (action === 'show') {
         try {
-            eventShow(this, geojson)
-            if (!process.env.DEBUG) {
-                logger.info(addPopup.name, null, {}, logFirst)
+            eventShow(this, geojson);
+            if (!Logger.getDebug()) {
+                Logger.info(addPopup.name, null, {}, logFirst);
             } else {
-                logger.debug(addPopup.name, null, payload)
+                Logger.debug(addPopup.name, null, payload);
             }
-        }
-        catch (error) {
-            logger.error(addPopup.name, error.message)
+        } catch (error) {
+            Logger.error(addPopup.name, error.message);
         }
     } else if (action === 'click') {
         try {
-            eventClick(this, ID, payload)
-            if (!process.env.DEBUG) {
-                logger.info(addPopup.name, null, {}, logFirst)
+            eventClick(this, ID, payload);
+            if (!Logger.getDebug()) {
+                Logger.info(addPopup.name, null, {}, logFirst);
             } else {
-                logger.debug(addPopup.name, null, payload)
+                Logger.debug(addPopup.name, null, payload);
             }
-        }
-        catch (error) {
-            logger.error(addPopup.name, error.message)
+        } catch (error) {
+            Logger.error(addPopup.name, error.message);
         }
     } else if (action === 'hover') {
         try {
             eventHover(this, ID, payload);
-            if (!process.env.DEBUG) {
-                logger.info(addPopup.name, null, {}, logFirst)
+            if (!Logger.getDebug()) {
+                Logger.info(addPopup.name, null, {}, logFirst);
             } else {
-                logger.debug(addPopup.name, null, payload)
+                Logger.debug(addPopup.name, null, payload);
             }
-        }
-        catch (error) {
-            logger.error(addPopup.name, error.message)
+        } catch (error) {
+            Logger.error(addPopup.name, error.message);
         }
     }
-    logFirst = false
+    logFirst = false;
 };
 
-module.exports = { addPopup };
+export default { addPopup };

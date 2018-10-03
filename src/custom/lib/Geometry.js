@@ -1,23 +1,23 @@
-/* eslint-disable */
-const logger = require('../util/Logger')
-const { LOG_CONSTANT } = require('../constant')
+// @flow
+import Logger from '../util/Logger';
+import { randomID } from '../util';
+import { LOG_CONSTANT } from '../constant';
 
 const loggerDebug = {
     addPolygon: true,
     addLine: true,
-}
+};
 
 const addPolygon = function (payload) {
-    const ID = payload.id || `places${Math.floor(Math.random() * 1000) + 1}`
+    const ID = payload.id || randomID();
     if (!payload.coordinates) {
-        logger.warn(addPolygon.name, LOG_CONSTANT.UNDEFINED_COORDINATES, {}, loggerDebug.addPolygon)
+        Logger.warn(addPolygon.name, LOG_CONSTANT.UNDEFINED_COORDINATES, {}, loggerDebug.addPolygon);
     }
 
-    let style;
     const defaultColor = '#888888';
     const defaultOpacity = 0.4;
 
-    style = payload.style || {
+    const style = payload.style || {
         fillColor: defaultColor,
         fillOpacity: defaultOpacity
     };
@@ -49,27 +49,25 @@ const addPolygon = function (payload) {
             },
             "filter": ["==", "$type", "Polygon"]
         });
-        if (!process.env.DEBUG) {
-            logger.info(addPolygon.name, null, {}, loggerDebug.addPolygon)
+        if (!Logger.getDebug()) {
+            Logger.info(addPolygon.name, null, {}, loggerDebug.addPolygon);
         } else {
-            logger.debug(addPolygon.name, null, payload)
+            Logger.debug(addPolygon.name, null, payload);
         }
+    } catch (error) {
+        Logger.error(addPolygon.name, error.message, {}, loggerDebug.addPolygon);
     }
-    catch (error) {
-        logger.error(addPolygon.name, error.message, {}, loggerDebug.addPolygon)
-    }
-    loggerDebug.addPolygon = false
+    loggerDebug.addPolygon = false;
 };
 
 const addLine = function (payload) {
-    const ID = payload.id || `places${Math.floor(Math.random() * 1000) + 1}`;
-    if (!payload.coordinates) { logger.warn(addLine.name, LOG_CONSTANT.UNDEFINED_COORDINATES) }
+    const ID = payload.id || randomID();
+    if (!payload.coordinates) { Logger.warn(addLine.name, LOG_CONSTANT.UNDEFINED_COORDINATES); }
 
-    let style;
     const defaultColor = '#FF1233';
     const defaultLineWidth = 3;
 
-    style = payload.style || {
+    const style = payload.style || {
         lineWidth: defaultLineWidth,
         color: defaultColor
     };
@@ -102,19 +100,18 @@ const addLine = function (payload) {
                 }
             }
         });
-        if (!process.env.DEBUG) {
-            logger.info(addLine.name, null, {}, loggerDebug.addLine)
+        if (!Logger.getDebug()) {
+            Logger.info(addLine.name, null, {}, loggerDebug.addLine);
         } else {
-            logger.debug(addLine.name, null, payload)
+            Logger.debug(addLine.name, null, payload);
         }
+    } catch (error) {
+        Logger.error(addLine.name, error.message);
     }
-    catch (error) {
-        logger.error(addLine.name, error.message)
-    }
-    loggerDebug.addLine = false
+    loggerDebug.addLine = false;
 };
 
-module.exports = {
+export default {
     addPolygon,
     addLine
 };

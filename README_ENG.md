@@ -11,18 +11,22 @@
 **Explore an example**: [DEMO](https://maps.mapmagic.co.th)
 
 ## :mega: Upcoming Releases
+- [ ] Improves addLine and addMarker function
 - [ ] Adjust shape of line and polygon
-- [ ] Additional options for setMarker function
-- [ ] removeMarker function
-- [ ] removeAllListener function
+- [ ] getMarker function
+- [ ] Snippets
 
-## :pushpin: Release Notes 1.1.9
-- [x] Add Routing API documents
-- [x] Update some content of ReverseGeocodingAPI document
+## :pushpin: Release Notes 1.2.1
+- [x] Better engine performance
+- [x] Fix duplicate random ID
+- [x] removeEventListener function
+- [x] Fix missing GeoLocationControl
+- [x] Fix missing NavigationControl
+- [x] แก้ไข reverse-geo API document
 
 ## Features
 * [Display map on website](#-get-start-with-mapmagic-api)
-* [Select language in map](MAPSTYLE_ENG.md#choose-maps-language)
+* [Select language in map](./wiki/en/MAPSTYLE.md#choose-maps-language)
 * [Map Style](#map-style)
     * [Change Map Style](#change-map-style)
 * [Protect scroll map](#protected-scrolling)
@@ -36,10 +40,11 @@
     * [Add line](#mapaddlineoptions-draw-line)
     * [Add polygon](#mapaddpolygonoptions-draw-polygon)
 * [API Document](#API-Document)
-    * [Search](./API_SEARCH_ENG.md)
-    * [Suggest](./API_SUGGEST_ENG.md)
-    * [Reverse Geocoding](./API_REVERSE_GEOCODING_ENG.md)
-    * [Public Transport Routing](./API_PUBLIC_TRANSPORT_ROUTING_ENG.md)
+    * [Search](./wiki/en/API_SEARCH.md)
+    * [Suggest](./wiki/en/API_SUGGEST.md)
+    * [Reverse Geocoding](./wiki/en/API_REVERSE_GEOCODING.md)
+    * [Public Transport Routing](./wiki/en/API_PUBLIC_TRANSPORT_ROUTING.md)
+    * [Static Data](./wiki/en/API_STATIC_DATA.md)
   
 ## :inbox_tray: Install MapMagic GL
 #### Install via NPM
@@ -61,8 +66,8 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 #### Or download from mapmagic server for using on HTML
 
 ```html
-<script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/js/mapmagic-gl.js'></script>
-<link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/css/mapmagic-gl.css' rel='stylesheet' />
+<script src='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/js/mapmagic-gl.js'></script>
+<link href='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/css/mapmagic-gl.css' rel='stylesheet' />
 ```
 
 
@@ -74,8 +79,8 @@ Create `<div id="YOUR_MAP">` for render map on website, but you should have both
 ```html
 <html>
   <head>
-    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/js/mapmagic-gl.js'></script>
-    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/css/mapmagic-gl.css' rel='stylesheet' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/css/mapmagic-gl.css' rel='stylesheet' />
   </head>
   <body>
     <div id="map" style="height: 100vh;" />
@@ -113,17 +118,17 @@ map.on('load', function() {
 ### Map style
 
 #### Style List
-- [Almond](MAPSTYLE_ENG.md#almond)
-- [Cha thai](MAPSTYLE_ENG.md#cha-thai)
-- [Charcoal](MAPSTYLE_ENG.md#charcoal)
-- [Cloudy](MAPSTYLE_ENG.md#cloudy)
-- [Hybrid](MAPSTYLE_ENG.md#hybrid)
-- [Ivory](MAPSTYLE_ENG.md#ivory)
-- [Lightsteel](MAPSTYLE_ENG.md#lightsteel)
-- [Midnight](MAPSTYLE_ENG.md#midnight)
-- [Satellite](MAPSTYLE_ENG.md#satellite)
-- [Spearmint](MAPSTYLE_ENG.md#spearmint)
-- [Terrain](MAPSTYLE_ENG.md#terrain)
+- [Almond](./wiki/en/MAPSTYLE.md#almond)
+- [Cha thai](./wiki/en/MAPSTYLE.md#cha-thai)
+- [Charcoal](./wiki/en/MAPSTYLE.md#charcoal)
+- [Cloudy](./wiki/en/MAPSTYLE.md#cloudy)
+- [Hybrid](./wiki/en/MAPSTYLE.md#hybrid)
+- [Ivory](./wiki/en/MAPSTYLE.md#ivory)
+- [Lightsteel](./wiki/en/MAPSTYLE.md#lightsteel)
+- [Midnight](./wiki/en/MAPSTYLE.md#midnight)
+- [Satellite](./wiki/en/MAPSTYLE.md#satellite)
+- [Spearmint](./wiki/en/MAPSTYLE.md#spearmint)
+- [Terrain](./wiki/en/MAPSTYLE.md#terrain)
 
 ![map style satellite](/static/image/map-style/satellite.png)
 
@@ -169,7 +174,7 @@ const map = new mapmagic.Map({
 |--|--|--|--|
 | id | Define ID for each marker (DO NOT USE DUPLICATE NAME) | string | (Random ID) |
 | lat | Marker's latitude | number | - |
-| lng | Marker's longtitude | number | - |
+| lng | Marker's longitude | number | - |
 | offset | Icon offset from marker coordinate (px) | number[] | [0, 0] |
 | onClick | Callback event when clicked | function | - |
 | icon | Change marker icon | string | - |
@@ -270,7 +275,7 @@ map.on('load', function() {
 |--|--|--|--|
 | id | Marker's id that need to updated location | string | - |
 | lat | latitude of Marker | number | - |
-| lng | longtitude of Marker | number | - |
+| lng | longitude of Marker | number | - |
 
 ###### Example
 

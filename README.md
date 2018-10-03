@@ -14,18 +14,22 @@
 
 
 ## :mega: Upcoming Releases
+- [ ] ปรับปรุงฟังก์ชัน addLine และ addMarker
 - [ ] แก้ไขรูปทรงของ line และ polygon ได้
-- [ ] Options เพิ่มเติมสำหรับฟังก์ชัน setMarker
-- [ ] ฟังก์ชัน removeMarker
-- [ ] ฟังก์ชัน ลบ Event listener ทั้งหมดของ map
+- [ ] ฟังก์ชัน getMarker
+- [ ] Snippets
 
-## :pushpin: Release Notes 1.1.9
-- [x] เพิ่ม Routing API documents
-- [x] อัพเดตคำอธิบายบางส่วนของ ReverseGeocodingAPI document
+## :pushpin: Release Notes 1.2.2
+- [x] เพิ่มประสิทธิภาพของ map engine
+- [x] แก้ไข auto-generated ID ของ Marker ที่มีโอกาสซ้ำ
+- [x] ฟังก์ชัน removeEventListener
+- [x] แก้ไข GeoLocationControl หาย
+- [x] แก้ไข NavigationControl หาย
+- [x] แก้ไข reverse-geo API document
 
 ## :clipboard: Features
-* [แสดงแผนที่บนเว็ปไซต์](#-%E0%B9%80%E0%B8%A3%E0%B8%B4%E0%B9%88%E0%B8%A1%E0%B9%83%E0%B8%8A%E0%B9%89%E0%B8%87%E0%B8%B2%E0%B8%99-mapmagic-api)
-* [การกำหนดการแสดงภาษาบนแผนที่](MAPSTYLE.md#%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%81%E0%B8%B3%E0%B8%AB%E0%B8%99%E0%B8%94%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%81%E0%B8%AA%E0%B8%94%E0%B8%87%E0%B8%A0%E0%B8%B2%E0%B8%A9%E0%B8%B2%E0%B8%9A%E0%B8%99%E0%B9%81%E0%B8%9C%E0%B8%99%E0%B8%97%E0%B8%B5%E0%B9%88)
+* [แสดงแผนที่บนเว็ปไซต์](#get-started)
+* [การกำหนดการแสดงภาษาบนแผนที่](./wiki/th/MAPSTYLE.md#%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%81%E0%B8%B3%E0%B8%AB%E0%B8%99%E0%B8%94%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B9%81%E0%B8%AA%E0%B8%94%E0%B8%87%E0%B8%A0%E0%B8%B2%E0%B8%A9%E0%B8%B2%E0%B8%9A%E0%B8%99%E0%B9%81%E0%B8%9C%E0%B8%99%E0%B8%97%E0%B8%B5%E0%B9%88)
 * [Map Style](#map-style)
   * [เปลี่ยน Map Style](#%E0%B9%80%E0%B8%9B%E0%B8%A5%E0%B8%B5%E0%B9%88%E0%B8%A2%E0%B8%99-map-style)
 * [Scroll protection](#protected-scrolling)
@@ -40,10 +44,11 @@
   * [Line](#mapaddlineoptions-%E0%B8%A7%E0%B8%B2%E0%B8%94%E0%B9%80%E0%B8%AA%E0%B9%89%E0%B8%99%E0%B8%A5%E0%B8%87%E0%B9%81%E0%B8%9C%E0%B8%99%E0%B8%97%E0%B8%B5%E0%B9%88)
   * [Polygon](#mapaddpolygonoptions-%E0%B8%A7%E0%B8%B2%E0%B8%94-polygon)
 * [API Document](#API-Document)
-  * [Search](./API_SEARCH.md)
-  * [Suggest](./API_SUGGEST.md)
-  * [Reverse Geocoding](./API_REVERSE_GEOCODING.md)
-  * [Public Transport Routing](./API_PUBLIC_TRANSPORT_ROUTING.md)
+  * [Search](./wiki/th/API_SEARCH.md)
+  * [Suggest](./wiki/th/API_SUGGEST.md)
+  * [Reverse Geocoding](./wiki/th/API_REVERSE_GEOCODING.md)
+  * [Public Transport Routing](./wiki/th/API_PUBLIC_TRANSPORT_ROUTING.md)
+  * [Static Data](./wiki/th/API_STATIC_DATA.md)
 
 
 ## :inbox_tray: ติดตั้ง MapMagic GL
@@ -66,12 +71,12 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 #### หรือดาวน์โหลดจาก MapMagic Server สำหรับใช้บน HTML
 
 ```html
-<script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/js/mapmagic-gl.js'></script>
-<link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/css/mapmagic-gl.css' rel='stylesheet' />
+<script src='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/js/mapmagic-gl.js'></script>
+<link href='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/css/mapmagic-gl.css' rel='stylesheet' />
 ```
 
 
-## :electric_plug: เริ่มใช้งาน MapMagic API
+## :electric_plug: เริ่มใช้งาน MapMagic API <a id="get-started"></a>
 ### เริ่มต้นสร้างแผนที่
 
 สร้าง div สำหรับเป็นพื้นที่ให้ render map ลงบนหน้าเว็ป และก่อนที่จะใช้ MapMagic คุณต้องทำการสร้าง `app_id` และ `api_key` จาก [MapMagic Platform](https://developers.mapmagic.co.th)
@@ -80,8 +85,8 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 ```html
 <html>
   <head>
-    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/js/mapmagic-gl.js'></script>
-    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/css/mapmagic-gl.css' rel='stylesheet' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/css/mapmagic-gl.css' rel='stylesheet' />
   </head>
   <body>
     <div id="map" style="height: 100vh;" />
@@ -89,7 +94,7 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
       const map = new mapmagic.Map({
         container: 'map', // id ของ div ที่จะให้ map ไป render
         app_id: 'YOUR_APP_ID',
-        api_key: 'YOUR_APP_ID',
+        api_key: 'YOUR_API_KEY',
       })
     </script>
   </body>
@@ -117,17 +122,17 @@ map.on('load', function() {
 
 ### Map style
 #### รายชื่อ Map Style
-- [Almond](MAPSTYLE.md#almond)
-- [Cha thai](MAPSTYLE.md#cha-thai)
-- [Charcoal](MAPSTYLE.md#charcoal)
-- [Cloudy](MAPSTYLE.md#cloudy)
-- [Hybrid](MAPSTYLE.md#hybrid)
-- [Ivory](MAPSTYLE.md#ivory)
-- [Lightsteel](MAPSTYLE.md#lightsteel)
-- [Midnight](MAPSTYLE.md#midnight)
-- [Satellite](MAPSTYLE.md#satellite)
-- [Spearmint](MAPSTYLE.md#spearmint)
-- [Terrain](MAPSTYLE.md#terrain)
+- [Almond](./wiki/th/MAPSTYLE.md#almond)
+- [Cha thai](./wiki/th/MAPSTYLE.md#cha-thai)
+- [Charcoal](./wiki/th/MAPSTYLE.md#charcoal)
+- [Cloudy](./wiki/th/MAPSTYLE.md#cloudy)
+- [Hybrid](./wiki/th/MAPSTYLE.md#hybrid)
+- [Ivory](./wiki/th/MAPSTYLE.md#ivory)
+- [Lightsteel](./wiki/th/MAPSTYLE.md#lightsteel)
+- [Midnight](./wiki/th/MAPSTYLE.md#midnight)
+- [Satellite](./wiki/th/MAPSTYLE.md#satellite)
+- [Spearmint](./wiki/th/MAPSTYLE.md#spearmint)
+- [Terrain](./wiki/th/MAPSTYLE.md#terrain)
 
 ![map style satellite](/static/image/map-style/satellite.png)
 
@@ -140,7 +145,7 @@ map.on('load', function() {
 const map = new mapmagic.Map({
   container: 'map', // div's id for render map
   app_id: 'YOUR_APP_ID',
-  api_key: 'YOUR_APP_ID',
+  api_key: 'YOUR_API_KEY',
   style: 'MAP_STYLE'
 })
 ```
@@ -172,7 +177,7 @@ const map = new mapmagic.Map({
 |--|--|--|--|
 | id | ระบุ id ให้แต่ละ marker ( ห้ามซ้ำเด็ดขาด ) | string | (Random ID) |
 | lat | latitude ของ Marker | number | - |
-| lng | longtitude ของ Marker | number | - |
+| lng | longitude ของ Marker | number | - |
 | offset | ระยะห่างของ icon กับพิกัดของ Marker | number[] | [0, 0] |
 | onClick | event ที่จะเกิดขึ้นเมื่อผู้ใช้ click | function | - |
 | icon | เปลี่ยน icon | string | - |
@@ -273,7 +278,7 @@ map.on('load', function() {
 |--|--|--|--|
 | id | id ของ Marker ที่ต้องการ update ค่า | string | - |
 | lat | latitude ของ Marker | number | - |
-| lng | longtitude ของ Marker | number | - |
+| lng | longitude ของ Marker | number | - |
 
 ###### ตัวอย่าง
 

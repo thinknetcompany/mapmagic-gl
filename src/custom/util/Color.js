@@ -1,10 +1,11 @@
 //@flow
-const tinycolor = require('tinycolor2');
+import tinycolor from 'tinycolor2'
 
 const isLight = (color) => {
-    return tinycolor(color).isLight();
+    return tinycolor(color).isLight()
 };
 
-module.exports = {
-    isLight
-};
+export {
+  isLight
+}
+

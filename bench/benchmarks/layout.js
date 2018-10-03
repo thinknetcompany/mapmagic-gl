@@ -1,138 +1,55 @@
 // @flow
 
-const Benchmark = require('../lib/benchmark');
-const createStyle = require('../lib/create_style');
+import Benchmark from '../lib/benchmark';
+import fetchStyle from '../lib/fetch_style';
+import TileParser from '../lib/tile_parser';
+import { OverscaledTileID } from '../../src/source/tile_id';
 
-const VT = require('@mapbox/vector-tile');
-const Protobuf = require('pbf');
-const assert = require('assert');
-const promisify = require('pify');
+export default class Layout extends Benchmark {
+    tiles: Array<{tileID: OverscaledTileID, buffer: ArrayBuffer}>;
+    parser: TileParser;
+    style: string;
+    locations: Array<OverscaledTileID>;
 
-const WorkerTile = require('../../src/source/worker_tile');
-const StyleLayerIndex = require('../../src/style/style_layer_index');
-const deref = require('../../src/style-spec/deref');
-const TileCoord = require('../../src/source/tile_coord');
-const {
-    normalizeStyleURL,
-    normalizeSourceURL,
-    normalizeTileURL
-} = require('../../src/util/mapbox');
+    constructor(style: string, locations: ?Array<OverscaledTileID>) {
+        super();
+        this.style = style;
+        this.locations = locations || this.tileIDs();
+    }
 
-import type {TileJSON} from '../../src/types/tilejson';
-
-// Note: this class is extended in turn by the LayoutDDS benchmark.
-module.exports = class Layout extends Benchmark {
-    glyphs: Object;
-    icons: Object;
-    workerTile: WorkerTile;
-    layerIndex: StyleLayerIndex;
-    tiles: Array<{coord: TileCoord, buffer: ArrayBuffer}>;
-
-    tileCoords(): Array<TileCoord> {
+    tileIDs(): Array<OverscaledTileID> {
         return [
-            new TileCoord(12, 655, 1583),
-            new TileCoord(8, 40, 98),
-            new TileCoord(4, 3, 6),
-            new TileCoord(0, 0, 0)
+            new OverscaledTileID(12, 0, 12, 655, 1583),
+            new OverscaledTileID(8, 0, 8, 40, 98),
+            new OverscaledTileID(4, 0, 4, 3, 6),
+            new OverscaledTileID(0, 0, 0, 0, 0)
         ];
     }
 
-    sourceID(): string {
-        return 'composite';
-    }
-
-    fetchStyle(): Promise<StyleSpecification> {
-        return fetch(normalizeStyleURL(`mapbox://styles/mapbox/streets-v9`))
-            .then(response => response.json());
-    }
-
-    fetchTiles(styleJSON: StyleSpecification): Promise<Array<{coord: TileCoord, buffer: ArrayBuffer}>> {
-        const sourceURL: string = (styleJSON.sources[this.sourceID()]: any).url;
-        return fetch(normalizeSourceURL(sourceURL))
-            .then(response => response.json())
-            .then((tileJSON: TileJSON) => {
-                return Promise.all(this.tileCoords().map(coord => {
-                    return fetch((normalizeTileURL(coord.url(tileJSON.tiles))))
-                        .then(response => response.arrayBuffer())
-                        .then(buffer => ({coord, buffer}));
-                }));
-            });
-    }
-
     setup(): Promise<void> {
-        return this.fetchStyle()
+        return fetchStyle(this.style)
             .then((styleJSON) => {
-                this.layerIndex = new StyleLayerIndex(deref(styleJSON.layers));
-                return Promise.all([createStyle(styleJSON), this.fetchTiles(styleJSON)]);
+                this.parser = new TileParser(styleJSON, 'composite');
+                return this.parser.setup();
             })
-            .then(([style, tiles]) => {
+            .then(() => {
+                return Promise.all(this.locations.map(tileID => this.parser.fetchTile(tileID)));
+            })
+            .then((tiles) => {
                 this.tiles = tiles;
-                this.glyphs = {};
-                this.icons = {};
-
-                const preloadGlyphs = (params, callback) => {
-                    style.getGlyphs('', params, (err, glyphs) => {
-                        this.glyphs[JSON.stringify(params)] = glyphs;
-                        callback(err, glyphs);
-                    });
-                };
-
-                const preloadImages = (params, callback) => {
-                    style.getImages('', params, (err, icons) => {
-                        this.icons[JSON.stringify(params)] = icons;
-                        callback(err, icons);
-                    });
-                };
-
-                return this.bench(preloadGlyphs, preloadImages);
-            });
+                // parse tiles once to populate glyph/icon cache
+                return Promise.all(tiles.map(tile => this.parser.parseTile(tile)));
+            })
+            .then(() => {});
     }
 
-    bench(getGlyphs: Function = (params, callback) => callback(null, this.glyphs[JSON.stringify(params)]),
-          getImages: Function = (params, callback) => callback(null, this.icons[JSON.stringify(params)])) {
-
-        const actor = {
-            send(action, params, callback) {
-                setTimeout(() => {
-                    if (action === 'getImages') {
-                        getImages(params, callback);
-                    } else if (action === 'getGlyphs') {
-                        getGlyphs(params, callback);
-                    } else assert(false);
-                }, 0);
-            }
-        };
-
-        let promise: Promise<void> = Promise.resolve();
-
-        for (const {coord, buffer} of this.tiles) {
+    bench() {
+        let promise = Promise.resolve();
+        for (const tile of this.tiles) {
             promise = promise.then(() => {
-                const workerTile = new WorkerTile({
-                    coord,
-                    zoom: coord.z,
-                    tileSize: 512,
-                    overscaling: 1,
-                    showCollisionBoxes: false,
-                    source: this.sourceID(),
-                    uid: '0',
-                    maxZoom: 22,
-                    pixelRatio: 1,
-                    request: {
-                        url: ''
-                    },
-                    angle: 0,
-                    pitch: 0,
-                    cameraToCenterDistance: 0,
-                    cameraToTileDistance: 0
-                });
-
-                const tile = new VT.VectorTile(new Protobuf(buffer));
-                const parse = promisify(workerTile.parse.bind(workerTile));
-
-                return parse(tile, this.layerIndex, actor);
+                return this.parser.parseTile(tile).then(() => {});
             });
         }
-
         return promise;
     }
-};
+}
