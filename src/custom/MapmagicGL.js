@@ -44,7 +44,7 @@ class MapMagicGL extends Map {
         this.setStyle(styleURL);
         this.on('style.load', this.setLogo);
         if (options.protectScroll === true) {
-            Handler.disabled(this);
+            Handler.disableScroll(this);
         }
         if (options.navigationCtrl) {
             this.addControl(new NavigationControl());
@@ -98,6 +98,7 @@ MapMagicGL.prototype = extend(MapMagicGL.prototype,
     Popup,
     Style,
     Geometry,
+    Handler,
 );
 
 export default MapMagicGL;

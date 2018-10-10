@@ -144,6 +144,18 @@ const addMarker = function(payload = {}) {
     loggerDebug.addMarker = false;
 };
 
+const removeMarker = function(id) {
+    if (id) {
+        const layer = this.getLayer(id);
+        if (layer) {
+            this.removeLayer(id);
+            this.removeSource(id);
+        } else {
+            console.warn('marker ID does not exist');
+        }
+    }
+};
+
 const addMarkerArray = function(payload = {}) {
     const ID = payload.id || randomID();
     if (!Array.isArray(payload.marker)) {
@@ -429,6 +441,7 @@ const setMarker = function(payload = {}) {
 
 export default {
     addMarker,
+    removeMarker,
     addMarkerArray,
     addMarkerImage,
     addMarkerImageArray,
