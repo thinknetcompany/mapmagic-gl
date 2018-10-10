@@ -1,12 +1,16 @@
 // @flow
 import Logger from '../util/Logger';
 
-let flag = 0;
+let isOverlayClosed = 0;
+let map = null;
 const macText = 'กด ⌘ + Scroll เพื่อซูมแผนที่';
 const winText = 'กด Ctrl + Scroll เพื่อซูมแผนที่';
 const mobileText = 'ใช้ 2 นิ้วเพื่อเลื่อนแผนที่';
 
-const overWrite = (map) => {
+const isWin = navigator.appVersion.includes("Win");
+const isMac = navigator.appVersion.includes("Mac");
+
+const overWrite = () => {
     map.dragPan._ignoreEvent = function _ignoreEvent(e) {
         if (map.boxZoom && map.boxZoom.isActive()) { return true; }
         if (map.dragRotate && map.dragRotate.isActive()) { return true; }
@@ -19,12 +23,12 @@ const overWrite = (map) => {
     };
 };
 
-const initStyle = (map) => {
+const initStyle = () => {
     const id = map._canvasContainer.offsetParent.id;
     document.getElementsByClassName("mapboxgl-canvas")[0].style.zIndex = 1;
 
     const element = document.createElement("div");
-    element.setAttribute('id', 'overlayMapmagic');
+    element.setAttribute('id', 'mapmagic-overlay');
     element.style.height = '100%';
     element.style.width = '100%';
     element.style.backgroundColor = 'black';
@@ -38,103 +42,120 @@ const initStyle = (map) => {
     document.getElementById(id).appendChild(element);
 };
 
-const overlayShow = (text = null) => {
-    const overlayMapmagic = document.getElementById('overlayMapmagic');
+const openOverlay = (text = null) => {
+    const mapmagicOverlay = document.getElementById('mapmagic-overlay');
     const mapmagic = document.getElementsByClassName('mapboxgl-canvas')[0];
-    overlayMapmagic.innerHTML = text;
-    overlayMapmagic.style.zIndex = 1;
-    overlayMapmagic.style.opacity = 0.5;
+    mapmagicOverlay.innerHTML = text;
+    mapmagicOverlay.style.zIndex = 1;
+    mapmagicOverlay.style.opacity = 0.5;
     mapmagic.style.zIndex = -1;
-    overlayMapmagic.style.transitionDuration = '0.5s';
+    mapmagicOverlay.style.transitionDuration = '0.5s';
 };
 
-const overlayClose = () => {
-    const overlayMapmagic = document.getElementById('overlayMapmagic');
+const closeOverlay = () => {
+    const mapmagicOverlay = document.getElementById('mapmagic-overlay');
     const mapmagic = document.getElementsByClassName('mapboxgl-canvas')[0];
-    overlayMapmagic.style.zIndex = -1;
-    overlayMapmagic.style.opacity = 0;
+    mapmagicOverlay.style.zIndex = -1;
+    mapmagicOverlay.style.opacity = 0;
     mapmagic.style.zIndex = 1;
     mapmagic.style.transition = 'z-index 0.3s';
-    overlayMapmagic.style.transitionDuration = '0.3s';
+    mapmagicOverlay.style.transitionDuration = '0.3s';
 };
 
-const handleMobile = (map, mobileText) => {
-    const overlayMapmagic = document.getElementById('overlayMapmagic');
+const handleMobile = (mobileText) => {
+    const mapmagicOverlay = document.getElementById('mapmagic-overlay');
     map.on('touchstart', (event) => {
         if (event.points.length < 2) {
-            overlayShow(mobileText);
+            openOverlay(mobileText);
             map.dragPan.disable();
         } else {
-            overlayClose();
+            closeOverlay();
             map.dragPan.enable();
         }
     });
-    overlayMapmagic.addEventListener('touchstart', (e) => {
+    mapmagicOverlay.addEventListener('touchstart', (e) => {
         if (e.touches.length < 2) {
-            overlayShow(mobileText);
+            openOverlay(mobileText);
         } else {
-            overlayClose();
+            closeOverlay();
             map.dragPan.enable();
         }
     });
     map.on('touchend', () => {
-        overlayClose();
+        closeOverlay();
     });
 };
 
 const _onScroll = () => {
-    if (flag === 1) {
-        const textShow = navigator.appVersion.indexOf("Win") != -1 ? winText : macText;
-        overlayShow(textShow);
+    if (isOverlayClosed === 1) {
+        const textShow = isWin ? winText : macText;
+        openOverlay(textShow);
     }
 };
 
-const handleDesktop = (map) => {
+const _onKeydown = (e) => {
+    if (isWin) {
+        if (e.ctrlKey) {
+            isOverlayClosed = 1;
+            closeOverlay();
+            map.scrollZoom.enable();
+        }
+    } else if (isMac) {
+        if (e.metaKey) {
+            isOverlayClosed = 1;
+            closeOverlay();
+            map.scrollZoom.enable();
+        }
+    }
+};
+
+const _onMouseOver = () => {
+    isOverlayClosed = 1;
+};
+
+const _onMouseOut = () => {
+    isOverlayClosed = 0;
+    closeOverlay();
+};
+
+const _onKeyUp = () => {
+    isOverlayClosed = 0;
+    map.scrollZoom.disable();
+};
+
+const handleDesktop = () => {
     const mapmagic = document.getElementsByClassName('mapboxgl-canvas')[0];
-    if (navigator.appVersion.indexOf("Win") != -1 || navigator.appVersion.indexOf("Mac") != -1) {
+    if (isWin || isMac) {
         map.scrollZoom.disable();
-        const overlayMapmagic = document.getElementById('overlayMapmagic');
-
-        document.addEventListener('keydown', (e) => {
-            if (navigator.appVersion.indexOf("Win") != -1) {
-                if (e.ctrlKey) {
-                    flag = 1;
-                    overlayClose();
-                    map.scrollZoom.enable();
-                }
-            } else if (navigator.appVersion.indexOf("Mac") != -1) {
-                if (e.metaKey) {
-                    flag = 1;
-                    overlayClose();
-                    map.scrollZoom.enable();
-                }
-            }
-        });
+        const mamagicOverlay = document.getElementById('mapmagic-overlay');
+        document.addEventListener('keydown', _onKeydown);
         document.addEventListener('scroll', _onScroll);
-
-        mapmagic.addEventListener('mouseover', () => {
-            flag = 1;
-        });
-        overlayMapmagic.addEventListener('mouseout', () => {
-            flag = 0;
-            overlayClose();
-        });
-        document.body.addEventListener('keyup', () => {
-            flag = 0;
-            map.scrollZoom.disable();
-        });
+        mapmagic.addEventListener('mouseover', _onMouseOver);
+        mamagicOverlay.addEventListener('mouseout', _onMouseOut);
+        document.body.addEventListener('keyup', _onKeyUp);
     }
 };
 
-const disabled = function (map) {
-    Logger.info(disabled.name);
-    overWrite(map);
-    initStyle(map);
-    handleMobile(map, mobileText);
-    handleDesktop(map, winText, macText);
+const removeDisableScroll = function () {
+    const mapmagic = document.getElementsByClassName('mapboxgl-canvas')[0];
+    const mamagicOverlay = document.getElementById('mapmagic-overlay');
+    document.removeEventListener('keydown', _onKeydown);
+    document.removeEventListener('scroll', _onScroll);
+    mapmagic.removeEventListener('mouseover', _onMouseOver);
+    mamagicOverlay.removeEventListener('mouseout', _onMouseOut);
+    document.body.removeEventListener('keyup', _onKeyUp);
+};
 
+const disableScroll = function (newMap) {
+    map = newMap;
+    Logger.info(disableScroll.name);
+    overWrite();
+    initStyle();
+    handleMobile(mobileText);
+    handleDesktop(winText, macText);
 };
 
 export default {
-    disabled
+    disableScroll,
+    removeDisableScroll,
 };

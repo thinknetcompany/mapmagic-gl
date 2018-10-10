@@ -1,5 +1,5 @@
 # **Service Static Data API Document**
-Service สำหรับดึงข้อมูล ภูมิภาค, จังหวัด, อำเภอ/เขต, ตำบล/แขวง ในประเทศไทย
+Service สำหรับดึงข้อมูล ภูมิภาค, จังหวัด, อำเภอ/เขต, ตำบล/แขวง, สถานศึกษา(ระดับวิทยาลัยและมหาวิทยาลัย), นิคมอุตสาหกรรม ในประเทศไทย
 
 ## Features
 * [Regions](#regions)
@@ -15,6 +15,9 @@ Service สำหรับดึงข้อมูล ภูมิภาค, จ
 * [Industrial Estates](#industrial-estates)
     * [Get All Industrial Estates](#get-all-industrial-estates)
     * [Get Industrial Estates By `industrial_estate_code`](#get-industrial-estates-by-industrial_estate_code)
+* [Educations](#education-places)
+    * [Get All Education Places](#get-all-education-places)
+    * [Get Education Place By `education_code`](#get-education-place-by-education_code)
 * [Advance Optional Search](#advance-optional-search)
     * [Example](#example)
 
@@ -274,7 +277,41 @@ Service สำหรับดึงข้อมูล ภูมิภาค, จ
     ...
 ]
 ```
+### Get Sub District by `sub_district_code`
+กรองข้อมูลจากรหัสของ แขวง/ตำบล
+> **GET** `https://api.mapmagic.co.th/v1/static/sub-districts/:sub_district_code`
 
+#### Params
+| Property | Description | Type | Allowed Values | Default Value |
+|----------|-------------|------|----------------|---------------|
+| sub_district_code | รหัสแขวง/ตำบล | String | "010101" - "77xxxx" | - |
+
+#### Response Object
+| Property | Description | Type |
+|----------|-------------|------|
+| name | ชื่อตำบล/แขวง | Object |
+| &nbsp;&nbsp;&nbsp;&nbsp;th | ชื่อตำบล/แขวงภาษาไทย | String |
+| &nbsp;&nbsp;&nbsp;&nbsp;en | ชื่อตำบล/แขวงภาษาอังกฤษ | String |
+| code | รหัสของตำบล/แขวง | String |
+| province_code | รหัสของจังหวัด | String |
+| district_code | รหัสของอำเภอ/เขต | String |
+
+#### Example Response
+> **GET** `https://api.mapmagic.co.th/v1/static/sub-districts/010101?app_id=YOUR_APP_ID&api_key=YOUR_API_KEY`
+
+```
+{
+    "name": {
+        "th": "แขวงคลองตัน",
+        "en": "Khwaeng Khlong Tan"
+    },
+    "code": "010101",
+    "district_code": "0101",
+    "province_code": "01"
+}
+```
+
+-----
 
 ### Get Sub District by `sub_district_code`
 กรองข้อมูลจากรหัสของ แขวง/ตำบล
@@ -307,6 +344,116 @@ Service สำหรับดึงข้อมูล ภูมิภาค, จ
     "code": "010101",
     "district_code": "0101",
     "province_code": "01"
+}
+```
+
+-----
+
+## Education Places
+### Get All Education Places
+ดึงข้อมูล สถานศึกษาระดับวิทยาลัยและมหาวิทยาลัย ทั้งหมดของประเทศไทย
+> **GET** `https://api.mapmagic.co.th/v1/static/educations
+
+#### Query Strings
+| Property | Description | Type | Allowed Values | Default Value |
+|----------|-------------|------|----------------|---------------|
+| province_code | รหัสของจังหวัด | String | "01" - "77" | - |
+| category | ประเภทของสถานศึกษา | String | "university", "college" | - |
+
+#### Response Array Object
+| Property | Description | Type |
+|----------|-------------|------|
+| name | ชื่อของสถานศึกษา | Object |
+| &nbsp;&nbsp;&nbsp;&nbsp;th | ชื่อภาษาไทย | String |
+| &nbsp;&nbsp;&nbsp;&nbsp;en | ชื่อภาษาอังกฤษ | String |
+| label | ชื่อย่อของสถานศึกษา | Object |
+| &nbsp;&nbsp;&nbsp;&nbsp;th | ชื่อย่อภาษาไทย | String |
+| &nbsp;&nbsp;&nbsp;&nbsp;en | ชื่อย่อภาษาอังกฤษ | String |
+| id | รหัสของสถานศึกษา | String |
+| province_code | รหัสของจังหวัด | String |
+| district_code | รหัสของอำเภอ/เขต | String |
+| sub_district_code | รหัสของตำบล/แขวง | String |
+
+#### Example Response
+> **GET** `https://api.mapmagic.co.thv1/static/educations?app_id=YOUR_APP_ID&api_key=YOUR_API_KEY`
+
+```
+[
+    {
+        "name": {
+            "th": "มหาวิทยาลัยธรรมศาสตร์ ศูนย์ลำปาง",
+            "en": "Thammasat University Lampang Campus"
+        },
+        "label": {
+            "th": "ม.ธรรมศาสตร์",
+            "en": "Thammasat University"
+        },
+        "id": "1000237",
+        "province_code": "52",
+        "district_code": "5213",
+        "sub_district_code": "521301",
+        "category": "University"
+    },
+    {
+        "name": {
+            "th": "วิทยาลัยสารพัดช่างน่าน",
+            "en": "Nan Polytechnic College"
+        },
+        "label": {
+            "th": "วิทยาลัยสารพัดช่างน่าน",
+            "en": "Nan Polytechnic College"
+        },
+        "id": "1000239",
+        "province_code": "26",
+        "district_code": "2601",
+        "sub_district_code": "260106",
+        "category": "College"
+    },
+    ...
+]
+```
+
+### Get Education Place by `education_code`
+ดึงข้อมูล สถานศึกษาระดับวิทยาลัยและมหาวิทยาลัย ในประเทศไทย จาก `education_code`
+> **GET** `https://api.mapmagic.co.th/v1/static/educations/:education_code`
+
+#### Params
+| Property | Description | Type |
+|----------|-------------|------|
+| education_code | รหัสของสถานศึกษา | String |
+
+#### Response Object
+| Property | Description | Type |
+|----------|-------------|------|
+| name | ชื่อของสถานศึกษา | Object |
+| &nbsp;&nbsp;&nbsp;&nbsp;th | ชื่อภาษาไทย | String |
+| &nbsp;&nbsp;&nbsp;&nbsp;en | ชื่อภาษาอังกฤษ | String |
+| label | ชื่อย่อของสถานศึกษา | Object |
+| &nbsp;&nbsp;&nbsp;&nbsp;th | ชื่อย่อภาษาไทย | String |
+| &nbsp;&nbsp;&nbsp;&nbsp;en | ชื่อย่อภาษาอังกฤษ | String |
+| id | รหัสของสถานศึกษา | String |
+| province_code | รหัสของจังหวัด | String |
+| district_code | รหัสของอำเภอ/เขต | String |
+| sub_district_code | รหัสของตำบล/แขวง | String |
+
+#### Example Response
+> **GET** `https://api.mapmagic.co.th/v1/static/educations/1000237?app_id=YOUR_APP_ID&api_key=YOUR_API_KEY`
+
+```
+{
+    "name": {
+        "th": "มหาวิทยาลัยธรรมศาสตร์ ศูนย์ลำปาง",
+        "en": "Thammasat University Lampang Campus"
+    },
+    "label": {
+        "th": "ม.ธรรมศาสตร์",
+        "en": "Thammasat University"
+    },
+    "id": "1000237",
+    "province_code": "52",
+    "district_code": "5213",
+    "sub_district_code": "521301",
+    "category": "University"
 }
 ```
 
@@ -435,7 +582,7 @@ Service สำหรับดึงข้อมูล ภูมิภาค, จ
 | Property | Description | Type | Allowed Values | Default Value |
 |----------|-------------|--|----------------|---------------|
 | centroid | แสดงจุดศูนย์กลางของพื้นที่ที่ค้นหา | boolean | true, false | false |
-| polygon | แสดงข้อมูลเชิง Geometry ของจังหวัด อำเภอ ตำบล | boolean | true, false | false |
+| polygon | แสดงข้อมูลเชิง Geometry ของจังหวัด อำเภอ ตำบล (ไม่รองรับ `Route educations`)| boolean | true, false | false |
 
 
 ### Example
