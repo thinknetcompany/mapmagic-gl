@@ -96,12 +96,14 @@ const _onScroll = () => {
 const _onKeydown = (e) => {
     if (isWin) {
         if (e.ctrlKey) {
+            document.removeEventListener('wheel', _onScroll);
             isOverlayClosed = 1;
             closeOverlay();
             map.scrollZoom.enable();
         }
     } else if (isMac) {
         if (e.metaKey) {
+            document.removeEventListener('wheel', _onScroll);
             isOverlayClosed = 1;
             closeOverlay();
             map.scrollZoom.enable();
@@ -118,7 +120,16 @@ const _onMouseOut = () => {
     closeOverlay();
 };
 
-const _onKeyUp = () => {
+const _onKeyUp = (e) => {
+    if (isWin) {
+        if (e.which === 17) {
+            document.addEventListener('wheel', _onScroll);
+        }
+    } else if (isMac) {
+        if (e.which === 91) {
+            document.addEventListener('wheel', _onScroll);
+        }
+    }
     isOverlayClosed = 0;
     map.scrollZoom.disable();
 };
@@ -130,6 +141,7 @@ const handleDesktop = () => {
         const mamagicOverlay = document.getElementById('mapmagic-overlay');
         document.addEventListener('keydown', _onKeydown);
         document.addEventListener('scroll', _onScroll);
+        document.addEventListener('wheel', _onScroll);
         mapmagic.addEventListener('mouseover', _onMouseOver);
         mamagicOverlay.addEventListener('mouseout', _onMouseOut);
         document.body.addEventListener('keyup', _onKeyUp);
@@ -141,6 +153,7 @@ const removeDisableScroll = function () {
     const mamagicOverlay = document.getElementById('mapmagic-overlay');
     document.removeEventListener('keydown', _onKeydown);
     document.removeEventListener('scroll', _onScroll);
+    document.removeEventListener('wheel', _onScroll);
     mapmagic.removeEventListener('mouseover', _onMouseOver);
     mamagicOverlay.removeEventListener('mouseout', _onMouseOut);
     document.body.removeEventListener('keyup', _onKeyUp);

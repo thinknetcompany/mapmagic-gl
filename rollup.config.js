@@ -3,9 +3,12 @@ import sourcemaps from 'rollup-plugin-sourcemaps';
 import {plugins} from './build/rollup_plugins';
 
 const version = JSON.parse(fs.readFileSync('package.json')).version;
-
-const production = process.env.BUILD === 'production';
-const outputFile = production ? 'dist/mapmagic-gl.js' : 'dist/mapmagic-gl-dev.js';
+const {BUILD, MINIFY} = process.env;
+const minified = MINIFY === 'true';
+const production = BUILD === 'production';
+const outputFile =
+    !production ? 'dist/mapmagic-gl-dev.js' :
+    minified ? 'dist/mapmagic-gl.js' : 'dist/mapmagic-gl-unminified.js';
 
 const config = [{
     // First, use code splitting to bundle GL JS into three "chunks":

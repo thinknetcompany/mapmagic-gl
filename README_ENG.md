@@ -16,13 +16,8 @@
 - [ ] getMarker function
 - [ ] Snippets
 
-## :pushpin: Release Notes 1.2.1
-- [x] Better engine performance
-- [x] Fix duplicate random ID
-- [x] removeEventListener function
-- [x] Fix missing GeoLocationControl
-- [x] Fix missing NavigationControl
-- [x] แก้ไข reverse-geo API document
+## :pushpin: Release Notes 1.2.3
+- [x] Fix show overlay hint when scrolling 
 
 ## Features
 * [Display map on website](#-get-start-with-mapmagic-api)
@@ -66,8 +61,8 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 #### Or download from mapmagic server for using on HTML
 
 ```html
-<script src='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/js/mapmagic-gl.js'></script>
-<link href='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/css/mapmagic-gl.css' rel='stylesheet' />
+<script src='https://libs.mapmagic.co.th/mapmagic-gl/1.2.3/js/mapmagic-gl.js'></script>
+<link href='https://libs.mapmagic.co.th/mapmagic-gl/1.2.3/css/mapmagic-gl.css' rel='stylesheet' />
 ```
 
 
@@ -79,8 +74,8 @@ Create `<div id="YOUR_MAP">` for render map on website, but you should have both
 ```html
 <html>
   <head>
-    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/js/mapmagic-gl.js'></script>
-    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/css/mapmagic-gl.css' rel='stylesheet' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.2.3/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.2.3/css/mapmagic-gl.css' rel='stylesheet' />
   </head>
   <body>
     <div id="map" style="height: 100vh;" />
@@ -414,8 +409,8 @@ map.on('load', function() {
   <head>
     <title>DEMO</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/js/mapmagic-gl.js'></script>
-    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/css/mapmagic-gl.css' rel='stylesheet' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.2.3/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.2.3/css/mapmagic-gl.css' rel='stylesheet' />
   </head>
   <body>
     <div id="map" style="height: 100vh;"></div>

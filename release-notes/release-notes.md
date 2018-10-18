@@ -1,9 +1,12 @@
 
 ## Release Notes
+### Version 1.2.3
+```
+1. แก้แสดง overlay เมื่อ scroll
+```
 ### Version 1.2.0
 ```
 1. เพิ่ม Logo โดยการใช้ภาพ svg
-2. 
 ```
 ### Version 1.1.9
 ```

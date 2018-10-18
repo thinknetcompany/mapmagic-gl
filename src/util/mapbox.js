@@ -46,7 +46,12 @@ function isMapboxURL(url: string) {
     return url.indexOf('mapbox:') === 0;
 }
 
-export { isMapboxURL };
+const mapboxHTTPURLRe = /^((https?:)?\/\/)?([^\/]+\.)?mapbox\.c(n|om)(\/|\?|$)/i;
+function isMapboxHTTPURL(url: string): boolean {
+    return mapboxHTTPURLRe.test(url);
+}
+
+export { isMapboxURL, isMapboxHTTPURL };
 
 export const normalizeStyleURL = function(url: string, accessToken?: string): string {
     if (!isMapboxURL(url)) return url;
@@ -146,8 +151,8 @@ export class TurnstileEvent {
         // mapbox tiles.
         if (config.ACCESS_TOKEN &&
             Array.isArray(tileUrls) &&
-            tileUrls.some((url) => { return /(mapbox\.c)(n|om)/i.test(url); })) {
-            this.queueRequest(browser.now());
+            tileUrls.some(url => isMapboxHTTPURL(url))) {
+            this.queueRequest(Date.now());
         }
     }
 
@@ -199,25 +204,25 @@ export class TurnstileEvent {
             return this.processRequests();
         }
 
-        const evenstUrlObject: UrlObject = parseUrl(config.EVENTS_URL);
-        evenstUrlObject.params.push(`access_token=${config.ACCESS_TOKEN || ''}`);
+        const eventsUrlObject: UrlObject = parseUrl(config.EVENTS_URL);
+        eventsUrlObject.params.push(`access_token=${config.ACCESS_TOKEN || ''}`);
+
         const request: RequestParameters = {
-            url: formatUrl(evenstUrlObject),
+            url: formatUrl(eventsUrlObject),
             headers: {
-                'Content-Type': 'text/plain' //Skip the pre-flight OPTIONS request
-            }
+                'Content-Type': 'text/plain' // Skip the pre-flight OPTIONS request
+            },
+            body: JSON.stringify([{
+                event: 'appUserTurnstile',
+                created: (new Date(nextUpdate)).toISOString(),
+                sdkIdentifier: 'mapbox-gl-js',
+                sdkVersion: version,
+                'enabled.telemetry': false,
+                userId: this.eventData.anonId
+            }])
         };
 
-        const payload = JSON.stringify([{
-            event: 'appUserTurnstile',
-            created: (new Date(nextUpdate)).toISOString(),
-            sdkIdentifier: 'mapbox-gl-js',
-            sdkVersion: version,
-            'enabled.telemetry': false,
-            userId: this.eventData.anonId
-        }]);
-
-        this.pendingRequest = postData(request, payload, (error) => {
+        this.pendingRequest = postData(request, (error: ?Error) => {
             this.pendingRequest = null;
             if (!error) {
                 this.eventData.lastSuccess = nextUpdate;

@@ -19,13 +19,8 @@
 - [ ] ฟังก์ชัน getMarker
 - [ ] Snippets
 
-## :pushpin: Release Notes 1.2.2
-- [x] เพิ่มประสิทธิภาพของ map engine
-- [x] แก้ไข auto-generated ID ของ Marker ที่มีโอกาสซ้ำ
-- [x] ฟังก์ชัน removeEventListener
-- [x] แก้ไข GeoLocationControl หาย
-- [x] แก้ไข NavigationControl หาย
-- [x] แก้ไข reverse-geo API document
+## :pushpin: Release Notes 1.2.3
+- [x] แก้ให้ overlay แสดงเมื่อมีการ scroll
 
 ## :clipboard: Features
 * [แสดงแผนที่บนเว็ปไซต์](#get-started)
@@ -71,8 +66,8 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 #### หรือดาวน์โหลดจาก MapMagic Server สำหรับใช้บน HTML
 
 ```html
-<script src='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/js/mapmagic-gl.js'></script>
-<link href='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/css/mapmagic-gl.css' rel='stylesheet' />
+<script src='https://libs.mapmagic.co.th/mapmagic-gl/1.2.3/js/mapmagic-gl.js'></script>
+<link href='https://libs.mapmagic.co.th/mapmagic-gl/1.2.3/css/mapmagic-gl.css' rel='stylesheet' />
 ```
 
 
@@ -85,8 +80,8 @@ require('node_modules/mapmagic-gl/dist/mapmagic-gl.css')
 ```html
 <html>
   <head>
-    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/js/mapmagic-gl.js'></script>
-    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.2.1/css/mapmagic-gl.css' rel='stylesheet' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.2.3/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.2.3/css/mapmagic-gl.css' rel='stylesheet' />
   </head>
   <body>
     <div id="map" style="height: 100vh;" />
@@ -417,8 +412,8 @@ map.on('load', function() {
   <head>
     <title>DEMO</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/js/mapmagic-gl.js'></script>
-    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.1.9/css/mapmagic-gl.css' rel='stylesheet' />
+    <script src='https://libs.mapmagic.co.th/mapmagic-gl/1.2.3/js/mapmagic-gl.js'></script>
+    <link href='https://libs.mapmagic.co.th/mapmagic-gl/1.2.3/css/mapmagic-gl.css' rel='stylesheet' />
   </head>
   <body>
     <div id="map" style="height: 100vh;"></div>
