@@ -8,7 +8,7 @@ function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
 
-var version = "1.2.4";
+var version = "1.2.5-rc.1";
 
 var unitbezier = UnitBezier;
 function UnitBezier(p1x, p1y, p2x, p2y) {

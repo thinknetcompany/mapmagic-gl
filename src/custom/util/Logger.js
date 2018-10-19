@@ -1,6 +1,6 @@
 // @flow
 import logger from 'beaver-logger';
-import { NODE_ENV, LOGGER_URL, LOGGER_URL_DEV, LOGGER_TIMER } from '../constant';
+import { LOGGER_URL, LOGGER_TIMER } from '../constant';
 
 const props = {};
 
@@ -35,7 +35,7 @@ const Logger = {
         props.LOGGING = LOGGING;
         props.DEBUG = DEBUG;
         logger.init({
-            uri: NODE_ENV !== 'production' ? LOGGER_URL_DEV : LOGGER_URL,
+            uri: LOGGER_URL,
             flushInterval: LOGGER_TIMER,
             heartbeat: false,
             silent: true,

@@ -1144,7 +1144,7 @@ define(['exports'], function (exports) { 'use strict';
 	};
 	});
 
-	var version = "1.2.3";
+	var version = "1.2.5-rc.1";
 
 	/*
 	 * Copyright (C) 2008 Apple Inc. All Rights Reserved.

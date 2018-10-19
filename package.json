@@ -1,13 +1,16 @@
 {
   "name": "mapmagic-gl",
-  "description": "Mapmagic GL is a WebGL interactive maps library",
-  "version": "1.2.4",
+  "description": "WebGL interactive maps library",
+  "version": "1.2.5-rc.1",
   "main": "dist/mapmagic-gl.js",
   "style": "dist/mapmagic-gl.css",
   "license": "SEE LICENSE IN LICENSE.txt",
   "repository": {
     "type": "git",
-    "url": "git://github.com/mapbox/mapbox-gl-js.git"
+    "url": "https://github.com/thinknetcompany/mapmagic-gl"
+  },
+  "bugs": {
+    "url": "https://github.com/thinknetcompany/mapmagic-gl/issues"
   },
   "engines": {
     "node": ">=6.4.0"
@@ -21,7 +24,7 @@
     "@mapbox/unitbezier": "^0.0.0",
     "@mapbox/vector-tile": "^1.3.1",
     "@mapbox/whoots-js": "^3.1.0",
-    "beaver-logger": "^4.0.5",
+    "beaver-logger": "^3.0.11",
     "csscolorparser": "~1.0.2",
     "earcut": "^2.1.3",
     "esm": "^3.0.84",
