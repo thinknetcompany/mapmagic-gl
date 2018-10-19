@@ -1,5 +1,9 @@
 
 ## Release Notes
+### Version 1.2.4
+```
+1. แก้ debug missing ใน production tier
+```
 ### Version 1.2.3
 ```
 1. แก้แสดง overlay เมื่อ scroll

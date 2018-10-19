@@ -331,6 +331,11 @@
   resolved "https://registry.yarnpkg.com/@types/node/-/node-9.4.6.tgz#d8176d864ee48753d053783e4e463aec86b8d82e"
   integrity sha512-CTUtLb6WqCCgp6P59QintjHWqzf4VL1uPA27bipLAPxFqrtK1gEYllePzTICGqQ8rYsCbpnsNypXjjDzGAAjEQ==
 
+Base64@^1.0.1:
+  version "1.0.1"
+  resolved "https://registry.npmjs.org/Base64/-/Base64-1.0.1.tgz#def45cc50c961bcc9bf2321d0f52bcbfec1f1bb1"
+  integrity sha1-3vRcxQyWG8yb8jIdD1K8v+wfG7E=
+
 JSONStream@^1.0.3, JSONStream@^1.0.4:
   version "1.3.2"
   resolved "https://registry.yarnpkg.com/JSONStream/-/JSONStream-1.3.2.tgz#c102371b6ec3a7cf3b847ca00c20bb0fce4c6dea"
@@ -1714,10 +1719,28 @@ bcryptjs@^2.3.0:
   resolved "https://registry.yarnpkg.com/bcryptjs/-/bcryptjs-2.4.3.tgz#9ab5627b93e60621ff7cdac5da9733027df1d0cb"
   integrity sha1-mrVie5PmBiH/fNrF2pczAn3x0Ms=
 
+beaver-logger@^4.0.5:
+  version "4.0.5"
+  resolved "https://registry.npmjs.org/beaver-logger/-/beaver-logger-4.0.5.tgz#3beee6821ed292f61fb51252ee45206d6ef6235e"
+  integrity sha512-T4/Q0QnSb3eUh+mWmaPDmxACUqu+v2M8083mTy4rrBg9nFZ+vgEmI665sF44zxcZ8QqJJXG7WUczTc9YJBV/qA==
+  dependencies:
+    belter "^1.0.17"
+    zalgo-promise "^1.0.26"
+
 before-after-hook@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/before-after-hook/-/before-after-hook-1.1.0.tgz#83165e15a59460d13702cb8febd6a1807896db5a"
   integrity sha512-VOMDtYPwLbIncTxNoSzRyvaMxtXmLWLUqr8k5AfC1BzLk34HvBXaQX8snOwQZ4c0aX8aSERqtJSiI9/m2u5kuA==
+
+belter@^1.0.17:
+  version "1.0.44"
+  resolved "https://registry.npmjs.org/belter/-/belter-1.0.44.tgz#539e060c608aba2fe0022fe75930e84654beaaf4"
+  integrity sha512-4vJ9ppWflppE+TXL0ULhCkPjvdiZPGBmbmDEYM5PZhRGEDNUZF0PFbusKP6A4QfKwYXhePKbUTftXpQK2X1PEg==
+  dependencies:
+    Base64 "^1.0.1"
+    cross-domain-safe-weakmap "^1.0.20"
+    cross-domain-utils "^2.0.10"
+    zalgo-promise "^1.0.28"
 
 benchmark@~2.1.0:
   version "2.1.4"
@@ -2945,6 +2968,20 @@ create-hmac@^1.1.0, create-hmac@^1.1.2, create-hmac@^1.1.4:
     ripemd160 "^2.0.0"
     safe-buffer "^5.0.1"
     sha.js "^2.4.8"
+
+cross-domain-safe-weakmap@^1.0.20:
+  version "1.0.22"
+  resolved "https://registry.npmjs.org/cross-domain-safe-weakmap/-/cross-domain-safe-weakmap-1.0.22.tgz#a272895cfaaffbfcb1122c06ba7c0d16cf203355"
+  integrity sha512-/XnCB0hrDvSe88P11VIdyJJ68/pz9Gkz/KPgBtlF0bt6TZgrlub7cmmyC76iDgR7VHItpBaxYmtPN4fPOdCijw==
+  dependencies:
+    cross-domain-utils "^2.0.0"
+
+cross-domain-utils@^2.0.0, cross-domain-utils@^2.0.10:
+  version "2.0.15"
+  resolved "https://registry.npmjs.org/cross-domain-utils/-/cross-domain-utils-2.0.15.tgz#800d214a88bbb0188793d9e88db407d2f731b1b8"
+  integrity sha512-5CW+BDqi2MRJfY44JEpahm8ACm9q75sJBf9zTHERp3ZjKqTAvl6y8Pv0rDP76ViCxJ4BFL2HSQvvwJI9rk5cMQ==
+  dependencies:
+    zalgo-promise "^1.0.11"
 
 cross-spawn@^4:
   version "4.0.2"
@@ -11365,6 +11402,11 @@ tiny-lr@^1.1.0:
     object-assign "^4.1.0"
     qs "^6.4.0"
 
+tinycolor2@^1.4.1:
+  version "1.4.1"
+  resolved "https://registry.npmjs.org/tinycolor2/-/tinycolor2-1.4.1.tgz#f4fad333447bc0b07d4dc8e9209d8f39a8ac77e8"
+  integrity sha1-9PrTM0R7wLB9TcjpIJ2POaisd+g=
+
 tinyqueue@^1.1.0:
   version "1.2.3"
   resolved "https://registry.yarnpkg.com/tinyqueue/-/tinyqueue-1.2.3.tgz#b6a61de23060584da29f82362e45df1ec7353f3d"
@@ -12629,6 +12671,11 @@ yargs@~3.10.0:
     cliui "^2.1.0"
     decamelize "^1.0.0"
     window-size "0.1.0"
+
+zalgo-promise@^1.0.11, zalgo-promise@^1.0.26, zalgo-promise@^1.0.28:
+  version "1.0.34"
+  resolved "https://registry.npmjs.org/zalgo-promise/-/zalgo-promise-1.0.34.tgz#b31376b420e79f4380d2137c1ee0e06587261921"
+  integrity sha512-olG4X/Lb1v/pmijrSmKqdNhiFbcsmPxENgYitkT4rISsIwfO/5kr89MkzapJZuFeRFJxut9/BilSgNM01DUKxg==
 
 zwitch@^1.0.0:
   version "1.0.2"

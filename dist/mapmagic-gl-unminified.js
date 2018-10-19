@@ -1,4 +1,4 @@
-/* Mapbox GL JS is licensed under the 3-Clause BSD License. Full text of license: https://github.com/mapbox/mapbox-gl-js/blob/v1.2.3/LICENSE.txt */
+/* Mapbox GL JS is licensed under the 3-Clause BSD License. Full text of license: https://github.com/mapbox/mapbox-gl-js/blob/v1.2.4/LICENSE.txt */
 (function (global, factory) {
 typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 typeof define === 'function' && define.amd ? define(factory) :
@@ -28,11 +28,15 @@ if (!shared) {
 
 define(['exports'], function (exports) { 'use strict';
 
+function unwrapExports (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
 function createCommonjsModule(fn, module) {
 	return module = { exports: {} }, fn(module, module.exports), module.exports;
 }
 
-var version = "1.2.3";
+var version = "1.2.4";
 
 var unitbezier = UnitBezier;
 function UnitBezier(p1x, p1y, p2x, p2y) {
@@ -16566,6 +16570,7 @@ function shapeIcon(image, iconOffset, iconAnchor) {
     };
 }
 
+exports.unwrapExports = unwrapExports;
 exports.createCommonjsModule = createCommonjsModule;
 exports.Point = pointGeometry;
 exports.window = self;
@@ -19990,10 +19995,7 @@ return Worker$1;
 
 });
 
-define(['./shared.js', 'beaver-logger', 'tinycolor2'], function (__chunk_1, logger, tinycolor) { 'use strict';
-
-logger = logger && logger.hasOwnProperty('default') ? logger['default'] : logger;
-tinycolor = tinycolor && tinycolor.hasOwnProperty('default') ? tinycolor['default'] : tinycolor;
+define(['./shared.js'], function (__chunk_1) { 'use strict';
 
 var mapboxGlSupported = __chunk_1.createCommonjsModule(function (module) {
 if (module.exports) {
@@ -35327,6 +35329,939 @@ var alertMissingKey = function (appID, apiKey, valid) {
 };
 var Debugger = { alertMissingKey: alertMissingKey };
 
+var beaverLogger = __chunk_1.createCommonjsModule(function (module, exports) {
+!function (root, factory) {
+    module.exports = factory();
+}('undefined' != typeof self ? self : this, function () {
+    return function (modules) {
+        var installedModules = {};
+        function __webpack_require__(moduleId) {
+            if (installedModules[moduleId]) {
+                return installedModules[moduleId].exports;
+            }
+            var module = installedModules[moduleId] = {
+                i: moduleId,
+                l: !1,
+                exports: {}
+            };
+            modules[moduleId].call(module.exports, module, module.exports, __webpack_require__);
+            module.l = !0;
+            return module.exports;
+        }
+        __webpack_require__.m = modules;
+        __webpack_require__.c = installedModules;
+        __webpack_require__.d = function (exports, name, getter) {
+            __webpack_require__.o(exports, name) || Object.defineProperty(exports, name, {
+                configurable: !1,
+                enumerable: !0,
+                get: getter
+            });
+        };
+        __webpack_require__.n = function (module) {
+            var getter = module && module.__esModule ? function () {
+                return module.default;
+            } : function () {
+                return module;
+            };
+            __webpack_require__.d(getter, 'a', getter);
+            return getter;
+        };
+        __webpack_require__.o = function (object, property) {
+            return Object.prototype.hasOwnProperty.call(object, property);
+        };
+        __webpack_require__.p = '';
+        return __webpack_require__(__webpack_require__.s = './src/index.js');
+    }({
+        './node_modules/belter/src/device.js': function (module, __webpack_exports__, __webpack_require__) {
+            __webpack_exports__.a = function () {
+                return !!(window.navigator.mockUserAgent || window.navigator.userAgent).match(/Android|webOS|iPhone|iPad|iPod|bada|Symbian|Palm|CriOS|BlackBerry|IEMobile|WindowsMobile|Opera Mini/i);
+            };
+        },
+        './node_modules/belter/src/dom.js': function (module, __webpack_exports__, __webpack_require__) {
+            __webpack_require__('./node_modules/zalgo-promise/src/index.js');
+            var util = __webpack_require__('./node_modules/belter/src/util.js');
+            __webpack_require__('./node_modules/belter/src/device.js');
+            __webpack_exports__.a = function () {
+                return 'undefined' != typeof window;
+            };
+            __webpack_exports__.b = function isLocalStorageEnabled() {
+                return Object(util.b)(isLocalStorageEnabled, function () {
+                    try {
+                        if ('undefined' == typeof window) {
+                            return !1;
+                        }
+                        if (window.localStorage) {
+                            var value = Math.random().toString();
+                            window.localStorage.setItem('__test__localStorage__', value);
+                            var result = window.localStorage.getItem('__test__localStorage__');
+                            window.localStorage.removeItem('__test__localStorage__');
+                            if (value === result) {
+                                return !0;
+                            }
+                        }
+                    } catch (err) {
+                    }
+                    return !1;
+                });
+            };
+        },
+        './node_modules/belter/src/experiment.js': function (module, __webpack_exports__, __webpack_require__) {
+            __webpack_require__('./node_modules/belter/src/util.js'), __webpack_require__('./node_modules/belter/src/storage.js');
+        },
+        './node_modules/belter/src/global.js': function (module, __webpack_exports__, __webpack_require__) {
+            __webpack_require__('./node_modules/belter/src/util.js');
+        },
+        './node_modules/belter/src/http.js': function (module, __webpack_exports__, __webpack_require__) {
+            __webpack_exports__.a = function (_ref) {
+                var url = _ref.url, _ref$method = _ref.method, method = void 0 === _ref$method ? 'get' : _ref$method, _ref$headers = _ref.headers, headers = void 0 === _ref$headers ? {} : _ref$headers, json = _ref.json, data = _ref.data, body = _ref.body, _ref$win = _ref.win, win = void 0 === _ref$win ? window : _ref$win, _ref$timeout = _ref.timeout, timeout = void 0 === _ref$timeout ? 0 : _ref$timeout;
+                return new __WEBPACK_IMPORTED_MODULE_0_zalgo_promise_src__.a(function (resolve, reject) {
+                    if (json && data || json && body || data && json) {
+                        throw new Error('Only options.json or options.data or options.body should be passed');
+                    }
+                    for (var normalizedHeaders = {}, _i4 = 0, _Object$keys2 = Object.keys(headers), _length4 = null == _Object$keys2 ? 0 : _Object$keys2.length; _i4 < _length4; _i4++) {
+                        var _key2 = _Object$keys2[_i4];
+                        normalizedHeaders[_key2.toLowerCase()] = headers[_key2];
+                    }
+                    json ? normalizedHeaders[HEADERS.CONTENT_TYPE] = normalizedHeaders[HEADERS.CONTENT_TYPE] || 'application/json' : (data || body) && (normalizedHeaders[HEADERS.CONTENT_TYPE] = normalizedHeaders[HEADERS.CONTENT_TYPE] || 'application/x-www-form-urlencoded; charset=utf-8');
+                    normalizedHeaders[HEADERS.ACCEPT] = normalizedHeaders[HEADERS.ACCEPT] || 'application/json';
+                    for (var _i6 = 0, _length6 = null == headerBuilders ? 0 : headerBuilders.length; _i6 < _length6; _i6++) {
+                        for (var builtHeaders = (0, headerBuilders[_i6])(), _i8 = 0, _Object$keys4 = Object.keys(builtHeaders), _length8 = null == _Object$keys4 ? 0 : _Object$keys4.length; _i8 < _length8; _i8++) {
+                            var _key3 = _Object$keys4[_i8];
+                            normalizedHeaders[_key3.toLowerCase()] = builtHeaders[_key3];
+                        }
+                    }
+                    var xhr = new win.XMLHttpRequest();
+                    xhr.addEventListener('load', function () {
+                        var responseHeaders = function () {
+                            for (var result = {}, _i2 = 0, _rawHeaders$trim$spli2 = (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : '').trim().split('\n'), _length2 = null == _rawHeaders$trim$spli2 ? 0 : _rawHeaders$trim$spli2.length; _i2 < _length2; _i2++) {
+                                var _line$split = _rawHeaders$trim$spli2[_i2].split(':'), _key = _line$split[0], values = _line$split.slice(1);
+                                result[_key.toLowerCase()] = values.join(':').trim();
+                            }
+                            return result;
+                        }(this.getAllResponseHeaders());
+                        if (!this.status) {
+                            return reject(new Error('Request to ' + method.toLowerCase() + ' ' + url + ' failed: no response status code.'));
+                        }
+                        var contentType = responseHeaders['content-type'], isJSON = contentType && (0 === contentType.indexOf('application/json') || 0 === contentType.indexOf('text/json')), responseBody = this.responseText;
+                        try {
+                            responseBody = JSON.parse(responseBody);
+                        } catch (err) {
+                            if (isJSON) {
+                                return reject(new Error('Invalid json: ' + this.responseText + '.'));
+                            }
+                        }
+                        var res = {
+                            status: this.status,
+                            headers: responseHeaders,
+                            body: responseBody
+                        };
+                        return resolve(res);
+                    }, !1);
+                    xhr.addEventListener('error', function (evt) {
+                        reject(new Error('Request to ' + method.toLowerCase() + ' ' + url + ' failed: ' + evt.toString() + '.'));
+                    }, !1);
+                    xhr.open(method, url, !0);
+                    for (var _key4 in normalizedHeaders) {
+                        normalizedHeaders.hasOwnProperty(_key4) && xhr.setRequestHeader(_key4, normalizedHeaders[_key4]);
+                    }
+                    json ? body = JSON.stringify(json) : data && (body = Object.keys(data).map(function (key) {
+                        return encodeURIComponent(key) + '=' + (data ? encodeURIComponent(data[key]) : '');
+                    }).join('&'));
+                    xhr.timeout = timeout;
+                    xhr.ontimeout = function () {
+                        reject(new Error('Request to ' + method.toLowerCase() + ' ' + url + ' has timed out'));
+                    };
+                    xhr.send(body);
+                });
+            };
+            var __WEBPACK_IMPORTED_MODULE_0_zalgo_promise_src__ = __webpack_require__('./node_modules/zalgo-promise/src/index.js'), HEADERS = (__webpack_require__('./node_modules/cross-domain-utils/src/index.js'), {
+                    CONTENT_TYPE: 'content-type',
+                    ACCEPT: 'accept'
+                }), headerBuilders = [];
+        },
+        './node_modules/belter/src/index.js': function (module, __webpack_exports__, __webpack_require__) {
+            __webpack_require__('./node_modules/belter/src/device.js');
+            var __WEBPACK_IMPORTED_MODULE_1__dom__ = __webpack_require__('./node_modules/belter/src/dom.js');
+            __webpack_require__.d(__webpack_exports__, 'isBrowser', function () {
+                return __WEBPACK_IMPORTED_MODULE_1__dom__.a;
+            });
+            __webpack_require__('./node_modules/belter/src/experiment.js'), __webpack_require__('./node_modules/belter/src/global.js'), __webpack_require__('./node_modules/belter/src/jsx.jsx'), __webpack_require__('./node_modules/belter/src/storage.js');
+            var __WEBPACK_IMPORTED_MODULE_6__util__ = __webpack_require__('./node_modules/belter/src/util.js');
+            __webpack_require__.d(__webpack_exports__, 'noop', function () {
+                return __WEBPACK_IMPORTED_MODULE_6__util__.c;
+            });
+            __webpack_require__.d(__webpack_exports__, 'objFilter', function () {
+                return __WEBPACK_IMPORTED_MODULE_6__util__.d;
+            });
+            __webpack_require__.d(__webpack_exports__, 'promiseDebounce', function () {
+                return __WEBPACK_IMPORTED_MODULE_6__util__.e;
+            });
+            __webpack_require__.d(__webpack_exports__, 'safeInterval', function () {
+                return __WEBPACK_IMPORTED_MODULE_6__util__.h;
+            });
+            var __WEBPACK_IMPORTED_MODULE_7__http__ = __webpack_require__('./node_modules/belter/src/http.js');
+            __webpack_require__.d(__webpack_exports__, 'request', function () {
+                return __WEBPACK_IMPORTED_MODULE_7__http__.a;
+            });
+            var __WEBPACK_IMPORTED_MODULE_8__types__ = __webpack_require__('./node_modules/belter/src/types.js');
+            __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__types__);
+        },
+        './node_modules/belter/src/jsx.jsx': function (module, __webpack_exports__, __webpack_require__) {
+            __webpack_require__('./node_modules/belter/src/util.js'), Object.assign;
+            function _classCallCheck(instance, Constructor) {
+                if (!(instance instanceof Constructor)) {
+                    throw new TypeError('Cannot call a class as a function');
+                }
+            }
+            function htmlEncode() {
+                return (arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/\//g, '&#x2F;');
+            }
+            !function (_JsxHTMLNode) {
+                !function (subClass, superClass) {
+                    if ('function' != typeof superClass && null !== superClass) {
+                        throw new TypeError('Super expression must either be null or a function, not ' + typeof superClass);
+                    }
+                    subClass.prototype = Object.create(superClass && superClass.prototype, {
+                        constructor: {
+                            value: subClass,
+                            enumerable: !1,
+                            writable: !0,
+                            configurable: !0
+                        }
+                    });
+                    superClass && (Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass);
+                }(JsxHTMLNodeContainer, _JsxHTMLNode);
+                function JsxHTMLNodeContainer(children) {
+                    _classCallCheck(this, JsxHTMLNodeContainer);
+                    return function (self, call) {
+                        if (!self) {
+                            throw new ReferenceError('this hasn\'t been initialised - super() hasn\'t been called');
+                        }
+                        return !call || 'object' != typeof call && 'function' != typeof call ? self : call;
+                    }(this, _JsxHTMLNode.call(this, '', {}, children));
+                }
+                JsxHTMLNodeContainer.prototype.toString = function () {
+                    return this.childrenToString();
+                };
+            }(function () {
+                function JsxHTMLNode(name, props, children) {
+                    _classCallCheck(this, JsxHTMLNode);
+                    this.name = name;
+                    this.props = props;
+                    this.children = children;
+                }
+                JsxHTMLNode.prototype.toString = function () {
+                    var name = this.name, props = this.propsToString(), children = this.childrenToString();
+                    return '<' + name + (props ? ' ' : '') + props + '>' + children + '</' + name + '>';
+                };
+                JsxHTMLNode.prototype.propsToString = function () {
+                    var props = this.props;
+                    return props ? Object.keys(props).filter(function (key) {
+                        return 'innerHTML' !== key && props && !1 !== props[key];
+                    }).map(function (key) {
+                        if (props) {
+                            var val = props[key];
+                            if (!0 === val) {
+                                return '' + htmlEncode(key);
+                            }
+                            if ('string' == typeof val) {
+                                return htmlEncode(key) + '="' + htmlEncode(val) + '"';
+                            }
+                        }
+                        return '';
+                    }).filter(Boolean).join(' ') : '';
+                };
+                JsxHTMLNode.prototype.childrenToString = function () {
+                    if (this.props && this.props.innerHTML) {
+                        return this.props.innerHTML;
+                    }
+                    if (!this.children) {
+                        return '';
+                    }
+                    var result = '';
+                    !function iterate(children) {
+                        for (var _i2 = 0, _length2 = null == children ? 0 : children.length; _i2 < _length2; _i2++) {
+                            var child = children[_i2];
+                            null !== child && void 0 !== child && (Array.isArray(child) ? iterate(child) : result += child instanceof JsxHTMLNode ? child.toString() : htmlEncode(child));
+                        }
+                    }(this.children);
+                    return result;
+                };
+                return JsxHTMLNode;
+            }());
+        },
+        './node_modules/belter/src/storage.js': function (module, __webpack_exports__, __webpack_require__) {
+            __webpack_exports__.a = function getStorage(_ref) {
+                var name = _ref.name, _ref$version = _ref.version, version = void 0 === _ref$version ? 'latest' : _ref$version, _ref$lifetime = _ref.lifetime, lifetime = void 0 === _ref$lifetime ? 300000 : _ref$lifetime;
+                return Object(__WEBPACK_IMPORTED_MODULE_0__util__.b)(getStorage, function () {
+                    var STORAGE_KEY = '__' + name + '_' + version + '_storage__', accessedStorage = void 0;
+                    function getState(handler) {
+                        var localStorageEnabled = Object(__WEBPACK_IMPORTED_MODULE_1__dom__.b)(), storage = void 0;
+                        accessedStorage && (storage = accessedStorage);
+                        if (!storage && localStorageEnabled) {
+                            var rawStorage = window.localStorage.getItem(STORAGE_KEY);
+                            rawStorage && (storage = JSON.parse(rawStorage));
+                        }
+                        storage || (storage = Object(__WEBPACK_IMPORTED_MODULE_0__util__.a)()[STORAGE_KEY]);
+                        storage || (storage = { id: Object(__WEBPACK_IMPORTED_MODULE_0__util__.j)() });
+                        storage.id || (storage.id = Object(__WEBPACK_IMPORTED_MODULE_0__util__.j)());
+                        accessedStorage = storage;
+                        var result = handler(storage);
+                        localStorageEnabled ? window.localStorage.setItem(STORAGE_KEY, JSON.stringify(storage)) : Object(__WEBPACK_IMPORTED_MODULE_0__util__.a)()[STORAGE_KEY] = storage;
+                        accessedStorage = null;
+                        return result;
+                    }
+                    function getSession(handler) {
+                        return getState(function (storage) {
+                            var session = storage.__session__, now = Date.now();
+                            session && now - session.created > lifetime && (session = null);
+                            session || (session = {
+                                guid: Object(__WEBPACK_IMPORTED_MODULE_0__util__.j)(),
+                                created: now
+                            });
+                            storage.__session__ = session;
+                            return handler(session);
+                        });
+                    }
+                    return {
+                        getState: getState,
+                        getID: function () {
+                            return getState(function (storage) {
+                                return storage.id;
+                            });
+                        },
+                        getSessionState: function (handler) {
+                            return getSession(function (session) {
+                                session.state = session.state || {};
+                                return handler(session.state);
+                            });
+                        },
+                        getSessionID: function () {
+                            return getSession(function (session) {
+                                return session.guid;
+                            });
+                        }
+                    };
+                }, [{
+                        name: name,
+                        version: version,
+                        lifetime: lifetime
+                    }]);
+            };
+            var __WEBPACK_IMPORTED_MODULE_0__util__ = __webpack_require__('./node_modules/belter/src/util.js'), __WEBPACK_IMPORTED_MODULE_1__dom__ = __webpack_require__('./node_modules/belter/src/dom.js');
+        },
+        './node_modules/belter/src/types.js': function (module, exports) {
+        },
+        './node_modules/belter/src/util.js': function (module, __webpack_exports__, __webpack_require__) {
+            __webpack_exports__.a = function () {
+                if ('undefined' != typeof window) {
+                    return window;
+                }
+                if ('undefined' != typeof window) {
+                    return window;
+                }
+                if ('undefined' != typeof global) {
+                    return global;
+                }
+                throw new Error('No global found');
+            };
+            __webpack_exports__.b = function (method, logic) {
+                var args = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : [];
+                method.__memoized__ || (method.__memoized__ = function (method) {
+                    var options = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : {}, cache = {};
+                    function memoizedFunction() {
+                        var arguments$1 = arguments;
+                        for (var _len = arguments.length, args = Array(_len), _key = 0; _key < _len; _key++) {
+                            args[_key] = arguments$1[_key];
+                        }
+                        var key = void 0;
+                        try {
+                            key = JSON.stringify(Array.prototype.slice.call(arguments));
+                        } catch (err) {
+                            throw new Error('Arguments not serializable -- can not be used to memoize');
+                        }
+                        var cacheTime = options.time;
+                        cache[key] && cacheTime && Date.now() - cache[key].time < cacheTime && delete cache[key];
+                        if (cache[key]) {
+                            return cache[key].value;
+                        }
+                        memoizedFunction.__calling__ = !0;
+                        var time = Date.now(), value = method.apply(this, arguments);
+                        memoizedFunction.__calling__ = !1;
+                        cache[key] = {
+                            time: time,
+                            value: value
+                        };
+                        return cache[key].value;
+                    }
+                    memoizedFunction.reset = function () {
+                        cache = {};
+                    };
+                    return memoizedFunction;
+                }(logic));
+                if (method.__memoized__ && method.__memoized__.__calling__) {
+                    throw new Error('Can not call memoized method recursively');
+                }
+                return method.__memoized__.apply(method, args);
+            };
+            __webpack_exports__.c = function () {
+            };
+            __webpack_exports__.j = function () {
+                var chars = '0123456789abcdef';
+                return 'xxxxxxxxxx'.replace(/./g, function () {
+                    return chars.charAt(Math.floor(Math.random() * chars.length));
+                }) + '_' + base64encode(new Date().toISOString().slice(11, 19).replace('T', '.')).replace(/[^a-zA-Z0-9]/g, '').toLowerCase();
+            };
+            __webpack_exports__.f = function (str, regex, handler) {
+                var results = [];
+                str.replace(regex, function (item) {
+                    results.push(handler ? handler.apply(null, arguments) : item);
+                });
+                return results;
+            };
+            __webpack_exports__.i = function (svg) {
+                return 'data:image/svg+xml;base64,' + base64encode(svg);
+            };
+            __webpack_exports__.d = function (obj) {
+                var filter = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : Boolean, result = {};
+                for (var _key4 in obj) {
+                    obj.hasOwnProperty(_key4) && filter(obj[_key4], _key4) && (result[_key4] = obj[_key4]);
+                }
+                return result;
+            };
+            __webpack_exports__.g = function (text, regex) {
+                var result = [];
+                text.replace(regex, function (token) {
+                    result.push(token);
+                    return '';
+                });
+                return result;
+            };
+            __webpack_exports__.e = function (method) {
+                var delay = arguments.length > 1 && void 0 !== arguments[1] ? arguments[1] : 50, promise = void 0, timeout = void 0;
+                return function () {
+                    timeout && clearTimeout(timeout);
+                    var localPromise = promise = promise || new __WEBPACK_IMPORTED_MODULE_0_zalgo_promise_src__.a();
+                    timeout = setTimeout(function () {
+                        promise = null;
+                        timeout = null;
+                        __WEBPACK_IMPORTED_MODULE_0_zalgo_promise_src__.a.try(method).then(function (result) {
+                            localPromise.resolve(result);
+                        }, function (err) {
+                            localPromise.reject(err);
+                        });
+                    }, delay);
+                    return localPromise;
+                };
+            };
+            __webpack_exports__.h = function (method, time) {
+                var timeout = void 0;
+                !function loop() {
+                    timeout = setTimeout(function () {
+                        method();
+                        loop();
+                    }, time);
+                }();
+                return {
+                    cancel: function () {
+                        clearTimeout(timeout);
+                    }
+                };
+            };
+            var __WEBPACK_IMPORTED_MODULE_0_zalgo_promise_src__ = __webpack_require__('./node_modules/zalgo-promise/src/index.js');
+            function base64encode(str) {
+                return window.btoa(str);
+            }
+        },
+        './node_modules/cross-domain-utils/src/index.js': function (module, __webpack_exports__, __webpack_require__) {
+            __webpack_require__('./node_modules/cross-domain-utils/src/utils.js');
+            var __WEBPACK_IMPORTED_MODULE_1__types__ = __webpack_require__('./node_modules/cross-domain-utils/src/types.js');
+            __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__types__);
+        },
+        './node_modules/cross-domain-utils/src/types.js': function (module, exports) {
+        },
+        './node_modules/cross-domain-utils/src/utils.js': function (module, __webpack_exports__, __webpack_require__) {
+        },
+        './node_modules/zalgo-promise/src/index.js': function (module, __webpack_exports__, __webpack_require__) {
+            function utils_isPromise(item) {
+                try {
+                    if (!item) {
+                        return !1;
+                    }
+                    if ('undefined' != typeof Promise && item instanceof Promise) {
+                        return !0;
+                    }
+                    if ('undefined' != typeof window && window.Window && item instanceof window.Window) {
+                        return !1;
+                    }
+                    if ('undefined' != typeof window && window.constructor && item instanceof window.constructor) {
+                        return !1;
+                    }
+                    if ('function' == typeof item.then) {
+                        return !0;
+                    }
+                } catch (err) {
+                    return !1;
+                }
+                return !1;
+            }
+            function getGlobal() {
+                var glob = void 0;
+                if ('undefined' != typeof window) {
+                    glob = window;
+                } else {
+                    if ('undefined' == typeof window) {
+                        throw new TypeError('Can not find global');
+                    }
+                    glob = window;
+                }
+                var zalgoGlobal = glob.__zalgopromise__ = glob.__zalgopromise__ || {};
+                zalgoGlobal.flushPromises = zalgoGlobal.flushPromises || [];
+                zalgoGlobal.activeCount = zalgoGlobal.activeCount || 0;
+                zalgoGlobal.possiblyUnhandledPromiseHandlers = zalgoGlobal.possiblyUnhandledPromiseHandlers || [];
+                zalgoGlobal.dispatchedErrors = zalgoGlobal.dispatchedErrors || [];
+                return zalgoGlobal;
+            }
+            var promise_ZalgoPromise = function () {
+                function ZalgoPromise(handler) {
+                    var _this = this;
+                    !function (instance, Constructor) {
+                        if (!(instance instanceof ZalgoPromise)) {
+                            throw new TypeError('Cannot call a class as a function');
+                        }
+                    }(this);
+                    this.resolved = !1;
+                    this.rejected = !1;
+                    this.errorHandled = !1;
+                    this.handlers = [];
+                    if (handler) {
+                        var _result = void 0, _error = void 0, resolved = !1, rejected = !1, isAsync = !1;
+                        try {
+                            handler(function (res) {
+                                if (isAsync) {
+                                    _this.resolve(res);
+                                } else {
+                                    resolved = !0;
+                                    _result = res;
+                                }
+                            }, function (err) {
+                                if (isAsync) {
+                                    _this.reject(err);
+                                } else {
+                                    rejected = !0;
+                                    _error = err;
+                                }
+                            });
+                        } catch (err) {
+                            this.reject(err);
+                            return;
+                        }
+                        isAsync = !0;
+                        resolved ? this.resolve(_result) : rejected && this.reject(_error);
+                    }
+                }
+                ZalgoPromise.prototype.resolve = function (result) {
+                    if (this.resolved || this.rejected) {
+                        return this;
+                    }
+                    if (utils_isPromise(result)) {
+                        throw new Error('Can not resolve promise with another promise');
+                    }
+                    this.resolved = !0;
+                    this.value = result;
+                    this.dispatch();
+                    return this;
+                };
+                ZalgoPromise.prototype.reject = function (error) {
+                    var _this2 = this;
+                    if (this.resolved || this.rejected) {
+                        return this;
+                    }
+                    if (utils_isPromise(error)) {
+                        throw new Error('Can not reject promise with another promise');
+                    }
+                    if (!error) {
+                        var _err = error && 'function' == typeof error.toString ? error.toString() : Object.prototype.toString.call(error);
+                        error = new Error('Expected reject to be called with Error, got ' + _err);
+                    }
+                    this.rejected = !0;
+                    this.error = error;
+                    this.errorHandled || setTimeout(function () {
+                        _this2.errorHandled || function (err, promise) {
+                            if (-1 === getGlobal().dispatchedErrors.indexOf(err)) {
+                                getGlobal().dispatchedErrors.push(err);
+                                setTimeout(function () {
+                                    throw err;
+                                }, 1);
+                                for (var j = 0; j < getGlobal().possiblyUnhandledPromiseHandlers.length; j++) {
+                                    getGlobal().possiblyUnhandledPromiseHandlers[j](err, promise);
+                                }
+                            }
+                        }(error, _this2);
+                    }, 1);
+                    this.dispatch();
+                    return this;
+                };
+                ZalgoPromise.prototype.asyncReject = function (error) {
+                    this.errorHandled = !0;
+                    this.reject(error);
+                };
+                ZalgoPromise.prototype.dispatch = function () {
+                    var _this3 = this, dispatching = this.dispatching, resolved = this.resolved, rejected = this.rejected, handlers = this.handlers;
+                    if (!dispatching && (resolved || rejected)) {
+                        this.dispatching = !0;
+                        getGlobal().activeCount += 1;
+                        for (var _loop = function (i) {
+                                    var _handlers$i = handlers[i], onSuccess = _handlers$i.onSuccess, onError = _handlers$i.onError, promise = _handlers$i.promise, result = void 0;
+                                    if (resolved) {
+                                        try {
+                                            result = onSuccess ? onSuccess(_this3.value) : _this3.value;
+                                        } catch (err) {
+                                            promise.reject(err);
+                                            return 'continue';
+                                        }
+                                    } else if (rejected) {
+                                        if (!onError) {
+                                            promise.reject(_this3.error);
+                                            return 'continue';
+                                        }
+                                        try {
+                                            result = onError(_this3.error);
+                                        } catch (err) {
+                                            promise.reject(err);
+                                            return 'continue';
+                                        }
+                                    }
+                                    if (result instanceof ZalgoPromise && (result.resolved || result.rejected)) {
+                                        result.resolved ? promise.resolve(result.value) : promise.reject(result.error);
+                                        result.errorHandled = !0;
+                                    } else {
+                                        utils_isPromise(result) ? result instanceof ZalgoPromise && (result.resolved || result.rejected) ? result.resolved ? promise.resolve(result.value) : promise.reject(result.error) : result.then(function (res) {
+                                            promise.resolve(res);
+                                        }, function (err) {
+                                            promise.reject(err);
+                                        }) : promise.resolve(result);
+                                    }
+                                }, i = 0; i < handlers.length; i++) {
+                            _loop(i);
+                        }
+                        handlers.length = 0;
+                        this.dispatching = !1;
+                        getGlobal().activeCount -= 1;
+                        0 === getGlobal().activeCount && ZalgoPromise.flushQueue();
+                    }
+                };
+                ZalgoPromise.prototype.then = function (onSuccess, onError) {
+                    if (onSuccess && 'function' != typeof onSuccess && !onSuccess.call) {
+                        throw new Error('Promise.then expected a function for success handler');
+                    }
+                    if (onError && 'function' != typeof onError && !onError.call) {
+                        throw new Error('Promise.then expected a function for error handler');
+                    }
+                    var promise = new ZalgoPromise();
+                    this.handlers.push({
+                        promise: promise,
+                        onSuccess: onSuccess,
+                        onError: onError
+                    });
+                    this.errorHandled = !0;
+                    this.dispatch();
+                    return promise;
+                };
+                ZalgoPromise.prototype.catch = function (onError) {
+                    return this.then(void 0, onError);
+                };
+                ZalgoPromise.prototype.finally = function (onFinally) {
+                    if (onFinally && 'function' != typeof onFinally && !onFinally.call) {
+                        throw new Error('Promise.finally expected a function');
+                    }
+                    return this.then(function (result) {
+                        return ZalgoPromise.try(onFinally).then(function () {
+                            return result;
+                        });
+                    }, function (err) {
+                        return ZalgoPromise.try(onFinally).then(function () {
+                            throw err;
+                        });
+                    });
+                };
+                ZalgoPromise.prototype.timeout = function (time, err) {
+                    var _this4 = this;
+                    if (this.resolved || this.rejected) {
+                        return this;
+                    }
+                    var timeout = setTimeout(function () {
+                        _this4.resolved || _this4.rejected || _this4.reject(err || new Error('Promise timed out after ' + time + 'ms'));
+                    }, time);
+                    return this.then(function (result) {
+                        clearTimeout(timeout);
+                        return result;
+                    });
+                };
+                ZalgoPromise.prototype.toPromise = function () {
+                    if ('undefined' == typeof Promise) {
+                        throw new TypeError('Could not find Promise');
+                    }
+                    return Promise.resolve(this);
+                };
+                ZalgoPromise.resolve = function (value) {
+                    return value instanceof ZalgoPromise ? value : utils_isPromise(value) ? new ZalgoPromise(function (resolve, reject) {
+                        return value.then(resolve, reject);
+                    }) : new ZalgoPromise().resolve(value);
+                };
+                ZalgoPromise.reject = function (error) {
+                    return new ZalgoPromise().reject(error);
+                };
+                ZalgoPromise.all = function (promises) {
+                    var promise = new ZalgoPromise(), count = promises.length, results = [];
+                    if (!count) {
+                        promise.resolve(results);
+                        return promise;
+                    }
+                    for (var _loop2 = function (i) {
+                                var prom = promises[i];
+                                if (prom instanceof ZalgoPromise) {
+                                    if (prom.resolved) {
+                                        results[i] = prom.value;
+                                        count -= 1;
+                                        return 'continue';
+                                    }
+                                } else if (!utils_isPromise(prom)) {
+                                    results[i] = prom;
+                                    count -= 1;
+                                    return 'continue';
+                                }
+                                ZalgoPromise.resolve(prom).then(function (result) {
+                                    results[i] = result;
+                                    0 == (count -= 1) && promise.resolve(results);
+                                }, function (err) {
+                                    promise.reject(err);
+                                });
+                            }, i = 0; i < promises.length; i++) {
+                        _loop2(i);
+                    }
+                    0 === count && promise.resolve(results);
+                    return promise;
+                };
+                ZalgoPromise.hash = function (promises) {
+                    var result = {};
+                    return ZalgoPromise.all(Object.keys(promises).map(function (key) {
+                        return ZalgoPromise.resolve(promises[key]).then(function (value) {
+                            result[key] = value;
+                        });
+                    })).then(function () {
+                        return result;
+                    });
+                };
+                ZalgoPromise.map = function (items, method) {
+                    return ZalgoPromise.all(items.map(method));
+                };
+                ZalgoPromise.onPossiblyUnhandledException = function (handler) {
+                    return function (handler) {
+                        getGlobal().possiblyUnhandledPromiseHandlers.push(handler);
+                        return {
+                            cancel: function () {
+                                getGlobal().possiblyUnhandledPromiseHandlers.splice(getGlobal().possiblyUnhandledPromiseHandlers.indexOf(handler), 1);
+                            }
+                        };
+                    }(handler);
+                };
+                ZalgoPromise.try = function (method, context, args) {
+                    if (method && 'function' != typeof method && !method.call) {
+                        throw new Error('Promise.try expected a function');
+                    }
+                    var result = void 0;
+                    try {
+                        result = method.apply(context, args || []);
+                    } catch (err) {
+                        return ZalgoPromise.reject(err);
+                    }
+                    return ZalgoPromise.resolve(result);
+                };
+                ZalgoPromise.delay = function (_delay) {
+                    return new ZalgoPromise(function (resolve) {
+                        setTimeout(resolve, _delay);
+                    });
+                };
+                ZalgoPromise.isPromise = function (value) {
+                    return !!(value && value instanceof ZalgoPromise) || utils_isPromise(value);
+                };
+                ZalgoPromise.flush = function () {
+                    var promise = new ZalgoPromise();
+                    getGlobal().flushPromises.push(promise);
+                    0 === getGlobal().activeCount && ZalgoPromise.flushQueue();
+                    return promise;
+                };
+                ZalgoPromise.flushQueue = function () {
+                    var promisesToFlush = getGlobal().flushPromises;
+                    getGlobal().flushPromises = [];
+                    for (var _i2 = 0, _length2 = null == promisesToFlush ? 0 : promisesToFlush.length; _i2 < _length2; _i2++) {
+                        promisesToFlush[_i2].resolve();
+                    }
+                };
+                return ZalgoPromise;
+            }();
+            __webpack_require__.d(__webpack_exports__, 'a', function () {
+                return promise_ZalgoPromise;
+            });
+        },
+        './src/index.js': function (module, __webpack_exports__, __webpack_require__) {
+            Object.defineProperty(__webpack_exports__, '__esModule', { value: !0 });
+            var src = __webpack_require__('./node_modules/zalgo-promise/src/index.js'), belter_src = __webpack_require__('./node_modules/belter/src/index.js'), LOG_LEVEL = {
+                    DEBUG: 'debug',
+                    INFO: 'info',
+                    WARN: 'warn',
+                    ERROR: 'error'
+                }, AUTO_FLUSH_LEVEL = [
+                    LOG_LEVEL.WARN,
+                    LOG_LEVEL.ERROR
+                ], LOG_LEVEL_PRIORITY = [
+                    LOG_LEVEL.ERROR,
+                    LOG_LEVEL.WARN,
+                    LOG_LEVEL.INFO,
+                    LOG_LEVEL.DEBUG
+                ], FLUSH_INTERVAL = 60000, DEFAULT_LOG_LEVEL = LOG_LEVEL.WARN, _extends = Object.assign || function (target) {
+                    var arguments$1 = arguments;
+                    for (var i = 1; i < arguments.length; i++) {
+                        var source = arguments$1[i];
+                        for (var key in source) {
+                            Object.prototype.hasOwnProperty.call(source, key) && (target[key] = source[key]);
+                        }
+                    }
+                    return target;
+                };
+            function httpTransport(_ref) {
+                var url = _ref.url, method = _ref.method, headers = _ref.headers, json = _ref.json;
+                return Object(belter_src.request)({
+                    url: url,
+                    method: method,
+                    headers: headers,
+                    json: json
+                }).then(belter_src.noop);
+            }
+            function extendIfDefined(target, source) {
+                for (var key in source) {
+                    source.hasOwnProperty(key) && source[key] && (target[key] = source[key]);
+                }
+            }
+            function Logger(_ref2) {
+                var url = _ref2.url, prefix = _ref2.prefix, _ref2$logLevel = _ref2.logLevel, logLevel = void 0 === _ref2$logLevel ? DEFAULT_LOG_LEVEL : _ref2$logLevel, _ref2$transport = _ref2.transport, transport = void 0 === _ref2$transport ? httpTransport : _ref2$transport, _ref2$flushInterval = _ref2.flushInterval, flushInterval = void 0 === _ref2$flushInterval ? FLUSH_INTERVAL : _ref2$flushInterval, events = [], tracking = [], payloadBuilders = [], metaBuilders = [], trackingBuilders = [], headerBuilders = [];
+                function print(level, event, payload) {
+                    if (Object(belter_src.isBrowser)() && window.console && window.console.log) {
+                        var consoleLogLevel = logLevel;
+                        window.LOG_LEVEL && -1 !== LOG_LEVEL_PRIORITY.indexOf(window.LOG_LEVEL) && (consoleLogLevel = window.LOG_LEVEL);
+                        if (!(LOG_LEVEL_PRIORITY.indexOf(level) > LOG_LEVEL_PRIORITY.indexOf(consoleLogLevel))) {
+                            var args = [event];
+                            args.push(payload);
+                            (payload.error || payload.warning) && args.push('\n\n', payload.error || payload.warning);
+                            try {
+                                window.console[level] && window.console[level].apply ? window.console[level].apply(window.console, args) : window.console.log && window.console.log.apply && window.console.log.apply(window.console, args);
+                            } catch (err) {
+                            }
+                        }
+                    }
+                }
+                function immediateFlush() {
+                    return src.a.try(function () {
+                        if (Object(belter_src.isBrowser)() && (events.length || tracking.length)) {
+                            for (var meta = {}, _i2 = 0, _length2 = null == metaBuilders ? 0 : metaBuilders.length; _i2 < _length2; _i2++) {
+                                extendIfDefined(meta, (0, metaBuilders[_i2])(meta));
+                            }
+                            for (var headers = {}, _i4 = 0, _length4 = null == headerBuilders ? 0 : headerBuilders.length; _i4 < _length4; _i4++) {
+                                extendIfDefined(headers, (0, headerBuilders[_i4])(headers));
+                            }
+                            var req = transport({
+                                method: 'POST',
+                                url: url,
+                                headers: headers,
+                                json: {
+                                    events: events,
+                                    meta: meta,
+                                    tracking: tracking
+                                }
+                            });
+                            events = [];
+                            tracking = [];
+                            return req.then(belter_src.noop);
+                        }
+                    });
+                }
+                var flush = Object(belter_src.promiseDebounce)(immediateFlush);
+                function log(level, event) {
+                    var payload = arguments.length > 2 && void 0 !== arguments[2] ? arguments[2] : {};
+                    if (Object(belter_src.isBrowser)()) {
+                        prefix && (event = prefix + '_' + event);
+                        for (var logPayload = _extends({}, Object(belter_src.objFilter)(payload), { timestamp: Date.now().toString() }), _i6 = 0, _length6 = null == payloadBuilders ? 0 : payloadBuilders.length; _i6 < _length6; _i6++) {
+                            extendIfDefined(logPayload, (0, payloadBuilders[_i6])(logPayload));
+                        }
+                        !function (level, event, payload) {
+                            events.push({
+                                level: level,
+                                event: event,
+                                payload: payload
+                            });
+                            -1 !== AUTO_FLUSH_LEVEL.indexOf(level) && flush();
+                        }(level, event, logPayload);
+                        print(level, event, logPayload);
+                    }
+                }
+                Object(belter_src.isBrowser)() && Object(belter_src.safeInterval)(flush, flushInterval);
+                return {
+                    debug: function (event, payload) {
+                        log(LOG_LEVEL.DEBUG, event, payload);
+                    },
+                    info: function (event, payload) {
+                        log(LOG_LEVEL.INFO, event, payload);
+                    },
+                    warn: function (event, payload) {
+                        log(LOG_LEVEL.WARN, event, payload);
+                    },
+                    error: function (event, payload) {
+                        log(LOG_LEVEL.ERROR, event, payload);
+                    },
+                    track: function () {
+                        var payload = arguments.length > 0 && void 0 !== arguments[0] ? arguments[0] : {};
+                        if (Object(belter_src.isBrowser)()) {
+                            for (var trackingPayload = Object(belter_src.objFilter)(payload), _i8 = 0, _length8 = null == trackingBuilders ? 0 : trackingBuilders.length; _i8 < _length8; _i8++) {
+                                extendIfDefined(trackingPayload, (0, trackingBuilders[_i8])(trackingPayload));
+                            }
+                            print(LOG_LEVEL.DEBUG, 'track', trackingPayload);
+                            tracking.push(trackingPayload);
+                        }
+                    },
+                    flush: flush,
+                    immediateFlush: immediateFlush,
+                    addPayloadBuilder: function (builder) {
+                        payloadBuilders.push(builder);
+                    },
+                    addMetaBuilder: function (builder) {
+                        metaBuilders.push(builder);
+                    },
+                    addTrackingBuilder: function (builder) {
+                        trackingBuilders.push(builder);
+                    },
+                    addHeaderBuilder: function (builder) {
+                        headerBuilders.push(builder);
+                    },
+                    setTransport: function (newTransport) {
+                        transport = newTransport;
+                    }
+                };
+            }
+            __webpack_require__.d(__webpack_exports__, 'Logger', function () {
+                return Logger;
+            });
+            __webpack_require__.d(__webpack_exports__, 'LOG_LEVEL', function () {
+                return LOG_LEVEL;
+            });
+        }
+    });
+});
+});
+
+var logger = __chunk_1.unwrapExports(beaverLogger);
+var beaverLogger_1 = beaverLogger.beaver;
+
 var UNDEFINED_COORDINATES = 'coordinates is undefined';
 var UNDEFINED_LATLNG = 'blank latitude and longitude';
 var UNDEFINED_ARRAY_LATLNG = 'blank latitude and longitude at item';
@@ -35401,6 +36336,1061 @@ var Logger = {
     }
 };
 Object.freeze(Logger);
+
+var tinycolor = __chunk_1.createCommonjsModule(function (module) {
+(function (Math) {
+    var trimLeft = /^\s+/, trimRight = /\s+$/, tinyCounter = 0, mathRound = Math.round, mathMin = Math.min, mathMax = Math.max, mathRandom = Math.random;
+    function tinycolor(color, opts) {
+        color = color ? color : '';
+        opts = opts || {};
+        if (color instanceof tinycolor) {
+            return color;
+        }
+        if (!(this instanceof tinycolor)) {
+            return new tinycolor(color, opts);
+        }
+        var rgb = inputToRGB(color);
+        this._originalInput = color, this._r = rgb.r, this._g = rgb.g, this._b = rgb.b, this._a = rgb.a, this._roundA = mathRound(100 * this._a) / 100, this._format = opts.format || rgb.format;
+        this._gradientType = opts.gradientType;
+        if (this._r < 1) {
+            this._r = mathRound(this._r);
+        }
+        if (this._g < 1) {
+            this._g = mathRound(this._g);
+        }
+        if (this._b < 1) {
+            this._b = mathRound(this._b);
+        }
+        this._ok = rgb.ok;
+        this._tc_id = tinyCounter++;
+    }
+    tinycolor.prototype = {
+        isDark: function () {
+            return this.getBrightness() < 128;
+        },
+        isLight: function () {
+            return !this.isDark();
+        },
+        isValid: function () {
+            return this._ok;
+        },
+        getOriginalInput: function () {
+            return this._originalInput;
+        },
+        getFormat: function () {
+            return this._format;
+        },
+        getAlpha: function () {
+            return this._a;
+        },
+        getBrightness: function () {
+            var rgb = this.toRgb();
+            return (rgb.r * 299 + rgb.g * 587 + rgb.b * 114) / 1000;
+        },
+        getLuminance: function () {
+            var rgb = this.toRgb();
+            var RsRGB, GsRGB, BsRGB, R, G, B;
+            RsRGB = rgb.r / 255;
+            GsRGB = rgb.g / 255;
+            BsRGB = rgb.b / 255;
+            if (RsRGB <= 0.03928) {
+                R = RsRGB / 12.92;
+            } else {
+                R = Math.pow((RsRGB + 0.055) / 1.055, 2.4);
+            }
+            if (GsRGB <= 0.03928) {
+                G = GsRGB / 12.92;
+            } else {
+                G = Math.pow((GsRGB + 0.055) / 1.055, 2.4);
+            }
+            if (BsRGB <= 0.03928) {
+                B = BsRGB / 12.92;
+            } else {
+                B = Math.pow((BsRGB + 0.055) / 1.055, 2.4);
+            }
+            return 0.2126 * R + 0.7152 * G + 0.0722 * B;
+        },
+        setAlpha: function (value) {
+            this._a = boundAlpha(value);
+            this._roundA = mathRound(100 * this._a) / 100;
+            return this;
+        },
+        toHsv: function () {
+            var hsv = rgbToHsv(this._r, this._g, this._b);
+            return {
+                h: hsv.h * 360,
+                s: hsv.s,
+                v: hsv.v,
+                a: this._a
+            };
+        },
+        toHsvString: function () {
+            var hsv = rgbToHsv(this._r, this._g, this._b);
+            var h = mathRound(hsv.h * 360), s = mathRound(hsv.s * 100), v = mathRound(hsv.v * 100);
+            return this._a == 1 ? 'hsv(' + h + ', ' + s + '%, ' + v + '%)' : 'hsva(' + h + ', ' + s + '%, ' + v + '%, ' + this._roundA + ')';
+        },
+        toHsl: function () {
+            var hsl = rgbToHsl(this._r, this._g, this._b);
+            return {
+                h: hsl.h * 360,
+                s: hsl.s,
+                l: hsl.l,
+                a: this._a
+            };
+        },
+        toHslString: function () {
+            var hsl = rgbToHsl(this._r, this._g, this._b);
+            var h = mathRound(hsl.h * 360), s = mathRound(hsl.s * 100), l = mathRound(hsl.l * 100);
+            return this._a == 1 ? 'hsl(' + h + ', ' + s + '%, ' + l + '%)' : 'hsla(' + h + ', ' + s + '%, ' + l + '%, ' + this._roundA + ')';
+        },
+        toHex: function (allow3Char) {
+            return rgbToHex(this._r, this._g, this._b, allow3Char);
+        },
+        toHexString: function (allow3Char) {
+            return '#' + this.toHex(allow3Char);
+        },
+        toHex8: function (allow4Char) {
+            return rgbaToHex(this._r, this._g, this._b, this._a, allow4Char);
+        },
+        toHex8String: function (allow4Char) {
+            return '#' + this.toHex8(allow4Char);
+        },
+        toRgb: function () {
+            return {
+                r: mathRound(this._r),
+                g: mathRound(this._g),
+                b: mathRound(this._b),
+                a: this._a
+            };
+        },
+        toRgbString: function () {
+            return this._a == 1 ? 'rgb(' + mathRound(this._r) + ', ' + mathRound(this._g) + ', ' + mathRound(this._b) + ')' : 'rgba(' + mathRound(this._r) + ', ' + mathRound(this._g) + ', ' + mathRound(this._b) + ', ' + this._roundA + ')';
+        },
+        toPercentageRgb: function () {
+            return {
+                r: mathRound(bound01(this._r, 255) * 100) + '%',
+                g: mathRound(bound01(this._g, 255) * 100) + '%',
+                b: mathRound(bound01(this._b, 255) * 100) + '%',
+                a: this._a
+            };
+        },
+        toPercentageRgbString: function () {
+            return this._a == 1 ? 'rgb(' + mathRound(bound01(this._r, 255) * 100) + '%, ' + mathRound(bound01(this._g, 255) * 100) + '%, ' + mathRound(bound01(this._b, 255) * 100) + '%)' : 'rgba(' + mathRound(bound01(this._r, 255) * 100) + '%, ' + mathRound(bound01(this._g, 255) * 100) + '%, ' + mathRound(bound01(this._b, 255) * 100) + '%, ' + this._roundA + ')';
+        },
+        toName: function () {
+            if (this._a === 0) {
+                return 'transparent';
+            }
+            if (this._a < 1) {
+                return false;
+            }
+            return hexNames[rgbToHex(this._r, this._g, this._b, true)] || false;
+        },
+        toFilter: function (secondColor) {
+            var hex8String = '#' + rgbaToArgbHex(this._r, this._g, this._b, this._a);
+            var secondHex8String = hex8String;
+            var gradientType = this._gradientType ? 'GradientType = 1, ' : '';
+            if (secondColor) {
+                var s = tinycolor(secondColor);
+                secondHex8String = '#' + rgbaToArgbHex(s._r, s._g, s._b, s._a);
+            }
+            return 'progid:DXImageTransform.Microsoft.gradient(' + gradientType + 'startColorstr=' + hex8String + ',endColorstr=' + secondHex8String + ')';
+        },
+        toString: function (format) {
+            var formatSet = !!format;
+            format = format || this._format;
+            var formattedString = false;
+            var hasAlpha = this._a < 1 && this._a >= 0;
+            var needsAlphaFormat = !formatSet && hasAlpha && (format === 'hex' || format === 'hex6' || format === 'hex3' || format === 'hex4' || format === 'hex8' || format === 'name');
+            if (needsAlphaFormat) {
+                if (format === 'name' && this._a === 0) {
+                    return this.toName();
+                }
+                return this.toRgbString();
+            }
+            if (format === 'rgb') {
+                formattedString = this.toRgbString();
+            }
+            if (format === 'prgb') {
+                formattedString = this.toPercentageRgbString();
+            }
+            if (format === 'hex' || format === 'hex6') {
+                formattedString = this.toHexString();
+            }
+            if (format === 'hex3') {
+                formattedString = this.toHexString(true);
+            }
+            if (format === 'hex4') {
+                formattedString = this.toHex8String(true);
+            }
+            if (format === 'hex8') {
+                formattedString = this.toHex8String();
+            }
+            if (format === 'name') {
+                formattedString = this.toName();
+            }
+            if (format === 'hsl') {
+                formattedString = this.toHslString();
+            }
+            if (format === 'hsv') {
+                formattedString = this.toHsvString();
+            }
+            return formattedString || this.toHexString();
+        },
+        clone: function () {
+            return tinycolor(this.toString());
+        },
+        _applyModification: function (fn, args) {
+            var color = fn.apply(null, [this].concat([].slice.call(args)));
+            this._r = color._r;
+            this._g = color._g;
+            this._b = color._b;
+            this.setAlpha(color._a);
+            return this;
+        },
+        lighten: function () {
+            return this._applyModification(lighten, arguments);
+        },
+        brighten: function () {
+            return this._applyModification(brighten, arguments);
+        },
+        darken: function () {
+            return this._applyModification(darken, arguments);
+        },
+        desaturate: function () {
+            return this._applyModification(desaturate, arguments);
+        },
+        saturate: function () {
+            return this._applyModification(saturate, arguments);
+        },
+        greyscale: function () {
+            return this._applyModification(greyscale, arguments);
+        },
+        spin: function () {
+            return this._applyModification(spin, arguments);
+        },
+        _applyCombination: function (fn, args) {
+            return fn.apply(null, [this].concat([].slice.call(args)));
+        },
+        analogous: function () {
+            return this._applyCombination(analogous, arguments);
+        },
+        complement: function () {
+            return this._applyCombination(complement, arguments);
+        },
+        monochromatic: function () {
+            return this._applyCombination(monochromatic, arguments);
+        },
+        splitcomplement: function () {
+            return this._applyCombination(splitcomplement, arguments);
+        },
+        triad: function () {
+            return this._applyCombination(triad, arguments);
+        },
+        tetrad: function () {
+            return this._applyCombination(tetrad, arguments);
+        }
+    };
+    tinycolor.fromRatio = function (color, opts) {
+        if (typeof color == 'object') {
+            var newColor = {};
+            for (var i in color) {
+                if (color.hasOwnProperty(i)) {
+                    if (i === 'a') {
+                        newColor[i] = color[i];
+                    } else {
+                        newColor[i] = convertToPercentage(color[i]);
+                    }
+                }
+            }
+            color = newColor;
+        }
+        return tinycolor(color, opts);
+    };
+    function inputToRGB(color) {
+        var rgb = {
+            r: 0,
+            g: 0,
+            b: 0
+        };
+        var a = 1;
+        var s = null;
+        var v = null;
+        var l = null;
+        var ok = false;
+        var format = false;
+        if (typeof color == 'string') {
+            color = stringInputToObject(color);
+        }
+        if (typeof color == 'object') {
+            if (isValidCSSUnit(color.r) && isValidCSSUnit(color.g) && isValidCSSUnit(color.b)) {
+                rgb = rgbToRgb(color.r, color.g, color.b);
+                ok = true;
+                format = String(color.r).substr(-1) === '%' ? 'prgb' : 'rgb';
+            } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.v)) {
+                s = convertToPercentage(color.s);
+                v = convertToPercentage(color.v);
+                rgb = hsvToRgb(color.h, s, v);
+                ok = true;
+                format = 'hsv';
+            } else if (isValidCSSUnit(color.h) && isValidCSSUnit(color.s) && isValidCSSUnit(color.l)) {
+                s = convertToPercentage(color.s);
+                l = convertToPercentage(color.l);
+                rgb = hslToRgb(color.h, s, l);
+                ok = true;
+                format = 'hsl';
+            }
+            if (color.hasOwnProperty('a')) {
+                a = color.a;
+            }
+        }
+        a = boundAlpha(a);
+        return {
+            ok: ok,
+            format: color.format || format,
+            r: mathMin(255, mathMax(rgb.r, 0)),
+            g: mathMin(255, mathMax(rgb.g, 0)),
+            b: mathMin(255, mathMax(rgb.b, 0)),
+            a: a
+        };
+    }
+    function rgbToRgb(r, g, b) {
+        return {
+            r: bound01(r, 255) * 255,
+            g: bound01(g, 255) * 255,
+            b: bound01(b, 255) * 255
+        };
+    }
+    function rgbToHsl(r, g, b) {
+        r = bound01(r, 255);
+        g = bound01(g, 255);
+        b = bound01(b, 255);
+        var max = mathMax(r, g, b), min = mathMin(r, g, b);
+        var h, s, l = (max + min) / 2;
+        if (max == min) {
+            h = s = 0;
+        } else {
+            var d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+            case r:
+                h = (g - b) / d + (g < b ? 6 : 0);
+                break;
+            case g:
+                h = (b - r) / d + 2;
+                break;
+            case b:
+                h = (r - g) / d + 4;
+                break;
+            }
+            h /= 6;
+        }
+        return {
+            h: h,
+            s: s,
+            l: l
+        };
+    }
+    function hslToRgb(h, s, l) {
+        var r, g, b;
+        h = bound01(h, 360);
+        s = bound01(s, 100);
+        l = bound01(l, 100);
+        function hue2rgb(p, q, t) {
+            if (t < 0) {
+                t += 1;
+            }
+            if (t > 1) {
+                t -= 1;
+            }
+            if (t < 1 / 6) {
+                return p + (q - p) * 6 * t;
+            }
+            if (t < 1 / 2) {
+                return q;
+            }
+            if (t < 2 / 3) {
+                return p + (q - p) * (2 / 3 - t) * 6;
+            }
+            return p;
+        }
+        if (s === 0) {
+            r = g = b = l;
+        } else {
+            var q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            var p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1 / 3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1 / 3);
+        }
+        return {
+            r: r * 255,
+            g: g * 255,
+            b: b * 255
+        };
+    }
+    function rgbToHsv(r, g, b) {
+        r = bound01(r, 255);
+        g = bound01(g, 255);
+        b = bound01(b, 255);
+        var max = mathMax(r, g, b), min = mathMin(r, g, b);
+        var h, s, v = max;
+        var d = max - min;
+        s = max === 0 ? 0 : d / max;
+        if (max == min) {
+            h = 0;
+        } else {
+            switch (max) {
+            case r:
+                h = (g - b) / d + (g < b ? 6 : 0);
+                break;
+            case g:
+                h = (b - r) / d + 2;
+                break;
+            case b:
+                h = (r - g) / d + 4;
+                break;
+            }
+            h /= 6;
+        }
+        return {
+            h: h,
+            s: s,
+            v: v
+        };
+    }
+    function hsvToRgb(h, s, v) {
+        h = bound01(h, 360) * 6;
+        s = bound01(s, 100);
+        v = bound01(v, 100);
+        var i = Math.floor(h), f = h - i, p = v * (1 - s), q = v * (1 - f * s), t = v * (1 - (1 - f) * s), mod = i % 6, r = [
+                v,
+                q,
+                p,
+                p,
+                t,
+                v
+            ][mod], g = [
+                t,
+                v,
+                v,
+                q,
+                p,
+                p
+            ][mod], b = [
+                p,
+                p,
+                t,
+                v,
+                v,
+                q
+            ][mod];
+        return {
+            r: r * 255,
+            g: g * 255,
+            b: b * 255
+        };
+    }
+    function rgbToHex(r, g, b, allow3Char) {
+        var hex = [
+            pad2(mathRound(r).toString(16)),
+            pad2(mathRound(g).toString(16)),
+            pad2(mathRound(b).toString(16))
+        ];
+        if (allow3Char && hex[0].charAt(0) == hex[0].charAt(1) && hex[1].charAt(0) == hex[1].charAt(1) && hex[2].charAt(0) == hex[2].charAt(1)) {
+            return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0);
+        }
+        return hex.join('');
+    }
+    function rgbaToHex(r, g, b, a, allow4Char) {
+        var hex = [
+            pad2(mathRound(r).toString(16)),
+            pad2(mathRound(g).toString(16)),
+            pad2(mathRound(b).toString(16)),
+            pad2(convertDecimalToHex(a))
+        ];
+        if (allow4Char && hex[0].charAt(0) == hex[0].charAt(1) && hex[1].charAt(0) == hex[1].charAt(1) && hex[2].charAt(0) == hex[2].charAt(1) && hex[3].charAt(0) == hex[3].charAt(1)) {
+            return hex[0].charAt(0) + hex[1].charAt(0) + hex[2].charAt(0) + hex[3].charAt(0);
+        }
+        return hex.join('');
+    }
+    function rgbaToArgbHex(r, g, b, a) {
+        var hex = [
+            pad2(convertDecimalToHex(a)),
+            pad2(mathRound(r).toString(16)),
+            pad2(mathRound(g).toString(16)),
+            pad2(mathRound(b).toString(16))
+        ];
+        return hex.join('');
+    }
+    tinycolor.equals = function (color1, color2) {
+        if (!color1 || !color2) {
+            return false;
+        }
+        return tinycolor(color1).toRgbString() == tinycolor(color2).toRgbString();
+    };
+    tinycolor.random = function () {
+        return tinycolor.fromRatio({
+            r: mathRandom(),
+            g: mathRandom(),
+            b: mathRandom()
+        });
+    };
+    function desaturate(color, amount) {
+        amount = amount === 0 ? 0 : amount || 10;
+        var hsl = tinycolor(color).toHsl();
+        hsl.s -= amount / 100;
+        hsl.s = clamp01(hsl.s);
+        return tinycolor(hsl);
+    }
+    function saturate(color, amount) {
+        amount = amount === 0 ? 0 : amount || 10;
+        var hsl = tinycolor(color).toHsl();
+        hsl.s += amount / 100;
+        hsl.s = clamp01(hsl.s);
+        return tinycolor(hsl);
+    }
+    function greyscale(color) {
+        return tinycolor(color).desaturate(100);
+    }
+    function lighten(color, amount) {
+        amount = amount === 0 ? 0 : amount || 10;
+        var hsl = tinycolor(color).toHsl();
+        hsl.l += amount / 100;
+        hsl.l = clamp01(hsl.l);
+        return tinycolor(hsl);
+    }
+    function brighten(color, amount) {
+        amount = amount === 0 ? 0 : amount || 10;
+        var rgb = tinycolor(color).toRgb();
+        rgb.r = mathMax(0, mathMin(255, rgb.r - mathRound(255 * -(amount / 100))));
+        rgb.g = mathMax(0, mathMin(255, rgb.g - mathRound(255 * -(amount / 100))));
+        rgb.b = mathMax(0, mathMin(255, rgb.b - mathRound(255 * -(amount / 100))));
+        return tinycolor(rgb);
+    }
+    function darken(color, amount) {
+        amount = amount === 0 ? 0 : amount || 10;
+        var hsl = tinycolor(color).toHsl();
+        hsl.l -= amount / 100;
+        hsl.l = clamp01(hsl.l);
+        return tinycolor(hsl);
+    }
+    function spin(color, amount) {
+        var hsl = tinycolor(color).toHsl();
+        var hue = (hsl.h + amount) % 360;
+        hsl.h = hue < 0 ? 360 + hue : hue;
+        return tinycolor(hsl);
+    }
+    function complement(color) {
+        var hsl = tinycolor(color).toHsl();
+        hsl.h = (hsl.h + 180) % 360;
+        return tinycolor(hsl);
+    }
+    function triad(color) {
+        var hsl = tinycolor(color).toHsl();
+        var h = hsl.h;
+        return [
+            tinycolor(color),
+            tinycolor({
+                h: (h + 120) % 360,
+                s: hsl.s,
+                l: hsl.l
+            }),
+            tinycolor({
+                h: (h + 240) % 360,
+                s: hsl.s,
+                l: hsl.l
+            })
+        ];
+    }
+    function tetrad(color) {
+        var hsl = tinycolor(color).toHsl();
+        var h = hsl.h;
+        return [
+            tinycolor(color),
+            tinycolor({
+                h: (h + 90) % 360,
+                s: hsl.s,
+                l: hsl.l
+            }),
+            tinycolor({
+                h: (h + 180) % 360,
+                s: hsl.s,
+                l: hsl.l
+            }),
+            tinycolor({
+                h: (h + 270) % 360,
+                s: hsl.s,
+                l: hsl.l
+            })
+        ];
+    }
+    function splitcomplement(color) {
+        var hsl = tinycolor(color).toHsl();
+        var h = hsl.h;
+        return [
+            tinycolor(color),
+            tinycolor({
+                h: (h + 72) % 360,
+                s: hsl.s,
+                l: hsl.l
+            }),
+            tinycolor({
+                h: (h + 216) % 360,
+                s: hsl.s,
+                l: hsl.l
+            })
+        ];
+    }
+    function analogous(color, results, slices) {
+        results = results || 6;
+        slices = slices || 30;
+        var hsl = tinycolor(color).toHsl();
+        var part = 360 / slices;
+        var ret = [tinycolor(color)];
+        for (hsl.h = (hsl.h - (part * results >> 1) + 720) % 360; --results;) {
+            hsl.h = (hsl.h + part) % 360;
+            ret.push(tinycolor(hsl));
+        }
+        return ret;
+    }
+    function monochromatic(color, results) {
+        results = results || 6;
+        var hsv = tinycolor(color).toHsv();
+        var h = hsv.h, s = hsv.s, v = hsv.v;
+        var ret = [];
+        var modification = 1 / results;
+        while (results--) {
+            ret.push(tinycolor({
+                h: h,
+                s: s,
+                v: v
+            }));
+            v = (v + modification) % 1;
+        }
+        return ret;
+    }
+    tinycolor.mix = function (color1, color2, amount) {
+        amount = amount === 0 ? 0 : amount || 50;
+        var rgb1 = tinycolor(color1).toRgb();
+        var rgb2 = tinycolor(color2).toRgb();
+        var p = amount / 100;
+        var rgba = {
+            r: (rgb2.r - rgb1.r) * p + rgb1.r,
+            g: (rgb2.g - rgb1.g) * p + rgb1.g,
+            b: (rgb2.b - rgb1.b) * p + rgb1.b,
+            a: (rgb2.a - rgb1.a) * p + rgb1.a
+        };
+        return tinycolor(rgba);
+    };
+    tinycolor.readability = function (color1, color2) {
+        var c1 = tinycolor(color1);
+        var c2 = tinycolor(color2);
+        return (Math.max(c1.getLuminance(), c2.getLuminance()) + 0.05) / (Math.min(c1.getLuminance(), c2.getLuminance()) + 0.05);
+    };
+    tinycolor.isReadable = function (color1, color2, wcag2) {
+        var readability = tinycolor.readability(color1, color2);
+        var wcag2Parms, out;
+        out = false;
+        wcag2Parms = validateWCAG2Parms(wcag2);
+        switch (wcag2Parms.level + wcag2Parms.size) {
+        case 'AAsmall':
+        case 'AAAlarge':
+            out = readability >= 4.5;
+            break;
+        case 'AAlarge':
+            out = readability >= 3;
+            break;
+        case 'AAAsmall':
+            out = readability >= 7;
+            break;
+        }
+        return out;
+    };
+    tinycolor.mostReadable = function (baseColor, colorList, args) {
+        var bestColor = null;
+        var bestScore = 0;
+        var readability;
+        var includeFallbackColors, level, size;
+        args = args || {};
+        includeFallbackColors = args.includeFallbackColors;
+        level = args.level;
+        size = args.size;
+        for (var i = 0; i < colorList.length; i++) {
+            readability = tinycolor.readability(baseColor, colorList[i]);
+            if (readability > bestScore) {
+                bestScore = readability;
+                bestColor = tinycolor(colorList[i]);
+            }
+        }
+        if (tinycolor.isReadable(baseColor, bestColor, {
+                'level': level,
+                'size': size
+            }) || !includeFallbackColors) {
+            return bestColor;
+        } else {
+            args.includeFallbackColors = false;
+            return tinycolor.mostReadable(baseColor, [
+                '#fff',
+                '#000'
+            ], args);
+        }
+    };
+    var names = tinycolor.names = {
+        aliceblue: 'f0f8ff',
+        antiquewhite: 'faebd7',
+        aqua: '0ff',
+        aquamarine: '7fffd4',
+        azure: 'f0ffff',
+        beige: 'f5f5dc',
+        bisque: 'ffe4c4',
+        black: '000',
+        blanchedalmond: 'ffebcd',
+        blue: '00f',
+        blueviolet: '8a2be2',
+        brown: 'a52a2a',
+        burlywood: 'deb887',
+        burntsienna: 'ea7e5d',
+        cadetblue: '5f9ea0',
+        chartreuse: '7fff00',
+        chocolate: 'd2691e',
+        coral: 'ff7f50',
+        cornflowerblue: '6495ed',
+        cornsilk: 'fff8dc',
+        crimson: 'dc143c',
+        cyan: '0ff',
+        darkblue: '00008b',
+        darkcyan: '008b8b',
+        darkgoldenrod: 'b8860b',
+        darkgray: 'a9a9a9',
+        darkgreen: '006400',
+        darkgrey: 'a9a9a9',
+        darkkhaki: 'bdb76b',
+        darkmagenta: '8b008b',
+        darkolivegreen: '556b2f',
+        darkorange: 'ff8c00',
+        darkorchid: '9932cc',
+        darkred: '8b0000',
+        darksalmon: 'e9967a',
+        darkseagreen: '8fbc8f',
+        darkslateblue: '483d8b',
+        darkslategray: '2f4f4f',
+        darkslategrey: '2f4f4f',
+        darkturquoise: '00ced1',
+        darkviolet: '9400d3',
+        deeppink: 'ff1493',
+        deepskyblue: '00bfff',
+        dimgray: '696969',
+        dimgrey: '696969',
+        dodgerblue: '1e90ff',
+        firebrick: 'b22222',
+        floralwhite: 'fffaf0',
+        forestgreen: '228b22',
+        fuchsia: 'f0f',
+        gainsboro: 'dcdcdc',
+        ghostwhite: 'f8f8ff',
+        gold: 'ffd700',
+        goldenrod: 'daa520',
+        gray: '808080',
+        green: '008000',
+        greenyellow: 'adff2f',
+        grey: '808080',
+        honeydew: 'f0fff0',
+        hotpink: 'ff69b4',
+        indianred: 'cd5c5c',
+        indigo: '4b0082',
+        ivory: 'fffff0',
+        khaki: 'f0e68c',
+        lavender: 'e6e6fa',
+        lavenderblush: 'fff0f5',
+        lawngreen: '7cfc00',
+        lemonchiffon: 'fffacd',
+        lightblue: 'add8e6',
+        lightcoral: 'f08080',
+        lightcyan: 'e0ffff',
+        lightgoldenrodyellow: 'fafad2',
+        lightgray: 'd3d3d3',
+        lightgreen: '90ee90',
+        lightgrey: 'd3d3d3',
+        lightpink: 'ffb6c1',
+        lightsalmon: 'ffa07a',
+        lightseagreen: '20b2aa',
+        lightskyblue: '87cefa',
+        lightslategray: '789',
+        lightslategrey: '789',
+        lightsteelblue: 'b0c4de',
+        lightyellow: 'ffffe0',
+        lime: '0f0',
+        limegreen: '32cd32',
+        linen: 'faf0e6',
+        magenta: 'f0f',
+        maroon: '800000',
+        mediumaquamarine: '66cdaa',
+        mediumblue: '0000cd',
+        mediumorchid: 'ba55d3',
+        mediumpurple: '9370db',
+        mediumseagreen: '3cb371',
+        mediumslateblue: '7b68ee',
+        mediumspringgreen: '00fa9a',
+        mediumturquoise: '48d1cc',
+        mediumvioletred: 'c71585',
+        midnightblue: '191970',
+        mintcream: 'f5fffa',
+        mistyrose: 'ffe4e1',
+        moccasin: 'ffe4b5',
+        navajowhite: 'ffdead',
+        navy: '000080',
+        oldlace: 'fdf5e6',
+        olive: '808000',
+        olivedrab: '6b8e23',
+        orange: 'ffa500',
+        orangered: 'ff4500',
+        orchid: 'da70d6',
+        palegoldenrod: 'eee8aa',
+        palegreen: '98fb98',
+        paleturquoise: 'afeeee',
+        palevioletred: 'db7093',
+        papayawhip: 'ffefd5',
+        peachpuff: 'ffdab9',
+        peru: 'cd853f',
+        pink: 'ffc0cb',
+        plum: 'dda0dd',
+        powderblue: 'b0e0e6',
+        purple: '800080',
+        rebeccapurple: '663399',
+        red: 'f00',
+        rosybrown: 'bc8f8f',
+        royalblue: '4169e1',
+        saddlebrown: '8b4513',
+        salmon: 'fa8072',
+        sandybrown: 'f4a460',
+        seagreen: '2e8b57',
+        seashell: 'fff5ee',
+        sienna: 'a0522d',
+        silver: 'c0c0c0',
+        skyblue: '87ceeb',
+        slateblue: '6a5acd',
+        slategray: '708090',
+        slategrey: '708090',
+        snow: 'fffafa',
+        springgreen: '00ff7f',
+        steelblue: '4682b4',
+        tan: 'd2b48c',
+        teal: '008080',
+        thistle: 'd8bfd8',
+        tomato: 'ff6347',
+        turquoise: '40e0d0',
+        violet: 'ee82ee',
+        wheat: 'f5deb3',
+        white: 'fff',
+        whitesmoke: 'f5f5f5',
+        yellow: 'ff0',
+        yellowgreen: '9acd32'
+    };
+    var hexNames = tinycolor.hexNames = flip(names);
+    function flip(o) {
+        var flipped = {};
+        for (var i in o) {
+            if (o.hasOwnProperty(i)) {
+                flipped[o[i]] = i;
+            }
+        }
+        return flipped;
+    }
+    function boundAlpha(a) {
+        a = parseFloat(a);
+        if (isNaN(a) || a < 0 || a > 1) {
+            a = 1;
+        }
+        return a;
+    }
+    function bound01(n, max) {
+        if (isOnePointZero(n)) {
+            n = '100%';
+        }
+        var processPercent = isPercentage(n);
+        n = mathMin(max, mathMax(0, parseFloat(n)));
+        if (processPercent) {
+            n = parseInt(n * max, 10) / 100;
+        }
+        if (Math.abs(n - max) < 0.000001) {
+            return 1;
+        }
+        return n % max / parseFloat(max);
+    }
+    function clamp01(val) {
+        return mathMin(1, mathMax(0, val));
+    }
+    function parseIntFromHex(val) {
+        return parseInt(val, 16);
+    }
+    function isOnePointZero(n) {
+        return typeof n == 'string' && n.indexOf('.') != -1 && parseFloat(n) === 1;
+    }
+    function isPercentage(n) {
+        return typeof n === 'string' && n.indexOf('%') != -1;
+    }
+    function pad2(c) {
+        return c.length == 1 ? '0' + c : '' + c;
+    }
+    function convertToPercentage(n) {
+        if (n <= 1) {
+            n = n * 100 + '%';
+        }
+        return n;
+    }
+    function convertDecimalToHex(d) {
+        return Math.round(parseFloat(d) * 255).toString(16);
+    }
+    function convertHexToDecimal(h) {
+        return parseIntFromHex(h) / 255;
+    }
+    var matchers = function () {
+        var CSS_INTEGER = '[-\\+]?\\d+%?';
+        var CSS_NUMBER = '[-\\+]?\\d*\\.\\d+%?';
+        var CSS_UNIT = '(?:' + CSS_NUMBER + ')|(?:' + CSS_INTEGER + ')';
+        var PERMISSIVE_MATCH3 = '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?';
+        var PERMISSIVE_MATCH4 = '[\\s|\\(]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')[,|\\s]+(' + CSS_UNIT + ')\\s*\\)?';
+        return {
+            CSS_UNIT: new RegExp(CSS_UNIT),
+            rgb: new RegExp('rgb' + PERMISSIVE_MATCH3),
+            rgba: new RegExp('rgba' + PERMISSIVE_MATCH4),
+            hsl: new RegExp('hsl' + PERMISSIVE_MATCH3),
+            hsla: new RegExp('hsla' + PERMISSIVE_MATCH4),
+            hsv: new RegExp('hsv' + PERMISSIVE_MATCH3),
+            hsva: new RegExp('hsva' + PERMISSIVE_MATCH4),
+            hex3: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
+            hex6: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/,
+            hex4: /^#?([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})([0-9a-fA-F]{1})$/,
+            hex8: /^#?([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})([0-9a-fA-F]{2})$/
+        };
+    }();
+    function isValidCSSUnit(color) {
+        return !!matchers.CSS_UNIT.exec(color);
+    }
+    function stringInputToObject(color) {
+        color = color.replace(trimLeft, '').replace(trimRight, '').toLowerCase();
+        var named = false;
+        if (names[color]) {
+            color = names[color];
+            named = true;
+        } else if (color == 'transparent') {
+            return {
+                r: 0,
+                g: 0,
+                b: 0,
+                a: 0,
+                format: 'name'
+            };
+        }
+        var match;
+        if (match = matchers.rgb.exec(color)) {
+            return {
+                r: match[1],
+                g: match[2],
+                b: match[3]
+            };
+        }
+        if (match = matchers.rgba.exec(color)) {
+            return {
+                r: match[1],
+                g: match[2],
+                b: match[3],
+                a: match[4]
+            };
+        }
+        if (match = matchers.hsl.exec(color)) {
+            return {
+                h: match[1],
+                s: match[2],
+                l: match[3]
+            };
+        }
+        if (match = matchers.hsla.exec(color)) {
+            return {
+                h: match[1],
+                s: match[2],
+                l: match[3],
+                a: match[4]
+            };
+        }
+        if (match = matchers.hsv.exec(color)) {
+            return {
+                h: match[1],
+                s: match[2],
+                v: match[3]
+            };
+        }
+        if (match = matchers.hsva.exec(color)) {
+            return {
+                h: match[1],
+                s: match[2],
+                v: match[3],
+                a: match[4]
+            };
+        }
+        if (match = matchers.hex8.exec(color)) {
+            return {
+                r: parseIntFromHex(match[1]),
+                g: parseIntFromHex(match[2]),
+                b: parseIntFromHex(match[3]),
+                a: convertHexToDecimal(match[4]),
+                format: named ? 'name' : 'hex8'
+            };
+        }
+        if (match = matchers.hex6.exec(color)) {
+            return {
+                r: parseIntFromHex(match[1]),
+                g: parseIntFromHex(match[2]),
+                b: parseIntFromHex(match[3]),
+                format: named ? 'name' : 'hex'
+            };
+        }
+        if (match = matchers.hex4.exec(color)) {
+            return {
+                r: parseIntFromHex(match[1] + '' + match[1]),
+                g: parseIntFromHex(match[2] + '' + match[2]),
+                b: parseIntFromHex(match[3] + '' + match[3]),
+                a: convertHexToDecimal(match[4] + '' + match[4]),
+                format: named ? 'name' : 'hex8'
+            };
+        }
+        if (match = matchers.hex3.exec(color)) {
+            return {
+                r: parseIntFromHex(match[1] + '' + match[1]),
+                g: parseIntFromHex(match[2] + '' + match[2]),
+                b: parseIntFromHex(match[3] + '' + match[3]),
+                format: named ? 'name' : 'hex'
+            };
+        }
+        return false;
+    }
+    function validateWCAG2Parms(parms) {
+        var level, size;
+        parms = parms || {
+            'level': 'AA',
+            'size': 'small'
+        };
+        level = (parms.level || 'AA').toUpperCase();
+        size = (parms.size || 'small').toLowerCase();
+        if (level !== 'AA' && level !== 'AAA') {
+            level = 'AA';
+        }
+        if (size !== 'small' && size !== 'large') {
+            size = 'small';
+        }
+        return {
+            'level': level,
+            'size': size
+        };
+    }
+    if (module.exports) {
+        module.exports = tinycolor;
+    } else {
+        window.tinycolor = tinycolor;
+    }
+}(Math));
+});
 
 var isLight = function (color) {
     return tinycolor(color).isLight();
